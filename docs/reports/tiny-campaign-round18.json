@@ -1,0 +1,1093 @@
+{
+  "schema_version": 1,
+  "groups": {
+    "candidate": {
+      "trials": 14,
+      "success": 11,
+      "failed": 3,
+      "tp": 2,
+      "fp": 16,
+      "fn": 12,
+      "line_tp": 3,
+      "line_fp": 15,
+      "line_fn": 11,
+      "latencies_ms": [
+        48297,
+        80051,
+        165931,
+        265141,
+        83447,
+        26501,
+        156943,
+        219292,
+        385983,
+        62749,
+        46491,
+        165045,
+        263623,
+        247352
+      ],
+      "completed_latencies_ms": [
+        48297,
+        80051,
+        165931,
+        265141,
+        83447,
+        26501,
+        219292,
+        385983,
+        62749,
+        46491,
+        165045
+      ],
+      "timeouts": 0,
+      "operational_totals": {
+        "turns": 155,
+        "tools": 216,
+        "tool_errors": 17,
+        "retries": 0,
+        "output_repairs": 0,
+        "empty_completions": 0,
+        "tool_budget_rejections": 0,
+        "settlements": 10,
+        "settlement_calls": 2,
+        "completion_tokens": 338782,
+        "prompt_tokens": 5463260,
+        "reasoning_tokens": 307210,
+        "total_tokens": 5802042
+      },
+      "runs_with_usage": 14,
+      "unexpected_total": 16,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 16,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0,
+      "precision": 0.1111111111111111,
+      "recall": 0.14285714285714285,
+      "f1": 0.125,
+      "line_precision": 0.16666666666666666,
+      "line_recall": 0.21428571428571427,
+      "line_f1": 0.1875,
+      "latencies_ms_mean": 158346.14285714287,
+      "latencies_ms_stdev": 107034.16557188798,
+      "completed_latencies_ms_mean": 140811.63636363635,
+      "completed_latencies_ms_stdev": 112491.23860663347
+    },
+    "baseline": {
+      "trials": 14,
+      "success": 14,
+      "failed": 0,
+      "tp": 2,
+      "fp": 18,
+      "fn": 12,
+      "line_tp": 4,
+      "line_fp": 16,
+      "line_fn": 10,
+      "latencies_ms": [
+        76552,
+        120509,
+        92651,
+        55066,
+        68285,
+        72944,
+        29104,
+        98800,
+        328388,
+        91101,
+        107472,
+        68284,
+        63777,
+        240324
+      ],
+      "completed_latencies_ms": [
+        76552,
+        120509,
+        92651,
+        55066,
+        68285,
+        72944,
+        29104,
+        98800,
+        328388,
+        91101,
+        107472,
+        68284,
+        63777,
+        240324
+      ],
+      "timeouts": 0,
+      "operational_totals": {
+        "turns": 159,
+        "tools": 213,
+        "tool_errors": 32,
+        "retries": 0,
+        "output_repairs": 2,
+        "empty_completions": 0,
+        "tool_budget_rejections": 2,
+        "settlements": 9,
+        "settlement_calls": 2,
+        "completion_tokens": 229039,
+        "prompt_tokens": 4720732,
+        "reasoning_tokens": 199932,
+        "total_tokens": 4949771
+      },
+      "runs_with_usage": 14,
+      "unexpected_total": 18,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 18,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0,
+      "precision": 0.1,
+      "recall": 0.14285714285714285,
+      "f1": 0.11764705882352941,
+      "line_precision": 0.2,
+      "line_recall": 0.2857142857142857,
+      "line_f1": 0.23529411764705882,
+      "latencies_ms_mean": 108089.78571428571,
+      "latencies_ms_stdev": 79998.92458332806,
+      "completed_latencies_ms_mean": 108089.78571428571,
+      "completed_latencies_ms_stdev": 79998.92458332806
+    }
+  },
+  "case_metrics": [
+    {
+      "run": "lock-symlink-truncation-1-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-1-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-1-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-1-baseline",
+      "variant": "baseline",
+      "line_tp": 1,
+      "line_fp": 4,
+      "line_fn": 0,
+      "unexpected_total": 5,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 5,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-1-candidate",
+      "variant": "candidate",
+      "line_tp": 1,
+      "line_fp": 2,
+      "line_fn": 0,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 3,
+      "line_fn": 1,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-1-baseline",
+      "variant": "baseline",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-1-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-1-candidate",
+      "variant": "candidate",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-1-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-2-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-2-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-1-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-2-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-2-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-2-candidate",
+      "variant": "candidate",
+      "line_tp": 1,
+      "line_fp": 2,
+      "line_fn": 0,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-2-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 3,
+      "line_fn": 1,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-2-baseline",
+      "variant": "baseline",
+      "line_tp": 1,
+      "line_fp": 2,
+      "line_fn": 0,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-2-baseline",
+      "variant": "baseline",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-2-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-2-baseline",
+      "variant": "baseline",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-2-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-2-candidate",
+      "variant": "candidate",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    }
+  ],
+  "review_queue": [
+    {
+      "run": "lock-symlink-truncation-1-baseline",
+      "variant": "baseline",
+      "review_id": "580498d27a950a33a11110dd90e1a5415bc15b43acf26ce30f38a859300053c5:lock-symlink-truncation:8d2adb2345bab99508551d2ca265cc639a90b824fe6733bc8aa870190ceddbd9",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_unix.py",
+        "line": 44,
+        "severity": "medium",
+        "title": "UnixFileLock follows symlinks and truncates the target when opening the lock file",
+        "evidence": "Attacker input is the filesystem state of the lock path: `lock_file` is attacker-influenced whenever the application picks a lock path inside a directory the attacker can write (e.g. a shared/tmp location with a predictable lock name). In UnixFileLock._acquire, line 40 calls ensure_directory_exists(self.lock_file), line 41 builds `open_flags = os.O_RDWR | os.O_TRUNC`, line 42 tests existence with `Path(self.lock_file).exists()` (which follows symlinks) and only then sets O_CREAT, and line 44 executes `fd = os.open(self.lock_file, open_flags, self._context.mode)`. There is no O_NOFOLLOW and no lstat/realpath check, so if the path is a pre-existing symlink to a victim file the process can write, Path.exists() returns True for the symlink target, O_CREAT is omitted, and O_RDWR|O_TRUNC is applied to the followed target, silently truncating an arbitrary file to zero bytes. The subsequent fcntl.flock at line 48 and the lock bookkeeping succeed, so the destructive truncation is not detected. Protections are insufficient: the SoftFileLock and WindowsFileLock backends call raise_on_not_writable_file, but UnixFileLock does not, and even that helper uses os.stat (symlink-following) so it would not block this case; nothing in the open path refuses to traverse a symlink. Required configuration is only that the lock path resolve through an attacker-writable directory, making this a reachable integrity violation (arbitrary truncation of files writable by the locking process)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-1-baseline",
+      "variant": "baseline",
+      "review_id": "4f8dbcfaee31c7be6f2b5560182e8fb7ad7bcdad59702f72d76816d9beadd791:iss-array-loose-match:d85186370aa1f8c8a4a47476bffaca9f1d910422b35111c59e7bf16d307cfd5d",
+      "finding": {
+        "cwe": "CWE-347",
+        "path": "src/verifier.js",
+        "line": 392,
+        "severity": "critical",
+        "title": "Empty/null key plus an algorithm allowlist accepts forged unsigned tokens",
+        "evidence": "createVerifier validates the key only by typeof (line 391-397): an empty string or null passes because typeof '' is 'string' and typeof null is 'object', and the later detection block at line 399 is skipped because `if (key && ...)` is falsy. allowedAlgorithms therefore stays whatever the caller configured (e.g. ['HS256']) while key is never prepared. At verification, verifyToken computes hasKey = !!key -> false (line 180), so both guards fail: `hasKey && !signature` is false and `!hasKey && signature` is false when the token has an empty signature segment (line 182-186). validateAlgorithmAndSignature then admits the token because header.alg is in the allowlist and the signature check is guarded by `if (signature && ...)` on an empty string (line 139), so nothing is ever verified. Input-to-sink: attacker sends `base64url(header).base64url(payload).` (empty signature) with alg matching the allowlist. Demonstrated with a PoC against this source: createVerifier({key:'',algorithms:['HS256']}) and ({key:null,algorithms:['HS256']}) both return the decoded payload {sub:'admin',role:'admin',...} for a forged unsigned token; 6.3.4 fixes this by requiring a key unless the only allowed algorithm is 'none'."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-1-baseline",
+      "variant": "baseline",
+      "review_id": "4f8dbcfaee31c7be6f2b5560182e8fb7ad7bcdad59702f72d76816d9beadd791:iss-array-loose-match:e9f939304ca100eed9b35b91c882594405961abdd4d3abecf77c979c5d9d7c90",
+      "finding": {
+        "cwe": "CWE-613",
+        "path": "src/verifier.js",
+        "line": 89,
+        "severity": "medium",
+        "title": "Cached verification can accept a token after its exp when iat is absent",
+        "evidence": "cacheSet only derives the cache upper bound from exp/maxAge when the payload has a numeric iat (`hasIat` gate at line 89-102). For a token that carries exp but no iat, cacheValue[2] stays 0 and line 106 replaces it with maxTTL = clockTimestamp + clockTolerance + cacheTTL, so the cached success entry remains valid for the full cacheTTL regardless of when the token expires. verify() then returns the cached payload as a hit whenever `now <= max` (line 268), bypassing the exp validator that already ran. Input-to-sink: a legitimately signed short-lived token without iat (e.g. from a non-fast-jwt issuer) is verified once while valid and cached; after its exp passes it is still accepted for up to cacheTTL (default 600000 ms). Demonstrated with a PoC on this source: with Date.now advanced 5 minutes past a token whose exp is 1 second away and no iat, the cached verifier returns {sub:'u',...} while a non-cached verifier rejects it with 'The token has expired'. 6.3.4 removes the iat gate and always bounds the entry by exp."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-baseline",
+      "variant": "baseline",
+      "review_id": "fdb5879fec8c34a5c3d5926a37bb274c41a68b7b05a4a435df55a6a59fe38eae:intoiter-drop-panic-double-free:bc945c7330690e6bf5167403a1ae4aea3df9837a6c75dd31750c6ca19532a983",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "Panic during element Drop in ThinVec::clear causes double-drop/double-free",
+        "evidence": "`ThinVec::clear` (line 1082) calls `ptr::drop_in_place(&mut self[..])` (line 1084) and only afterwards resets the length via `self.set_len(0)` (line 1085). A safe caller can invoke `clear()` on a `ThinVec<T>` where `T::drop` panics. The slice drop glue begins dropping elements and, when one element's `Drop` unwinds, the remaining elements are still dropped during unwinding, but `set_len(0)` is never reached, so the vector's length remains the old (non-zero) value. When the `ThinVec` itself is subsequently dropped, `ThinVec::drop` (line 1912) runs `drop_in_place(&mut this[..])` over the still-set length and drops every element a second time, producing a double-free / use-after-free of already-dropped elements. This is reachable purely through safe APIs. Verified by build/run of a PoC: pushing 3 elements (first one's `Drop` panics and then clears its flag) and calling `clear()` yields \"drop Elem\" six times for three elements, i.e. every element is dropped twice. The 0.2.16 upstream repair is exactly a `DropGuard` that sets the length to 0 even on panic, confirming the missing panic guard as the root cause."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-baseline",
+      "variant": "baseline",
+      "review_id": "fdb5879fec8c34a5c3d5926a37bb274c41a68b7b05a4a435df55a6a59fe38eae:intoiter-drop-panic-double-free:0dfe7227549f39ab67262ca53650ec8038c7805b3183da9c6a1311ae1e2e7f0b",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "Panic during element Drop in IntoIter::drop causes double-drop of moved elements",
+        "evidence": "`<IntoIter<T> as Drop>::drop_non_singleton` (line 2544) does `let mut vec = mem::replace(&mut this.vec, ThinVec::new())` (line 2546) and then `ptr::drop_in_place(&mut vec[this.start..])` (line 2547). The length of the vector was never cleared before dropping the remaining slice, so if an element's `Drop` panics, control unwinds out of `drop_non_singleton` with the local `vec` still holding a non-zero length; the compiler then drops that local `ThinVec`, whose `Drop` (line 1912) calls `drop_in_place` on the whole `[0..len]` range again, double-dropping the element that already panicked and any elements processed during unwinding. Safe code reaches this by obtaining an `IntoIter<T>` (e.g. `v.into_iter()`), consuming some elements, and letting the iterator drop while `T::drop` panics; the original `this.vec` was already replaced with an empty singleton, so only the double-dropped local remains. The 0.2.16 upstream repair wraps the drop in a `DropGuard` that unconditionally sets the length, confirming the missing panic guard as the root cause."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-baseline",
+      "variant": "baseline",
+      "review_id": "37cf31fa5598ca7ae21f1483ba99880d582b446b01e3127e9d70d9c167ffec2a:argon2i32-small-block-count:9ea61e87ff5fbbf4f2da0611411177692395850d1a82bfc7747f2dc19a7c28ce",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "Unvalidated BLAKE2b key length causes stack buffer overflow",
+        "evidence": "blake2b(msg, key=None) passes the caller-supplied key and its length straight to the C API: crypto_blake2b_keyed(hash, len(hash), key, len(key), msg, len(msg)). The binding never constrains len(key). In monocypher.c:544-547 the key is copied into a fixed 128-byte stack buffer: 'u8 key_block[128] = {0}; COPY(key_block, key, key_size);' where COPY expands to a byte-by-byte loop of length key_size. Calling blake2b(b'...', key=b'A'*200) (or Blake2b(key=b'A'*200), c_monocypher.pyx:297) writes key_size bytes into the 128-byte stack array, overflowing the stack. The public Python API requires no trusted input: any key longer than 128 bytes from a caller/attacker-controlled source reaches the memcpy-like sink. This is a memory-corruption primitive, not merely a bounds check omission."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-baseline",
+      "variant": "baseline",
+      "review_id": "37cf31fa5598ca7ae21f1483ba99880d582b446b01e3127e9d70d9c167ffec2a:argon2i32-small-block-count:87df96923a76ddc4387d9db8668225e2ec077e54c052545a31b3ff9272d1d05f",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 328,
+        "severity": "high",
+        "title": "Unvalidated argon2 nb_blocks causes heap buffer overflow",
+        "evidence": "argon2i_32 assigns config.nb_blocks = nb_blocks with no lower-bound validation and then allocates work_area = malloc(nb_blocks * 1024) (line 345). monocypher's crypto_argon2 (monocypher.c:752-757) computes segment_size = nb_blocks / nb_lanes / 4 and lane_size = segment_size*4, so for nb_blocks 0 or 1 lane_size becomes 0. It then unconditionally fills the first two blocks of every lane (monocypher.c:773-778, load64_le_buf(blocks[l*lane_size+i].a, hash_area, 128) for i in 0,1), writing 2048 bytes past the heap allocation (1024 bytes for nb_blocks=1; malloc(0) for nb_blocks=0) and later reading blocks[lane_size-1] = blocks[-1]. Calling argon2i_32(1, 1, password, salt) from Python therefore overflows the heap. nb_blocks is caller-controlled and the binding documents/validates nothing (the header requires nb_blocks >= 8*nb_lanes)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-baseline",
+      "variant": "baseline",
+      "review_id": "37cf31fa5598ca7ae21f1483ba99880d582b446b01e3127e9d70d9c167ffec2a:argon2i32-small-block-count:1ee9a5336fbfe9c6e86fa0caee0d5662f98eabd587c511ac86ae89139b08aa67",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 181,
+        "severity": "medium",
+        "title": "Missing length validation for fixed-size key/nonce/signature parameters",
+        "evidence": "Several public functions forward caller buffers to C APIs whose parameters are fixed-size arrays without checking their lengths. lock()/unlock() (lines 181/199) pass key and nonce to crypto_aead_lock/crypto_aead_unlock, which read key[32] and nonce[24] unmodified; compute_key_exchange_public_key (line 362) and key_exchange (line 375) read 32 bytes of secret_key/public_key; signature_check (line 429) calls crypto_eddsa_check, which reads signature[64] and public_key[32] (monocypher.h:225-226). Because no length check is performed, a caller supplying a shorter bytes object (e.g. a 16-byte key or nonce from a network/parsed field) makes the C code read past the end of the Python buffer, leaking adjacent heap memory into cryptographic outputs/return values and potentially crashing. The equivalent class-based path validates lengths (lines 214-218), showing the omission is unintended."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-baseline",
+      "variant": "baseline",
+      "review_id": "37cf31fa5598ca7ae21f1483ba99880d582b446b01e3127e9d70d9c167ffec2a:argon2i32-small-block-count:48cd618d03e3c23c1b32f044d2fa85371b97bb5d240a96c19a12f83cc05e8b1a",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 296,
+        "severity": "medium",
+        "title": "Unvalidated Blake2b hash_size leaks internal context memory",
+        "evidence": "Blake2b.__init__ stores the caller-supplied hash_size unchanged (self._hash_size = hash_size) and passes it to crypto_blake2b_keyed_init (line 297). In monocypher.c crypto_blake2b_final sets hash_size = MIN(ctx->hash_size,64) for the tail loop but first calls store64_le_buf(hash, ctx->hash, nb_words) with nb_words = hash_size>>3, copying nb_words 64-bit words from the 8-word ctx->hash array. Calling Blake2b(hash_size=128).finalize() allocates bytes(128) (line 311) and causes store64_le_buf to read 16 words from the 8-word ctx->hash field, returning out-of-bounds contents of the crypto_blake2b_ctx (input_offset, input buffer, which contains the key block and hashed message data) to the caller. hash_size is never bounded to the valid 1..64 range."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-baseline",
+      "variant": "baseline",
+      "review_id": "37cf31fa5598ca7ae21f1483ba99880d582b446b01e3127e9d70d9c167ffec2a:argon2i32-small-block-count:fa165e92b736dfe2d3e64b919271aed8d2267587666793dc9c80a618a141e87d",
+      "finding": {
+        "cwe": "CWE-476",
+        "path": "c_monocypher.pyx",
+        "line": 345,
+        "severity": "medium",
+        "title": "Unchecked malloc result tolerated by crypto_argon2 NULL dereference",
+        "evidence": "argon2i_32 allocates work_area = malloc((size_t)nb_blocks * (size_t)1024) and immediately passes it to crypto_argon2 in the try block (line 347) without checking for NULL. nb_blocks is an unvalidated caller-supplied integer (only the C struct field is uint32_t), so values producing a multi-terabyte request (or a negative value cast to size_t) make malloc fail and return NULL. crypto_argon2 unconditionally dereferences the work area (monocypher.c:757 'blk *blocks = (blk*)work_area;' then writes blocks[...].a and ZERO(p,128*nb_blocks)), causing a NULL-pointer write and process crash. Reachable directly via argon2i_32(0xffffffff, 1, password, salt)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-candidate",
+      "variant": "candidate",
+      "review_id": "be305ccc16770535348fa74f029cdbd3f2ef47eaf6212b4285f9e592e32b589b:argon2i32-small-block-count:ea7cc721a88401cd150b549db7e774882bca047456dddee9bc2de5640f6a2273",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "Unbounded Blake2b key length overflows fixed 128-byte stack buffer in Monocypher",
+        "evidence": "blake2b(msg, key) forwards the caller-controlled key and its length verbatim to monocypher: crypto_blake2b_keyed(hash, 64, key, len(key), msg, len(msg)) (c_monocypher.pyx:281); the identical unchecked sink exists in Blake2b.__init__ at c_monocypher.pyx:297 (crypto_blake2b_keyed_init(&self._ctx, self._hash_size, key, len(key))). Neither function ever validates the key size. In monocypher.c:544-546 crypto_blake2b_keyed_init declares `u8 key_block[128] = {0}` and then `COPY(key_block, key, key_size)`, where COPY is the unchecked macro `FOR(_i_,0,size) (dst)[_i_]=(src)[_i_]` (monocypher.c:65). Any key longer than 128 bytes is written past key_block, smashing adjacent stack data, even though Monocypher only supports keys up to 64 bytes. Attacker input: a passphrase/key of e.g. 200 bytes that an application passes to blake2b(msg, key) (or Blake2b(key=...)) is enough; the binding performs no length check, so the copy overruns the stack frame with attacker-influenced bytes/timing."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-candidate",
+      "variant": "candidate",
+      "review_id": "be305ccc16770535348fa74f029cdbd3f2ef47eaf6212b4285f9e592e32b589b:argon2i32-small-block-count:2273a39479f59a784800deb47be1a787a0cc9ab834ce3ef99a0a33851ac77067",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 181,
+        "severity": "medium",
+        "title": "Fixed-size key/nonce/mac arguments accepted without length checks cause out-of-bounds reads",
+        "evidence": "lock() passes caller-provided key and nonce directly into Monocypher, which reads fixed sizes (key[32], nonce[24]) regardless of the Python object length: crypto_aead_lock(crypto_text, mac, key, nonce, associated_data, len(associated_data), message, len(message)) (c_monocypher.pyx:181). No length validation exists in this module-level helper; the only key/nonce checks are in IncrementalAuthenticatedEncryption.__init__ (lines 214-218). The same unchecked pattern appears in unlock() (c_monocypher.pyx:199, key/nonce/mac), chacha20() (lines 267/269, key[32]), compute_key_exchange_public_key() (line 362) and key_exchange() (line 375, 32-byte keys), and signature_check() (line 429, 64-byte signature/32-byte public key). Example input: lock(b'', nonce, message) makes Monocypher read 32 bytes of key material from a 1-byte Python bytes buffer, so the derived ciphertext/MAC depend on out-of-bounds heap bytes (information disclosure of adjacent heap contents observable through the output) and can segfault when the object sits near the end of its allocation."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-candidate",
+      "variant": "candidate",
+      "review_id": "c009d2c897e5777cdf291fa8b1ae14f04dd8d00ebdfb7e0ea987c1e389f2d6ff:intoiter-drop-panic-double-free:e8638646b2f0f5cc7fa9a56f50dd0ece4ddffccf35b61a747e316a8072843de7",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "ThinVec::clear() double-drops elements when an element's Drop panics (double free)",
+        "evidence": "Triggerable from 100% safe code with default features: any ThinVec<T> whose T::drop can panic (e.g. an attacker-influenced cleanup path). clear() (src/lib.rs:1082) runs ptr::drop_in_place(&mut self[..]) at line 1084 and only afterwards sets the length to 0 at line 1085. If element i's Drop unwinds, line 1085 is skipped, so the vector still reports its full old len. The vector is then destroyed during unwinding, and Drop for ThinVec (line 1912 -> drop_non_singleton at 1915) again runs ptr::drop_in_place(&mut this[..]) at line 1917 over the same slots, invoking Drop a second time on elements that were already destroyed (and on the partially-dropped panicking element). For resource-owning element types this is a double free/use-after-free (memory corruption), not merely a leak. The length update is not panic-safe because there is no unwind guard around the drop. Upstream thin-vec 0.2.16 RELEASES.md explicitly records 'two double-drop issues with ThinVec::clear() ... when the Drop implementation of the item panics' and the fix wraps the drop in a DropGuard that always sets len to 0; the shipped 0.2.15 source here lacks that guard."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-candidate",
+      "variant": "candidate",
+      "review_id": "c009d2c897e5777cdf291fa8b1ae14f04dd8d00ebdfb7e0ea987c1e389f2d6ff:intoiter-drop-panic-double-free:ec61aa2775458913ba7c50053ec3ff4b69b364bc3a50d6859674319c98e04797",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "IntoIter::drop double-drops elements when an element's Drop panics (double free)",
+        "evidence": "Reachable from safe code with default features: build v.into_iter(), call next() once, then drop the iterator while a remaining element's Drop panics. IntoIter::drop (src/lib.rs:2541) calls drop_non_singleton (src/lib.rs:2544), which does mem::replace(&mut this.vec, ThinVec::new()) at line 2546, moving the vector into local `vec` whose len still includes the slot(s) already moved out by next() via ptr::read at line 2510. It then drops the tail with ptr::drop_in_place(&mut vec[this.start..]) at line 2547 and only afterwards clears the length with vec.set_len_non_singleton(0) at line 2548. If an element's Drop unwinds, line 2548 is skipped; while unwinding, the local `vec` is destroyed by ThinVec::drop (line 1912 -> line 1917), which drops [0..len) using the stale full length, re-running Drop for elements already read out by next() and for the panicking element. This is a second, independent double-drop/memory-corruption sink (CWE-415) rather than a leak. Upstream 0.2.16 fixes it with a DropGuard that sets the length to 0 on unwind (test_panic_into_iter) and RELEASES.md lists it as one of the two double-drop fixes; the 0.2.15 code shipped here has no such guard."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-candidate",
+      "variant": "candidate",
+      "review_id": "c009d2c897e5777cdf291fa8b1ae14f04dd8d00ebdfb7e0ea987c1e389f2d6ff:intoiter-drop-panic-double-free:c4a416a5b0090862bb1b51bd6d2637e1c0ef1966a9a0b1241e8138f1906b1883",
+      "finding": {
+        "cwe": "CWE-664",
+        "path": "src/lib.rs",
+        "line": 1772,
+        "severity": "medium",
+        "title": "reallocate() loses length of stack-backed auto arrays in gecko-ffi mode",
+        "evidence": "Requires the non-default gecko-ffi feature and a ThinVec viewed over a C++ nsTArray auto array (stack buffer with len > 0) that is reallocated via push/reserve/shrink. In reallocate() (src/lib.rs:1733) the non-heap branch calls header_with_capacity (line 1749), which builds a header with _len = 0; for cfg(gecko-ffi) && len > 0 it copies the len live elements into the new buffer (lines 1764-1768) and zeroes the old stack header (line 1769), but never records len in the new header before self.ptr = new_header at line 1772. The vector therefore reports len()==0 while the heap allocation holds len initialized values: subsequent push() writes over live elements at index 0..len, and Drop for ThinVec (line 1917) drops 0 elements, so the moved values are silently corrupted/leaked. Upstream 0.2.16 adds new_header.as_mut().set_len(len) exactly here and RELEASES.md records 'Fix reserve() on auto arrays in gecko-ffi mode'; the 0.2.15 source audited lacks that assignment."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-1-candidate",
+      "variant": "candidate",
+      "review_id": "0073ef2ed432d506b0ba1869f7d49b4159c1ef0f68edddbd35fec8e31b7de995:iss-array-loose-match:f184385a781402c560c17a07ca21990aeed15fa1dbca0e06971dff9191193621",
+      "finding": {
+        "cwe": "CWE-347",
+        "path": "src/verifier.js",
+        "line": 139,
+        "severity": "high",
+        "title": "Signature verification skipped when key is falsy: unsigned tokens accepted",
+        "evidence": "Input: attacker-supplied JWT string. Flow: `createVerifier` option validation (line 392) accepts a falsy key of type string/object ('' or null), and the key-detection/preparation block is guarded by `if (key && keyType !== 'function')` (line 399), so for an empty-string/null key nothing is detected or prepared and the verifier stays keyless. In `verifyToken` (lines 180-186) `hasKey = key instanceof Buffer ? key.length : !!key` evaluates false, so an empty signature does not raise `missingSignature` (`if (hasKey && !signature)` is false; `else if (!hasKey && signature)` is also false for an empty signature), and control reaches `validateAlgorithmAndSignature`, whose only signature check is `if (signature && !verifySignature(...))` (line 139) - the `signature &&` short-circuit means the cryptographic verification is never executed for an empty signature. The header `alg` still passes the allow-list test at line 134, so the token is accepted with no signature at all. Demonstrated with `createVerifier({ key: '', algorithms: ['HS256'] })` (and `key: null`): the token `base64url({\"alg\":\"HS256\"}) + '.' + base64url({\"admin\":true}) + '.'` was ACCEPTED and returned `{\"admin\":true}` (control: with `key: 's'` the same token is rejected FAST_JWT_MISSING_SIGNATURE, and an empty key without an explicit `algorithms` array is rejected FAST_JWT_INVALID_ALGORITHM). Required configuration: a key that is an empty string (e.g. `key: process.env.JWT_SECRET` where the variable is defined but empty) plus an `algorithms` list; this configuration is realistic for asymmetric setups (empty public-key env var), where the attacker cannot compute an RS256 signature and therefore gains full claim control from an unsigned token."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-1-candidate",
+      "variant": "candidate",
+      "review_id": "0073ef2ed432d506b0ba1869f7d49b4159c1ef0f68edddbd35fec8e31b7de995:iss-array-loose-match:4cf0ebd28aa0235f2d29d19723a3f64d683e1b888a09364b065812529cc95cb8",
+      "finding": {
+        "cwe": "CWE-613",
+        "path": "src/verifier.js",
+        "line": 92,
+        "severity": "medium",
+        "title": "Expired tokens without an iat claim remain valid indefinitely from cache",
+        "evidence": "Input: a correctly signed token whose payload contains `exp` but no `iat` (e.g. produced with the signer's `noTimestamp` option or by another issuer), combined with the documented `cache` option. Flow: `cacheSet` computes the cache entry's validity window, but the entire exp/nbf block is nested inside `if (hasIat)` (line 89 defines `hasIat`, line 92 guards the block, lines 93-100 set `min`/`max`, line 106 applies `Math.min`). With no `iat`, `cacheValue[2]` stays 0 and is replaced by `maxTTL = clockTimestamp + clockTolerance + cacheTTL` (lines 105-106, default 600000 ms), so the stored entry's expiration is completely disconnected from `exp`. The cache-hit test in `verify` (lines 258-271: `min === 0 ... && (max === 0 || now <= max)`) then returns the cached payload without re-running any validator, so `exp` is never re-checked while the entry lives. Demonstrated with `createVerifier({ key: 's', cache: true, cacheTTL: 600000 })` and a stubbed clock: the token `{sub:'x', exp: now+2s}` (no iat) verified successfully while valid and was still ACCEPTED with `{\"sub\":\"x\",\"exp\":...}` 3 minutes after `exp`; controls show the failure is the stale cache entry, not a general exp bypass - the same token with `iat` added was rejected FAST_JWT_EXPIRED, an expired no-iat token that had never been verified was rejected FAST_JWT_EXPIRED, and the same expired no-iat token verified with `cache` disabled was rejected FAST_JWT_EXPIRED. Attacker prerequisite: hold a token that was valid once and replay it after expiration against a verifier running with caching enabled - expired credentials are honored for up to cacheTTL beyond `exp`, bypassing the expiration policy (session-revocation/authorization impact)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-2-baseline",
+      "variant": "baseline",
+      "review_id": "1130dd7c01333ee94b9da8a61260b45eb5f8445c4a2b6d832f9626a65728b7c4:iss-array-loose-match:da6b29c0dc094f5972e933cc930cfc9159b0e5731aff18741ca4e2618ca3849a",
+      "finding": {
+        "cwe": "CWE-347",
+        "path": "src/verifier.js",
+        "line": 180,
+        "severity": "high",
+        "title": "Empty secret key accepted, disabling signature verification",
+        "evidence": "In createVerifier, key preparation/validation is guarded by if (key && keyType !== 'function') (line 399). An empty-string secret (e.g. an unset secret env var resolved to '') is falsy, so the entire key-preparation block is skipped: detectPublicKeyAlgorithms is never called, prepareKeyOrSecret is never called, and no error is raised (line 409 is the only place a secret would be converted/checked; there is no emptiness check). The empty string is then carried into verifyToken. There const hasKey = key instanceof Buffer ? key.length : !!key (line 180) evaluates to false for '' (and for a zero-length Buffer), so the guards at lines 182-186 do not fire: hasKey && !signature is false (no missing-signature error) and !hasKey && signature is false when the attacker supplies an empty signature segment. validateAlgorithmAndSignature (line 131) then only checks that header.alg is in allowedAlgorithms (line 134), and its signature check is gated by if (signature && !verifySignature(...)) (line 139); with signature equal to the empty string the HMAC verification is skipped entirely. Consequently, when a server is configured with an empty secret and an explicit algorithms list (e.g. ['HS256']), an unauthenticated attacker can submit a token whose header claims HS256, whose payload is arbitrary, and whose third segment is empty, and have the payload accepted with no signature check, yielding full token forgery and authentication bypass. The code should reject an empty secret at construction instead of silently treating it as no key."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-baseline",
+      "variant": "baseline",
+      "review_id": "c2a29c674fa0515c47ebddbd99ffffceed8223b386f2d66e41a6e6a9f336796f:sha256-length-comparator-unconstrained:a4033139230be5e3f6cb9cadf03f2914a17ec283a322dcb422f9b8eac0850b25",
+      "finding": {
+        "cwe": "CWE-129",
+        "path": "sha.circom",
+        "line": 195,
+        "severity": "high",
+        "title": "Unvalidated block index (inBlockIndex-1) becomes a wrapped negative that bypasses the ItemAtIndex selector range check, allowing a forged all-zero SHA256 digest",
+        "evidence": "Attacker-controlled input: `paddedInLength` (and the bit array `paddedIn`, which drives `paddedInLength` in Sha256Bytes/Sha256BytesPartial). Flow: sha.circom:110-111 derives `inBlockIndex <-- (paddedInLength >> 9)` and constrains `paddedInLength === inBlockIndex * 512`. The only additional bound is the circomlib `LessEqThan(maxBitsPaddedBits)` at lines 125-128, which (like `LessThan`) does not range-check its operands to n bits, and there is no lower-bound/no `inBlockIndex >= 1` constraint. Setting `paddedInLength = 0` (accepted by the LessEqThan check since 0 <= maxBitLength) forces `inBlockIndex = 0`, so at line 195 the selector index becomes `inBlockIndex - 1 = -1`, i.e. the field element p-1. This index is fed to `ItemAtIndex(maxBlocks)` (array.circom:15-46). The intended protection is the guard `lessThan.in[0] <== index; lessThan.in[1] <== maxArrayLen; lessThan.out === 1;` (array.circom:25-28). That guard is unsound: circomlib `LessThan(n)` computes `1 - bit_n(index + 2^n - maxArrayLen)` via `Num2Bits(n+1)` without constraining `index` to n bits, so with index = p-1 the value reduces mod p to `2^n - maxArrayLen - 1 < 2^n`, bit n is 0 and lessThan.out === 1 is satisfied even though index is out of range. All `IsEqual(i, p-1)` comparisons then yield 0, so `calcTotal.sum` and hence `out` (and therefore all 256 output bits of Sha256General/Sha256Partial) are forced to 0. Protections failed: (1) sha.circom never constrains `inBlockIndex >= 1`/rejects a zero padded length, and (2) the replacement range check in array.circom (sha.circom includes \"../utils/array.circom\") is bypassable, whereas the sound selector asserts `calcTotalIndex.sum === 1` so an out-of-range index cannot satisfy the circuit. Consequence: a malicious prover can generate a valid witness/proof for the false statement that the SHA256 digest of the (zero-length) padded input is the all-zero 256-bit value, breaking the hash-binding/soundness property the circuit is relied upon for."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-2-candidate",
+      "variant": "candidate",
+      "review_id": "0474dfc199a7f5d1622a8dcf08c46fe09f26d479780e5db1411043ab0a4ec2ec:iss-array-loose-match:df19ec73bff3ff66d21ebb00e6634a69dc014a6895bae7975312c0ab7336e76a",
+      "finding": {
+        "cwe": "CWE-400",
+        "path": "src/verifier.js",
+        "line": 47,
+        "severity": "medium",
+        "title": "Stateful RegExp claim matchers cause intermittent rejection of valid tokens (logical DoS)",
+        "evidence": "createVerifier accepts caller-supplied RegExp objects for allowedIss/allowedAud/allowedSub/allowedJti/allowedNonce (lines 466-484) and routes them through ensureStringClaimMatcher, which passes any object exposing a .test function through unchanged (lines 47-49) without validating its flags and without resetting lastIndex. During verification, verifyToken (line 226) calls validateClaimValues (lines 154-162), which evaluates allowed.some(a => a.test(v)) at line 159; the regex keeps its lastIndex for the whole process lifetime. A RegExp compiled with /g or /y is stateful: RegExp.prototype.test advances lastIndex after a successful match, so the next call on an identical value starts past the previous match and returns false (and for multi-value array claims such as aud can skip later allowed alternatives). With a normal configuration such as createVerifier({ key, algorithms: ['HS256'], allowedIss: /^my-issuer$/g }), every second otherwise-valid token is rejected, producing ~50% intermittent authentication failures and retry storms. The impact is availability only (invalid tokens are still rejected), but no protection exists in the path: the flags are never checked and lastIndex is never reset before a.test(v), so the failure toggles deterministically with each verification attempt."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-candidate",
+      "variant": "candidate",
+      "review_id": "aeded50f5e945ee953647c9f7a72625315ec07e09b19fc5945cf23581b3566fd:sha256-length-comparator-unconstrained:17eb32c2d6b59491396c623ddf35e01c70f5b333701dff4dbe0540272bcffded",
+      "finding": {
+        "cwe": "CWE-129",
+        "path": "sha.circom",
+        "line": 195,
+        "severity": "high",
+        "title": "Unvalidated block-selector index lets a prover force the SHA256 output to all zeros",
+        "evidence": "`paddedInLength` is a free prover-supplied signal. It is only required to be a multiple of 512 (`paddedInLength === inBlockIndex * 512`, line 111) and to be <= maxBitLength (`bitLengthVerifier = LessEqThan(maxBitsPaddedBits)`, lines 125-128). No lower bound is imposed, so the prover may set paddedInLength = 0; then `inBlockIndex <-- (paddedInLength >> 9)` (line 110) is 0, and the selector index consumed at line 195 is `arraySelectors[k].index <== inBlockIndex - 1` = -1 (i.e. p-1 in the field), which is fed straight into the array selection that drives the circuit output `out[k] <== arraySelectors[k].out` (line 196). The only protection that is supposed to reject an out-of-range index is inside `ItemAtIndex` (array.circom lines 24-28): `LessThan(bitLength); lessThan.in[0] <== index; lessThan.in[1] <== maxArrayLen; lessThan.out === 1;`. circomlib's `LessThan(n)` is sound only when both inputs are < 2^n, and `index` is never range-checked, so with index = p-1 the internal `Num2Bits(bitLength+1)` operand (`index + 2^bitLength - maxArrayLen`) wraps modulo p to `2^bitLength - maxArrayLen - 1`, whose bit `bitLength` is 0, and `lessThan.out === 1` is satisfied even though index >= maxArrayLen. Consequently no `eqs[i]` (i in [0, maxBlocks)) matches, `CalculateTotal` returns 0, and every output bit `out[k]` is 0. A prover can thus produce a valid proof of the false statement SHA256(paddedIn) = 0x000...0 for arbitrary `paddedIn` with paddedInLength = 0, breaking the circuit's soundness (upstream repaired this exact generator by replacing the ineffective `LessThan` check with the assertion that the sum of the equality indicators equals 1, i.e. that `index` actually selects exactly one element)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-baseline",
+      "variant": "baseline",
+      "review_id": "e97222812f59de56d72e56111aaed20038bb65c58d889bba4b12b5deab720e1a:intoiter-drop-panic-double-free:801b8615ba42af8cd78f0cf60c84d78621d89e9040b7a5506623e15bc745c2da",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "Double-drop in ThinVec::clear when an element's Drop panics",
+        "evidence": "`clear` drops all elements in place and only afterwards resets the length: `ptr::drop_in_place(&mut self[..]); self.set_len(0);` (lines 1082-1087). If any element's `Drop::drop` panics during `drop_in_place`, the `set_len(0)` on line 1085 is never reached (the unsafe fn aborts at line 1084). Unwinding then runs `ThinVec::drop` (line 1910-1930), which computes the slice from the still-unchanged `len` and calls `drop_in_place(&mut this[..])` a second time. Every element at index 0..=panicking_index is therefore dropped twice. For element types owning heap pointers (e.g. `Box<T>`, `String`, `Rc`) this is a double free / use-after-free of the freed allocation. Reachable from entirely safe code: `let mut v: ThinVec<Box<u8>> = ...; v.clear();` where the item type's `Drop` panics (e.g. a `Box`-holding wrapper whose Drop panics, or a custom Drop impl). The intended guard `debug_assert!`/len handling provides no protection and the length update is not panic-safe; there is no `DropGuard` to reset `len` before unwinding. Fixed upstream in 0.2.16 (0.2.21 installs a `DropGuard` that calls `set_len(0)` on unwind before the elements are dropped)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-baseline",
+      "variant": "baseline",
+      "review_id": "e97222812f59de56d72e56111aaed20038bb65c58d889bba4b12b5deab720e1a:intoiter-drop-panic-double-free:4fd0b2aece379bbc8f873c7892709796f76eaaf619c296023b0b94dbfb6639a5",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "Double-drop in IntoIter::drop when an element's Drop panics",
+        "evidence": "`IntoIter`'s destructor moves the vector out, drops the remaining elements (`ptr::drop_in_place(&mut vec[this.start..])`, line 2547) and then zeroes the length (`vec.set_len_non_singleton(0)`, line 2548). If an element's destructor panics at line 2547, `set_len_non_singleton(0)` is skipped; unwinding then drops the local `vec`, whose `ThinVec::drop` (lines 1910-1930) drops `vec[..]` using the still-original length. Because `start` (the front-consumed prefix) was never subtracted from the length either, all elements from index 0..len are dropped again, including already-consumed (`mem::replace`d-out) items and the element whose Drop panicked: a double free/use-after-free of any heap-owning element. Reachable from safe code, e.g. `for x in ThinVec::<Box<u8>>::from(...).into_iter().take(n) { ... }` where the type's `Drop` panics during the implicit iterator drop. Upstream 0.2.16 fixed this with a `DropGuard` whose `Drop` runs `set_len_non_singleton(0)` before the element drop, guaranteeing the length is cleared even on a panic (seen in 0.2.21 lines 2684-2703)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-candidate",
+      "variant": "candidate",
+      "review_id": "64eaa8ef07d7fe6f80cf8a2022241767e479c6a69e08ca0351e984bfa3def689:argon2i32-small-block-count:a87b5a31b6093c7cc5f1d89e0e570423f9a3ac4ebff1f202f11d71793a546cec",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 297,
+        "severity": "high",
+        "title": "Unvalidated BLAKE2b key length causes stack buffer overflow in monocypher",
+        "evidence": "Blake2b.__init__ (line 297) and blake2b() (line 281) both forward a caller-supplied `key` straight to the native BLAKE2b keyed-init without any length check: `crypto_blake2b_keyed_init(&self._ctx, self._hash_size, key, len(key))` / `crypto_blake2b_keyed(hash, len(hash), key, len(key), msg, len(msg))`. Cython confirms the raw buffer pointer with its true length is passed (`__Pyx_PyObject_AsUString(__pyx_v_key)`, generated c_monocypher.c:3760, :5964), so no Python-side bound is enforced. In monocypher.c the sink is `crypto_blake2b_keyed_init`, which does `u8 key_block[128] = {0}; COPY(key_block, key, key_size);` where `COPY(dst,src,size)` is the byte loop `FOR(_i_,0,size) (dst)[_i_]=(src)[_i_]` (monocypher.c:65). A `key` longer than 128 bytes makes this write attacker-controlled bytes past the 128-byte stack buffer (CWE-121), corrupting saved stack state/return address; impact is memory corruption and likely control-flow hijack. Reached trivially via `Blake2b(key=b'A'*200)` or `blake2b(b'msg', b'A'*200)`. The class docstring says 'optional 32-byte key' but no check exists, and unlike IncrementalAuthenticatedEncryption (which validates len(key)==32 at line 214) nothing constrains this argument."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-candidate",
+      "variant": "candidate",
+      "review_id": "64eaa8ef07d7fe6f80cf8a2022241767e479c6a69e08ca0351e984bfa3def689:argon2i32-small-block-count:bf10467ee276b72cb2b6ba6a6b5d84be7e51dfb10f06faa23e6bbe894ee95333",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 199,
+        "severity": "medium",
+        "title": "Missing length validation on fixed-size key/nonce/mac buffers causes native out-of-bounds read",
+        "evidence": "unlock() passes `mac`, `key`, and `nonce` to `crypto_aead_unlock(plain_text, mac, key, nonce, ...)` (line 199) without validating their lengths, even though the C prototype reads fixed sizes (16/32/24 bytes). The same defect exists in lock() (line 181), blake2b() (line 281), compute_key_exchange_public_key() (line 362), key_exchange() (lines 374-375), chacha20() (lines 267-269, only nonce is checked), and signature_check() (line 429, reads a 64-byte signature and 32-byte public key). Cython passes the raw bytes buffer pointer with no size guard (`__Pyx_PyObject_AsUString(__pyx_v_mac/key/nonce)`, generated c_monocypher.c:3760-3764, :4034-4036), so a short `bytes` argument makes the C code read 16-64 bytes past the end of the Python allocation. Because authentication tags/public keys/nonces commonly arrive from untrusted network data, a truncated input of e.g. 1 byte causes an out-of-bounds heap read (CWE-125) that can disclose adjacent heap memory into crypto output or segfault. This is confirmed to be an oversight rather than intended: IncrementalAuthenticatedEncryption validates len(key)==32/len(nonce)==24 (lines 214-218) and len(mac)==16 (line 246), but the equivalent standalone functions never do."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-candidate",
+      "variant": "candidate",
+      "review_id": "64eaa8ef07d7fe6f80cf8a2022241767e479c6a69e08ca0351e984bfa3def689:argon2i32-small-block-count:1d140c2033633989976edabcbc0444b6d1d4c94b5c370969959bd84c734fd423",
+      "finding": {
+        "cwe": "CWE-476",
+        "path": "c_monocypher.pyx",
+        "line": 345,
+        "severity": "medium",
+        "title": "Unchecked malloc result passed to crypto_argon2 enables NULL-pointer dereference",
+        "evidence": "argon2i_32() allocates the KDF work area with `work_area = malloc((<size_t> nb_blocks) * (<size_t> 1024))` (line 345) and immediately uses it as the third argument to `crypto_argon2(hash, ..., work_area, config, inputs, extras)` (line 347) with no NULL check; only `free(work_area)` runs in the finally block. `nb_blocks` is a caller-supplied, unvalidated argument placed directly into `config.nb_blocks` (line 328), so a large value requests a huge allocation that can fail and return NULL. In monocypher.c `crypto_argon2` treats the pointer as a block array (`blk *blocks = (blk*)work_area;`) and writes into it (e.g. `load64_le_buf(blocks[l*lane_size+i].a, hash_area, 128)`), so a NULL result causes an immediate write to near-address-0 and a process crash (CWE-476, availability violation). On 32-bit size_t the multiply `nb_blocks*1024` can also wrap to a small allocation that is then overrun by the KDF, compounding the corruption."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "chunked-trailer-not-validated-2-candidate",
+      "variant": "candidate",
+      "review_id": "beb3f922ae2c1d3ef91a0788d8e3be5759c770993e040cce929be976d0ad6d18:chunked-trailer-not-validated:53e0ac5d1be211442f632da8d42df45f29a35a6f85be95ee1c74405a93abf74a",
+      "finding": {
+        "cwe": "CWE-444",
+        "path": "h11/_readers.py",
+        "line": 164,
+        "severity": "high",
+        "title": "Chunked body footer is discarded without validating it is CRLF, enabling HTTP request smuggling (CVE-2025-43859)",
+        "evidence": "Root cause: in ChunkedReader.__call__, after the final data byte of a chunk is consumed the reader sets self._bytes_to_discard = 2 (h11/_readers.py:197) and on the next call blindly consumes 2 bytes with data = buf.maybe_extract_at_most(self._bytes_to_discard) / self._bytes_to_discard -= len(data) (h11/_readers.py:163-170), then falls through to read the next chunk-size line. The two footer bytes are never compared to b\"\\r\\n\"; the only framing validation in this class is validate(chunk_header_re, chunk_header, ...) at line 177, which constrains the chunk-size line, not the chunk terminator. The only guard, `assert self._bytes_to_discard == 0` (line 171), merely checks the count. Flow: an attacker who can send bytes to a process using h11 to parse a chunked message (Transfer-Encoding: chunked, e.g. h11.Connection(h11.SERVER) receiving a request) supplies a body whose chunk footer is not CRLF. Demonstrated with a control: a pip-installed reference (same file fixed in h11 0.16.0) rejects the payload RemoteProtocolError: malformed chunk footer: bytearray(b'\\n\\n') (expected b'\\r\\n'), while the audited target (h11 0.14.0, h11/_readers.py) parses the exact same bytes `POST / HTTP/1.1\\r\\nHost: x\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n5\\r\\nhello\\n\\n0\\r\\n\\r\\n` to completion and emits Request(...) | Data(data=b'hello', chunk_start=True, chunk_end=True) | EndOfMessage. Because the two skipped bytes are attacker-controlled and unvalidated, h11 can be desynchronized from any peer/parser that frames the same stream differently (e.g. treating a lone LF as the line terminator, so it consumes only one of the two bytes), producing an inconsistent HTTP message boundary. Prerequisite/configuration: h11 used to parse chunked bodies (server or client role); impact is request smuggling (cache poisoning, auth bypass, front-end/back-end desync) when h11 is deployed behind or in front of another HTTP implementation. Confirmed local PoC execution against both versions as described."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-candidate",
+      "variant": "candidate",
+      "review_id": "ce23af853c1ca34fad71967ca0e09db5491f44270c558a3616bc7b9b819fef91:intoiter-drop-panic-double-free:2d11157fd8882cb4d06ffcb34c4d334d9aeead5c46b2585d94003b8860932052",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "ThinVec::clear double-drops elements when an element's Drop panics",
+        "evidence": "clear() (lines 1082-1087) drops every element with ptr::drop_in_place(&mut self[..]) (line 1084) and only afterwards resets the length via self.set_len(0) (line 1085). There is no guard resetting the length on unwind. If any element's Drop panics (any user/attacker-influenced element type whose destructor can panic), the panic unwinds out of clear() before line 1085 executes, leaving the header length at the original value. Because the ThinVec still owns and reports that length, its own Drop (line 1917, ptr::drop_in_place(&mut this[..])) runs during unwinding and drops the already-dropped elements again, including the element whose destructor was interrupted, i.e. a double free/double drop (CWE-415) reachable from entirely safe code with default features. The elements' Drop can run only once; the crate's own 0.2.16 changelog confirms this fix. The fix wraps the drop in a DropGuard that calls set_len(0) even when unwinding; the target has no such guard."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-candidate",
+      "variant": "candidate",
+      "review_id": "ce23af853c1ca34fad71967ca0e09db5491f44270c558a3616bc7b9b819fef91:intoiter-drop-panic-double-free:4e84cb090f48140fbe94c05cd9c1b267baf9c09c5497388c5fd2d23e077d22ba",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "IntoIter::drop double-drops elements when an element's Drop panics",
+        "evidence": "IntoIter::drop's cold path (lines 2544-2549) moves the ThinVec out with mem::replace(&mut this.vec, ThinVec::new()) (line 2546), then drops the remaining elements with ptr::drop_in_place(&mut vec[this.start..]) (line 2547) and only then calls vec.set_len_non_singleton(0) (line 2548). If an element's Drop panics, unwinding destroys the local `vec` before line 2548, and ThinVec::drop (line 1917) re-drops vec[..] using the still-original length, so every element (including the interrupted one) is dropped a second time -> double free/double drop (CWE-415). Fully reachable from safe code (v.into_iter() dropped while an element destructor panics) with default features; the 0.2.16 fix replaces this with a DropGuard that zeroes the length during unwind, which the target lacks."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-candidate",
+      "variant": "candidate",
+      "review_id": "ce23af853c1ca34fad71967ca0e09db5491f44270c558a3616bc7b9b819fef91:intoiter-drop-panic-double-free:fb12c5e22db2dcfb4843a42d0fcc8870323fafba8fac73110c5d40888bc9523d",
+      "finding": {
+        "cwe": "CWE-190",
+        "path": "src/lib.rs",
+        "line": 441,
+        "severity": "high",
+        "title": "Allocation layout constructed unchecked allows size rounding overflow past isize::MAX",
+        "evidence": "alloc_size::<T> (lines 386-410) only rejects the case where cap*size_of::<T>() + header + padding exceeds isize::MAX using checked_add; it therefore returns a byte size equal to isize::MAX for e.g. ThinVec::<u8>::with_capacity(isize::MAX as usize - size_of::<Header>()) (data_size = cap, header_size = 16, 0 padding). layout() (lines 440-442) turns this into a Layout with Layout::from_size_align_unchecked(alloc_size::<T>(cap), alloc_align::<T>()) (line 441). That constructor is documented as UB unless the size, rounded up to the alignment (>= 8 here), does not overflow isize::MAX; isize::MAX is not a multiple of 8, so the rounded size overflows and the produced Layout violates Layout's invariant. header_with_capacity (line 449) then calls alloc(layout) (line 453) with this invalid layout, and reallocate (lines 1737-1741) passes alloc_size::<T>(new_cap) directly to realloc, which is memory-unsafe/UB per the allocator contracts. The existing capacity-overflow tests only cover values that overflow alloc_size's checked_add (>= isize::MAX), not this rounded-up boundary, so the guard is bypassed; reachable from safe code with default features. The 0.2.19 fix replaces the unchecked constructor with Layout::from_size_align(...).ok().unwrap_cap_overflow(), which panics with 'capacity overflow'; the target still uses the unchecked form."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-baseline",
+      "variant": "baseline",
+      "review_id": "a1de9fd6df08f6ed35823e0ac069d061addeb4c78c3c6fe2fa804cddba9044cf:argon2i32-small-block-count:1026b4223f44b365f8729429020be88e6c8d8d5ba2ebedd38314d48e43bd917b",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "Unvalidated BLAKE2b key length overflows stack buffer in crypto_blake2b_keyed_init",
+        "evidence": "blake2b(msg, key) takes an arbitrary Python bytes key and passes it straight through: crypto_blake2b_keyed(hash, len(hash), key, len(key), msg, len(msg)) (line 281); Blake2b.__init__ does the same via crypto_blake2b_keyed_init(&self._ctx, self._hash_size, key, len(key)) (line 297). Neither call validates the key length. In the backend, monocypher.c crypto_blake2b_keyed_init declares `u8 key_block[128]` (monocypher.c:545) and then does `COPY(key_block, key, key_size)` (monocypher.c:546), which is a byte-by-byte loop over the caller-supplied key_size and performs no bounds check. Cython converts the Python bytes object to a raw `const uint8_t*` and passes len(key) as key_size, so a key longer than 128 bytes (e.g. blake2b(b'x', key=b'A'*256)) causes COPY to write len(key) bytes into the 128-byte stack buffer, smashing saved registers/return address. The only nominal constraint the underlying library assumes is the BLAKE2b 64-byte key limit, and the binding does not enforce even that; any length > 128 is a guaranteed write overflow reachable purely with attacker-influenced key material."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-baseline",
+      "variant": "baseline",
+      "review_id": "a1de9fd6df08f6ed35823e0ac069d061addeb4c78c3c6fe2fa804cddba9044cf:argon2i32-small-block-count:9f115958472866fffc5db03365a9322d999539e156bfd97dcaa710ce6f0244a9",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 345,
+        "severity": "high",
+        "title": "Unvalidated Argon2 nb_blocks causes heap under-allocation and out-of-bounds writes",
+        "evidence": "argon2i_32 accepts nb_blocks with no lower-bound check, assigns it to config.nb_blocks (line 328), and sizes the work area as `malloc((<size_t> nb_blocks) * (<size_t> 1024))` (line 345) before calling crypto_argon2(hash, ..., work_area, config, ...) (line 347). Monocypher requires nb_blocks >= 8 * nb_lanes (monocypher.h:160); the binding fixes nb_lanes=1 but never enforces nb_blocks>=8. Inside crypto_argon2 (monocypher.c) segment_size = nb_blocks/nb_lanes/4 and lane_size = segment_size*4, but the initial fill loop runs `for l in 0..nb_lanes { for i in 0..2 { ... load64_le_buf(blocks[l*lane_size + i] ...) } }`, unconditionally writing two 1024-byte blocks (blocks[0] and blocks[1]) regardless of the rounded-down lane size. With nb_blocks=1 the allocation is only 1024 bytes yet 2048 bytes are written, corrupting adjacent heap; a caller-controlled small nb_blocks therefore yields a deterministic heap buffer overflow via the malloc/crypto_argon2 pair."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-baseline",
+      "variant": "baseline",
+      "review_id": "a1de9fd6df08f6ed35823e0ac069d061addeb4c78c3c6fe2fa804cddba9044cf:argon2i32-small-block-count:8f67d168e61073060b8e65085a30de0ed24db6ee9771b34d6d9dbaf21bbde513",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 181,
+        "severity": "medium",
+        "title": "AEAD/key-exchange bindings omit key and nonce length validation leading to out-of-bounds reads",
+        "evidence": "lock(key, nonce, message) calls crypto_aead_lock(crypto_text, mac, key, nonce, ...) (line 181) and unlock(...) calls crypto_aead_unlock(..., mac, key, nonce, ...) (line 199) without checking len(key)==32 or len(nonce)==24, even though the C prototypes read fixed 32/24-byte arrays. Cython marshals the Python bytes to a bare pointer and the C code (crypto_aead_init_x, monocypher.c) copies 32 key bytes and 24 nonce bytes unconditionally, so passing a short key/nonce reads past the object's buffer. The same unchecked pattern affects chacha20 (key length not validated, only nonce at lines 266-272), compute_key_exchange_public_key (line 362 reads 32 bytes of secret_key), key_exchange (line 375 reads 32 bytes each), and signature_check (line 429 reads 64/32 bytes of signature/public_key), giving attacker-influenceable out-of-bounds reads of adjacent heap whenever a truncated key, nonce, signature, or public key is supplied."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-2-baseline",
+      "variant": "baseline",
+      "review_id": "6f844a8d45dae5ab4048014237cbc35c83367add7c7d26ad98106ca28633f421:sha256-length-comparator-unconstrained:d610e86588bcdd961a1cd40c01e7e843d51b75722f83726227f12f16050e78a1",
+      "finding": {
+        "cwe": "CWE-1284",
+        "path": "sha.circom",
+        "line": 110,
+        "severity": "high",
+        "title": "Underconstrained inBlockIndex lets a prover force an all-zero SHA-256 output",
+        "evidence": "`Sha256General` takes `paddedInLength` as an unconstrained field input and derives the array/block selector from it via the non-deterministic assignment `inBlockIndex <-- (paddedInLength >> 9)` (line 110), tying it to the input only through `paddedInLength === inBlockIndex * 512` (line 111). Nothing constrains `inBlockIndex` to the range [1, maxBlocks]; in particular `paddedInLength = 0` yields `inBlockIndex = 0` and satisfies both line 111 and the `LessEqThan` length check at lines 125-128 (which only bounds `paddedInLength` above and is itself wrappable in the field). Line 195 then computes `arraySelectors[k].index <== inBlockIndex - 1`, i.e. `-1 \u2261 p-1` in the BN254 field. The intended guard inside `ItemAtIndex` (`LessThan(bitLength)` against `maxArrayLen`, array.circom lines 25-28, instantiated at sha.circom lines 191/288) fails to reject this out-of-range value because `LessThan` evaluates `in[0] + 2^n - in[1]` modulo the prime; for `index = p-1` this reduces to the small in-range value `2^n - maxBlocks - 1`, so the guard returns 1 and is bypassed. Since no `IsEqual` position matches `p-1`, every selector's `calcTotal.sum` is 0 (array.circom lines 34-45), making all 256 output bits 0 at sha.circom lines 196/293. An attacker who controls `paddedInLength` through the public wrappers `Sha256Bytes` (line 33) or `Sha256BytesPartial` (line 65) can therefore generate a valid proof that an arbitrary padded input hashes to zero without any SHA-256 preimage, breaking the circuit's soundness (false statement accepted by any consumer that verifies hash equality against this output)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    }
+  ],
+  "usage_note": "Provider-reported totals; zero/missing usage is unknown, not free. No cost claim."
+}

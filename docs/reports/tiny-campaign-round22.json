@@ -1,0 +1,1073 @@
+{
+  "schema_version": 1,
+  "groups": {
+    "default": {
+      "trials": 28,
+      "success": 25,
+      "failed": 3,
+      "tp": 4,
+      "fp": 36,
+      "fn": 24,
+      "line_tp": 7,
+      "line_fp": 33,
+      "line_fn": 21,
+      "latencies_ms": [
+        120420,
+        126111,
+        150318,
+        79214,
+        260569,
+        102356,
+        178107,
+        277506,
+        147441,
+        156441,
+        112209,
+        79750,
+        318726,
+        69918,
+        130615,
+        300998,
+        235105,
+        130330,
+        360449,
+        97571,
+        110028,
+        318855,
+        248744,
+        112463,
+        100939,
+        277598,
+        103988,
+        290042
+      ],
+      "completed_latencies_ms": [
+        120420,
+        126111,
+        150318,
+        79214,
+        260569,
+        102356,
+        277506,
+        147441,
+        156441,
+        112209,
+        79750,
+        69918,
+        130615,
+        300998,
+        235105,
+        130330,
+        360449,
+        97571,
+        110028,
+        318855,
+        112463,
+        100939,
+        277598,
+        103988,
+        290042
+      ],
+      "timeouts": 0,
+      "operational_totals": {
+        "turns": 316,
+        "tools": 427,
+        "tool_errors": 58,
+        "retries": 0,
+        "output_repairs": 3,
+        "empty_completions": 0,
+        "tool_budget_rejections": 0,
+        "settlements": 21,
+        "settlement_calls": 0,
+        "completion_tokens": 906340,
+        "prompt_tokens": 11335552,
+        "reasoning_tokens": 832891,
+        "total_tokens": 12241892
+      },
+      "runs_with_usage": 28,
+      "unexpected_total": 36,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 36,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0,
+      "precision": 0.1,
+      "recall": 0.14285714285714285,
+      "f1": 0.11764705882352941,
+      "line_precision": 0.175,
+      "line_recall": 0.25,
+      "line_f1": 0.20588235294117646,
+      "latencies_ms_mean": 178457.5357142857,
+      "latencies_ms_stdev": 89473.15463703279,
+      "completed_latencies_ms_mean": 170049.36,
+      "completed_latencies_ms_stdev": 88920.38534970483
+    }
+  },
+  "case_metrics": [
+    {
+      "run": "argon2i32-small-block-count-1-default",
+      "variant": "default",
+      "line_tp": 1,
+      "line_fp": 2,
+      "line_fn": 0,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-1-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-1-default",
+      "variant": "default",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-1-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-2-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-1-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-2-default",
+      "variant": "default",
+      "line_tp": 1,
+      "line_fp": 1,
+      "line_fn": 0,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-2-default",
+      "variant": "default",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-2-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-2-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-3-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-2-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-3-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 3,
+      "line_fn": 1,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-3-default",
+      "variant": "default",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-3-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-4-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-4-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-3-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-4-default",
+      "variant": "default",
+      "line_tp": 1,
+      "line_fp": 2,
+      "line_fn": 0,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-4-default",
+      "variant": "default",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-4-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 3,
+      "line_fn": 1,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-4-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-4-default",
+      "variant": "default",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    }
+  ],
+  "review_queue": [
+    {
+      "run": "argon2i32-small-block-count-1-default",
+      "variant": "default",
+      "review_id": "ed78a233f4e7bf1af483a95ac5fd97a5cda143c3064e07ac9bb5025a26952173:argon2i32-small-block-count:825d2f324053e3d0c15111fd929bc447a30a506b089607d313882f74fe4e622f",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "Unvalidated BLAKE2b key length overflows a 128-byte stack buffer",
+        "evidence": "blake2b() (lines 276-282) forwards a caller-supplied key and its exact length to crypto_blake2b_keyed(hash, len(hash), key, len(key), msg, len(msg)) with no bound on len(key); Blake2b.__init__ (line 297) does the same via crypto_blake2b_keyed_init. Monocypher's crypto_blake2b_keyed_init (monocypher.c:544-549) declares 'u8 key_block[128] = {0};' and executes COPY(key_block, key, key_size), and COPY (monocypher.c:65) writes exactly key_size bytes. Neither the binding nor the library clamps key_size (the header/API documents a <=64-byte key). An attacker who can influence the key (e.g. any app that calls blake2b(msg, key=<user/password-derived data>) or Blake2b(key=<user input>)) supplies a key longer than 128 bytes and the excess is copied past the fixed 128-byte stack array, corrupting the stack frame with attacker-controlled bytes (classic stack-based memory corruption / potential code execution). The only mitigation expected here would be an explicit length check in the binding, which is absent."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-default",
+      "variant": "default",
+      "review_id": "ed78a233f4e7bf1af483a95ac5fd97a5cda143c3064e07ac9bb5025a26952173:argon2i32-small-block-count:fce08845bb7661a0920b7cfb6df53baf043e3e952df5c22243589c7ed2c34b4b",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 345,
+        "severity": "medium",
+        "title": "Unvalidated argon2 nb_blocks yields undersized heap work_area and OOB read/write",
+        "evidence": "argon2i_32() (lines 322-352) assigns config.nb_blocks = nb_blocks and allocates work_area = malloc((<size_t> nb_blocks) * (<size_t> 1024)) without enforcing Monocypher's documented requirement nb_blocks >= 8*nb_lanes (monocypher.h:160) and without checking the malloc return value. crypto_argon2 (monocypher.c:752-757) computes segment_size = nb_blocks/nb_lanes/4, lane_size = segment_size*4 and rounds nb_blocks down, but then unconditionally fills two full 1 KiB blocks per lane (monocypher.c:776-783 writes blocks[l*lane_size+i] for i=0,1) and reads blocks[lane_size-1] (monocypher.c:902, store64_le_buf from last_block). With nb_blocks <= 1 the rounding makes lane_size 0, so the initial writes reach blocks[1] (offset 1024) beyond the <=1 KiB allocation -> heap buffer overflow; with nb_blocks in 1..3 (lane_size 0) last_block = work_area - 1 -> out-of-bounds heap read folded into the derived output. An attacker who controls KDF cost parameters (a common pattern when Argon2 parameters are read from an untrusted file/message) can therefore trigger heap memory corruption. Additionally, a very large nb_blocks passes the size multiplication to malloc unchecked; a NULL/truncated result is then written to, causing a NULL-pointer/out-of-bounds write."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-default",
+      "variant": "default",
+      "review_id": "ed78a233f4e7bf1af483a95ac5fd97a5cda143c3064e07ac9bb5025a26952173:argon2i32-small-block-count:ed932f2aec2d7bc6b1221213f39b594d9d0d0d67e4b9cb8dabe2a5d0ce26024e",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 429,
+        "severity": "medium",
+        "title": "Missing length validation on fixed-size inputs causes OOB reads in signature_check and AEAD decrypt",
+        "evidence": "signature_check() (lines 419-429) passes signature and public_key straight to crypto_eddsa_check(signature, public_key, message, len(message)) with no length checks, even though the C routine reads a fixed 64-byte signature and 32-byte public key: crypto_eddsa_check calls hash_reduce(h, signature, 32, public_key, 32, msg, msg_size) and crypto_eddsa_check_equation then reads 'const u8 *s = signature + 32' (32 more bytes). Signature verification is normally fed attacker-controlled network data, so a short signature/public_key buffer makes the C code read up to 64/32 bytes past the Python bytes allocation. The same unchecked-fixed-size pattern exists in unlock() (line 199 -> crypto_aead_unlock reads key[32], nonce[24], mac[16]; monocypher.c:2942-2949), lock() (line 181), chacha20() (lines 267/269, key[32] unchecked, nonce only length-checked) and key_exchange() (line 375, 32-byte inputs unchecked). The bindings validate only message/AAD lengths, relying on the caller; a short key/nonce/mac/signature/public_key therefore reaches an out-of-bounds read of adjacent heap memory (crash/DoS and undefined behavior)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "lock-symlink-truncation-1-default",
+      "variant": "default",
+      "review_id": "8a188df32a00b0a28bf0b6b516042a7c58662ed54b3bfd0d411b0ad755d95f36:lock-symlink-truncation:866da9d39e89ade2bc350c51e9dbeca3d548b6a8a8366f0e75836870e5aa26b5",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_unix.py",
+        "line": 44,
+        "severity": "medium",
+        "title": "UnixFileLock follows symlinks when opening the lock file (no O_NOFOLLOW), enabling arbitrary file truncation/creation via a planted lock path",
+        "evidence": "UnixFileLock is the active lock on POSIX (has_fcntl True -> filelock/__init__.py:38 sets _FileLock = UnixFileLock). In _acquire() the flags are built as open_flags = os.O_RDWR | os.O_TRUNC (line 41) and os.O_CREAT is added only when Path(self.lock_file).exists() is False (lines 42-43); then os.open(self.lock_file, open_flags, self._context.mode) is called at line 44 with no os.O_NOFOLLOW (and no O_EXCL). Path.exists() follows symbolic links, so a dangling symlink at the lock path reports False, O_CREAT is added, and os.open() follows the link and creates/truncates the *target* file with the caller's privileges; for an existing target, O_TRUNC immediately empties it. Thus an attacker who can write in the directory that holds the lock file (a shared /tmp, world-writable cache, or any path derived from untrusted input) can pre-plant a symlink at lock_file pointing at a victim file such as ~/.bashrc or ~/.ssh/authorized_keys; the next lock acquisition truncates/creates that file. The exists()-to-os.open() window is also a TOCTOU (the link can be swapped after the check). No lstat/O_NOFOLLOW/O_EXCL guard exists anywhere in the acquire path (contrast SoftFileLock, which uses O_EXCL and is not affected), so any application that derives lock_file from external input reaches this unsafe open without protection."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-default",
+      "variant": "default",
+      "review_id": "03bfec796655e7dee8cc574797db6f76ab25a48a1317b2a021f0f2957485830f:intoiter-drop-panic-double-free:0e8500dc6aea81dd8bcc61ea324ba90452e2533cf2fc0c13f1b295b34c2e022b",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1085,
+        "severity": "high",
+        "title": "Double free / use-after-free in ThinVec::clear when an element Drop panics",
+        "evidence": "ThinVec::clear() drops the live slice with `ptr::drop_in_place(&mut self[..])` (line 1084) and only then resets the length with `self.set_len(0)` (line 1085). If any element's Drop panics, unwinding skips set_len(0), so `self.len()` still returns the original length. The already-dropped element memory is later freed a second time when the ThinVec is dropped: `Drop for ThinVec` -> drop_non_singleton (line 1917) runs `ptr::drop_in_place(&mut this[..])` again over the stale length, re-dropping elements whose owned heap buffers were already deallocated. No unsafe code or API misuse is needed by the attacker/caller; only a panicking destructor of a stored type, which a library cannot generally exclude (third-party/attacker-influenced element types). Flow: safe call `v.clear()` -> panic in an element Drop -> missing len reset -> later drop -> second `drop_in_place` -> double free/use-after-free. Protection failed: no RAII guard (std's Vec uses one) around the drop before the len reset; the `// could be the singleton` comment shows the author considered only normal completion. Demonstrated locally with default features: a ThinVec<PanicBomb> whose 2nd element panics in Drop, wrapped in catch_unwind, prints `[drop] normal1` twice and the tracking global allocator reports `address 0x1f8ba61dd50 freed a second time (double free / use-after-free)` (exit 99), while a control run with no panicking Drop exits 0. Fixed upstream in 0.2.16 by wrapping the drop in a DropGuard that always calls set_len(0)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-default",
+      "variant": "default",
+      "review_id": "03bfec796655e7dee8cc574797db6f76ab25a48a1317b2a021f0f2957485830f:intoiter-drop-panic-double-free:4c48859360be435376aedc6e954a53cc438ae1a67ca5bc56c8a8a31bcad94701",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2548,
+        "severity": "high",
+        "title": "Double free / use-after-free in IntoIter::drop when a remaining element Drop panics",
+        "evidence": "IntoIter::drop -> drop_non_singleton moves the buffer out with `mem::replace(&mut this.vec, ThinVec::new())` (line 2546), drops the not-yet-yielded range with `ptr::drop_in_place(&mut vec[this.start..])` (line 2547), and only afterwards resets length via `vec.set_len_non_singleton(0)` (line 2548). If an element's Drop panics, line 2548 is never executed; during unwinding the replaced local `vec` is dropped with its stale length, so `Drop for ThinVec` -> drop_non_singleton (line 1917) performs `ptr::drop_in_place(&mut this[..])` a second time over elements already moved out and freed by `IntoIter::next`, producing a double free/use-after-free. Reachable from entirely safe code: build a ThinVec, call `into_iter()`, consume some elements, and drop the partially consumed iterator while a remaining element's Drop panics (typical when iterator consumers short-circuit or panic). Flow: `let mut it = v.into_iter(); it.next();` then `drop(it)` -> panic inside element Drop -> set_len cleanup skipped -> local vec unwinds -> second drop_in_place -> double free. Protection failed: unlike std::vec::IntoIter, no DropGuard is installed before the element drop, so the length-reset invariant is not panic-safe. Demonstrated locally with default features: PoC prints `[drop] normal1` twice after the injected panic and the tracking global allocator reports `address 0x1b865ffdb00 freed a second time (double free / use-after-free)` (exit 99); the no-panic control exits 0. Fixed upstream in 0.2.16 with a DropGuard calling set_len_non_singleton(0)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-1-default",
+      "variant": "default",
+      "review_id": "8824023496b205fccc396838d26bd3712196dcc19386fa43299635054fe30abe:iss-array-loose-match:45742a2df1cc82870705323d8edf883f336e2359085e9270fd907993774c6b16",
+      "finding": {
+        "cwe": "CWE-347",
+        "path": "src/verifier.js",
+        "line": 184,
+        "severity": "critical",
+        "title": "Verifier accepts forged unsigned tokens when the key is empty/null and algorithms are allowlisted",
+        "evidence": "Input: an attacker-supplied token string ending in an empty signature, e.g. base64url({\"alg\":\"HS256\",\"typ\":\"JWT\"}) + '.' + base64url({\"sub\":\"admin\",\"role\":\"admin\"}) + '.'. Flow: createVerifier preserves an explicit allowlist (line 387) and accepts key:'' / key:null because the type check (lines 391-397) only rejects types other than string/object/function and the key-preparation/algorithm-detection block (line 399, `if (key && keyType !== 'function')`) is skipped for falsy keys, so context.key stays ''/null and allowedAlgorithms stays ['HS256',...]. In verifyToken, hasKey = `key instanceof Buffer ? key.length : !!key` is false (line 180); the guard at line 184 (`else if (!hasKey && signature)`) raises missingKey only when a signature is present, so an EMPTY signature passes both guards. validateAlgorithmAndSignature (line 139, `if (signature && !verifySignature(...))`) then skips signature verification entirely because `signature` is falsy, and header.alg passes the allowlist check at line 134. Result: no cryptographic check is performed and the forged payload is returned (and cached). No protection rejects a falsy key or an empty signature for a signature-requiring algorithm. PoC executed on Node 24.18.0: createVerifier({key:'',algorithms:['HS256','RS256']}) and createVerifier({key:null,algorithms:['HS256']}) both returned {\"sub\":\"admin\",\"role\":\"admin\"} for the unsigned token, while the same forged token with key:'secret' is rejected (FAST_JWT_MISSING_SIGNATURE) and with an empty allowlist is rejected (FAST_JWT_INVALID_ALGORITHM). Required configuration: key resolves to '' or null (e.g. empty env var / null config) together with an explicit non-'none' algorithms list."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-1-default",
+      "variant": "default",
+      "review_id": "8824023496b205fccc396838d26bd3712196dcc19386fa43299635054fe30abe:iss-array-loose-match:2545a34f2ffdd2f37a704eaeb87a98e11a921811816c86bf899af7ba649338e4",
+      "finding": {
+        "cwe": "CWE-613",
+        "path": "src/verifier.js",
+        "line": 92,
+        "severity": "medium",
+        "title": "Cache returns tokens past `exp` when the payload has no `iat`",
+        "evidence": "Input: a validly signed token whose payload has `exp` but no `iat` (produced by an issuer using noTimestamp or a non-fast-jwt signer). Flow: cacheSet (lines 89-106) only computes the cached validity window inside `if (hasIat)` (line 92, `const hasIat = payload && typeof payload.iat === 'number'`). Because `iat` is absent, cacheValue[2] stays 0 and is replaced by maxTTL = clockTimestamp + clockTolerance + cacheTTL (lines 105-106), so the `exp` bound (lines 96-97) is never applied. The cache-hit path (lines 262-269) accepts the entry whenever `now <= max` without re-evaluating the validators, so after one successful verification the expired token continues to verify for up to cacheTTL. Required configuration: caching enabled (`cache: true`/size) and a token lacking `iat`. PoC executed on Node 24.18.0 with createVerifier({key:'secret',algorithms:['HS256'],cache:true,cacheTTL:4000}) and a token signed with noTimestamp, exp=now+1s: first verify at t0 succeeded, and after exp passed the same cached verifier returned the payload while a cacheless verifier correctly rejected it with FAST_JWT_EXPIRED."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "lock-symlink-truncation-2-default",
+      "variant": "default",
+      "review_id": "c022edc7b1144997ea5b6b44945be1bbf22b2ed8c4b8dbec921452a970115f95:lock-symlink-truncation:fcc5ff16ddd84693de8bde669119ffb25c64cdb99aa3e5cd37b8023f79b6922c",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_unix.py",
+        "line": 44,
+        "severity": "medium",
+        "title": "UnixFileLock opens the lock path with O_TRUNC and no O_NOFOLLOW, allowing symlink-following truncation of an arbitrary file",
+        "evidence": "Input/flow: the caller-supplied lock path (BaseFileLock.lock_file, set from os.fspath(lock_file) in filelock/_api.py:184) reaches UnixFileLock._acquire. At filelock/_unix.py:41 the flags are `os.O_RDWR | os.O_TRUNC` and line 44 performs `os.open(self.lock_file, open_flags, self._context.mode)` with no `O_NOFOLLOW` and no exclusive-create check; because `Path(self.lock_file).exists()` (line 42) follows symlinks, a symlink at the lock path pointing to an existing file is treated as an existing lock and opened directly. Unsafe operation: `os.open` resolves the symlink and `O_TRUNC` zeroes the target file before any `fcntl.flock` (line 48) is attempted; line 46 then `os.fchmod`-s the followed inode to the configured mode. Failed protection: nothing verifies that the opened inode is the lock file itself (no O_NOFOLLOW, no O_EXCL/create-then-verify, no lstat/inode comparison), so whenever the directory containing the lock file is writable by a lower-privileged local attacker (e.g. a lock placed in a shared temp directory such as /tmp, a common pattern), the attacker pre-creates the lock path as a symlink to a file the victim can write (another user file, application data, config), and the victim's `FileLock(...).acquire()` / `with lock:` call truncates or permission-changes that target with the victim's privileges - an integrity (and potential availability) violation. The same unprotected open with `O_CREAT | O_TRUNC` exists in filelock/_windows.py:28, so the root cause (lock acquisition following a link at the attacker-influenced lock path) is shared across backends."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-default",
+      "variant": "default",
+      "review_id": "47209b347606125d80e4d2424234d14853df07ffffa95b3a53c533ca7c6a2d9d:sha256-length-comparator-unconstrained:d9601aeeb66def55588b5e31e866c55899c0e705c7299456c40f3866190dc4b1",
+      "finding": {
+        "cwe": "CWE-345",
+        "path": "sha.circom",
+        "line": 111,
+        "severity": "high",
+        "title": "Sha256 circuit never constrains SHA-256 padding/length, so prover controls block count and content (length-extension body-hash forgery)",
+        "evidence": "Input flow: `Sha256Bytes`/`Sha256BytesPartial` take attacker-supplied `paddedIn[*]` and `paddedInLength` (sha.circom:18-19, 49-50), convert bytes to bits, and set `sha.paddedInLength <== paddedInLength * 8` (sha.circom:33, 65) without asserting that the bits are a valid SHA-256 padded encoding. Inside `Sha256General` the only length constraints are `inBlockIndex <-- (paddedInLength >> 9)` and `paddedInLength === inBlockIndex * 512` (sha.circom:110-111) plus `LessEqThan(paddedInLength, maxBitLength)` (sha.circom:125-128). Nothing checks the mandatory 0x80 padding byte, the zero fill, or the trailing 64-bit big-endian message length, and nothing ties `paddedInLength` to the block in which that padding occurs. The comment at sha.circom:130-131 explicitly defers this verification outside the circuit. The output is then the compression-chain value selected at `inBlockIndex - 1` over the prover-chosen blocks (`arraySelectors[k].index <== inBlockIndex - 1`, sha.circom:195; `out[k] <== arraySelectors[k].out`, sha.circom:196). Unsafe operation: the circuit therefore proves `out = chaining-value(prover-chosen blocks)` rather than `out = SHA256(padded encoding of the claimed message)`. A malicious prover can set `paddedInLength` to any multiple of 512 <= maxBitLength (e.g. 1024 where the honest body padded to 512 bits), supply `paddedIn = body || pad(body) || extra_data || pad(extra_data)` and obtain a valid proof whose output is a length-extended hash computed from the signed body hash, binding an unsigned/extended body to a previously signed body hash. Because the SHA-256 length field and padding boundary are never enforced in-circuit, the authenticity guarantee the circuit is meant to provide in the DKIM/body-hash setting (out is the hash of exactly the committed body) does not hold."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-default",
+      "variant": "default",
+      "review_id": "063d1a834d928db95ef301e65fe350ce925881888a48854e6dc4b7c6e977fc2b:intoiter-drop-panic-double-free:b6cf53f04051590b8d93fde84ef30915449e68ec6dd4eb38beb8d65d72404940",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "ThinVec::clear() double-drops elements when an element destructor panics",
+        "evidence": "clear() is a safe API: `unsafe { ptr::drop_in_place(&mut self[..]); self.set_len(0); }` (lines 1083-1086). `drop_in_place` runs the destructors of all `len()` elements; if any one panics, execution unwinds before line 1085 `self.set_len(0)` runs, so the vector still reports the original length even though elements `0..=i` have already been dropped. The caller (or any later `drop`/`clear`) then runs `ptr::drop_in_place` over that same range again, dropping already-dead values. This is reachable from safe code with only a panicking `Drop` as prerequisite. PoC built against this exact source (md5 5995da44b8c61319b84451ffbbefe9cb): a `ThinVec` of 3 `Drop`-counting elements that panics on one element reports `clear(): total element drops for 3 elements = 6` (each element destroyed twice), and a tracking global allocator aborts with `*** MEMORY-SAFETY VIOLATION: address 0x... freed a second time (double free / use-after-free) ***`. A control run with no panicking destructor reports exactly 3 drops and no violation. Upstream 0.2.16 fixed this by installing a DropGuard that calls `set_len(0)` on unwind before `drop_in_place`."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-default",
+      "variant": "default",
+      "review_id": "063d1a834d928db95ef301e65fe350ce925881888a48854e6dc4b7c6e977fc2b:intoiter-drop-panic-double-free:adf0d856fd89c100091b6a822944016b5af5d6dd6679c287c55d629393fef8b1",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "ThinVec IntoIter::drop double-frees remaining elements when an element destructor panics",
+        "evidence": "`Drop for IntoIter` calls `drop_non_singleton` (lines 2544-2550): `let mut vec = mem::replace(&mut this.vec, ThinVec::new()); ptr::drop_in_place(&mut vec[this.start..]); vec.set_len_non_singleton(0)`. The local `vec` moved out of the iterator deliberately retains the full length, and line 2548 zeroes it only after the destructor loop finishes. If a destructor in `vec[this.start..]` panics, line 2548 is skipped during unwinding, so the local `vec` is itself dropped via `impl Drop for ThinVec` while still reporting the original length; that re-drops the already-yielded prefix `[0, start)` (values already moved out) plus the suffix just destroyed - a double drop/double free. Any `T` with a panicking `Drop` triggers it from safe code (`v.into_iter()` then dropping the iterator). PoC on this exact source (md5 5995da44b8c61319b84451ffbbefe9cb): counting drops for a 3-element iterator exceeds 3, and the tracking allocator prints `*** MEMORY-SAFETY VIOLATION: address 0x... freed a second time (double free / use-after-free) ***`; the no-panic control completes with no violation. Upstream 0.2.16 fixed this with a DropGuard that zeroes the length on unwind."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-default",
+      "variant": "default",
+      "review_id": "93753c9cccb08a5bffba643ab58276ea64824c5273e9c3a1d9108bc7d75e4f03:argon2i32-small-block-count:3142b0ee77a1531826c4389650790ba5f4b7046c8be32280f25809db3875d947",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 345,
+        "severity": "high",
+        "title": "Unvalidated nb_blocks causes heap out-of-bounds write in argon2i_32",
+        "evidence": "argon2i_32(nb_blocks, ...) takes nb_blocks from the caller and assigns it unchecked to crypto_argon2_config.nb_blocks (line 328); unlike password/salt/key/ad, it never passes through _validate_u32 and has no lower-bound check. It then sizes the work area as malloc(nb_blocks * 1024) (line 345) and passes it to crypto_argon2 (line 347). Monocypher requires nb_blocks >= 8*nb_lanes: crypto_argon2 computes segment_size = nb_blocks/nb_lanes/4 and lane_size = segment_size*4 (monocypher.c:752-754), so with the fixed nb_lanes=1 and nb_blocks < 4, lane_size becomes 0, while the 'fill first 2 blocks of each lane' loop still writes blocks[0] and blocks[1] (2048 bytes, monocypher.c:776-782). Calling argon2i_32(1, 1, b'p', b's') allocates only 1024 bytes yet writes 1024 bytes past the heap buffer. The malloc result is also never NULL-checked, so a large but valid uint32 nb_blocks (up to 0xffffffff) makes malloc fail and crypto_argon2 dereferences NULL, crashing the process. Protections absent: no numeric bounds validation of nb_blocks before the native call and no allocation-failure handling."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-default",
+      "variant": "default",
+      "review_id": "93753c9cccb08a5bffba643ab58276ea64824c5273e9c3a1d9108bc7d75e4f03:argon2i32-small-block-count:a6ea38bfebd41d7b112b0d7257852bbb027a93e3dd167a434c63f60e7416a01e",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "Unbounded BLAKE2b key length overflows stack buffer in crypto_blake2b_keyed_init",
+        "evidence": "blake2b(msg, key) forwards a caller-supplied key of arbitrary length to crypto_blake2b_keyed(hash, len(hash), key, len(key), msg, len(msg)) at line 281, and Blake2b.__init__ forwards it to crypto_blake2b_keyed_init(&self._ctx, self._hash_size, key, len(key)) at line 297, with no check on len(key). Monocypher's crypto_blake2b_keyed_init declares a fixed stack buffer 'u8 key_block[128]' and performs COPY(key_block, key, key_size), copying len(key) bytes into it (the documented API requires key_size <= 64). A key longer than 128 bytes, e.g. blake2b(b'm', key=b'A'*200) or Blake2b(key=b'A'*200), therefore writes past key_block and corrupts adjacent stack memory/return address. Protections absent: the binding never bounds the key length before the native call."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "lock-symlink-truncation-3-default",
+      "variant": "default",
+      "review_id": "019e9210a64ef7432ff4d7a90e005733b62f2169b4438060fcc9c697b5cf9057:lock-symlink-truncation:0fa7bd9afac3932ddfcee1d9d41b5bded533e29b66f2a1b9542fee9c32563de6",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_unix.py",
+        "line": 44,
+        "severity": "medium",
+        "title": "Lock-file open follows symlinks with O_TRUNC (no O_NOFOLLOW), enabling arbitrary file truncation and chmod",
+        "evidence": "Attacker input is the lock-file path/directory: filelock is typically pointed at a lock path inside a shared, writable directory (e.g. /tmp/<app>.lock) via `FileLock(path)`, and `BaseFileLock.__init__` stores it unchanged (`os.fspath(lock_file)` -> `FileLockContext.lock_file`, filelock/_api.py:184-189). On `acquire()` -> `_acquire()`, `UnixFileLock._acquire` calls `ensure_directory_exists(self.lock_file)` (filelock/_unix.py:40) which mkdirs the parent, then builds `open_flags = os.O_RDWR | os.O_TRUNC` and only adds `O_CREAT` when `Path(self.lock_file).exists()` is False (lines 41-43), then calls `os.open(self.lock_file, open_flags, self._context.mode)` at line 44. No `O_NOFOLLOW` is used and `Path.exists()` itself resolves symlinks, so if a local attacker pre-creates a symlink at the lock path pointing to a victim file, `os.open` follows the link and, because `O_TRUNC` is set, truncates/corrupts the symlink target while the process holds whatever privileges it was started with. The subsequent `os.fchmod(fd, self._context.mode)` (line 46) then rewrites the permissions of that same followed target, and the O_CREAT path lets the attacker also create arbitrary files. The stat-based guard `raise_on_not_writable_file` is not called by UnixFileLock._acquire at all, and it would in any case `os.stat`-follow the symlink (filelock/_util.py:22), so it cannot prevent link resolution. The same unsafe pattern exists for the soft/Windows backends via `os.open`/create of the lock path (filelock/_soft.py:27 with `raise_on_not_writable_file` at line 17, filelock/_windows.py:28, filelock/_windows.py:49). Required configuration: the lock path must live in a directory writable by the attacker and be predictable, and the victim must acquire the lock while holding privileges over the target file. This yields an integrity/availability violation (arbitrary file truncation and permission change) rather than mere lock contention."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-default",
+      "variant": "default",
+      "review_id": "881c0f3b6e4fe0bfdf3f16b6efb5bebd7bafa9a8997b8d57b3ed2aff96b7a6f3:intoiter-drop-panic-double-free:77222c10f27fa38733ecdb0ea7b68c346836305213d05ed88d6b3f97d2300c4e",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "Double free in ThinVec::clear() when an element's Drop panics",
+        "evidence": "`ThinVec::clear()` (src/lib.rs:1082-1087) first calls `ptr::drop_in_place(&mut self[..])` at line 1084 over the whole current slice, and only afterwards executes `self.set_len(0)` at line 1085. `drop_in_place` runs every element's destructor; if any single destructor panics, unwinding leaves the function before line 1085, so the header `_len` still reports the original non-zero length. The owning `ThinVec` is then destroyed during unwind and its `Drop::drop` (src/lib.rs:1910-1931) executes `ptr::drop_in_place(&mut this[..])` at line 1917 with that stale length, re-running destructors for elements (and the partially-dropped element) that were already destroyed. For any `T` holding an owned resource (`Box`, `String`, `Rc`, etc.) this is a double free / use-after-free, i.e. memory corruption. The unsafe operation is reachable from safe API with no caller responsibility: the trigger is merely `T: Drop` that can panic (e.g. a destructor that panics on error, or user code), together with the default unwinding panic strategy; no special features are needed. Protections fail because the length is reset only after the unguarded `drop_in_place`, so the drop guard that zeroes the length on unwind is missing (upstream 0.2.15 -> 0.2.16 changelog: \"Fix two double-drop issues with ThinVec::clear() and ThinVec::into_iter() when the Drop implementation of the item panics\"; the fix wraps the drop in a DropGuard that calls set_len(0))."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-default",
+      "variant": "default",
+      "review_id": "881c0f3b6e4fe0bfdf3f16b6efb5bebd7bafa9a8997b8d57b3ed2aff96b7a6f3:intoiter-drop-panic-double-free:f31cb512e96fc587d222d5799d133ae64eff3fd07ec27753d694aa4cd7fd9f15",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "Double free in IntoIter::drop when an element's Drop panics",
+        "evidence": "`IntoIter::drop` (src/lib.rs:2539-2556) calls `drop_non_singleton`, which moves the vector out via `mem::replace(&mut this.vec, ThinVec::new())` at line 2546, then runs `ptr::drop_in_place(&mut vec[this.start..])` at line 2547, and only then clears the length with `vec.set_len_non_singleton(0)` at line 2548. If any element destructor panics inside the slice drop, line 2548 never runs; as the panic unwinds, the local `vec` is itself dropped with its still-original non-zero length, so `ThinVec::drop` (src/lib.rs:1917) calls `drop_in_place` on the full range again and re-drops every element (including the partially-dropped one and the prefix elements already moved out by `IntoIter::next`, which are logically uninitialized yet still counted by `vec.len()`). For resource-owning `T` this is a double free / use-after-free. Reachable from safe code: `let it = vec.into_iter();` (dropped, possibly after partial consumption) with any `T: Drop` that can panic under the default unwinding strategy; no features or unsafe calls are required. The protection is insufficient because the length is reset only after the unguarded `drop_in_place`, and upstream 0.2.16 fixed exactly this by adding a DropGuard that sets the length to 0 during unwind (\"Fix two double-drop issues with ThinVec::clear() and ThinVec::into_iter() when the Drop implementation of the item panics\")."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-2-default",
+      "variant": "default",
+      "review_id": "6c38677f7c13e6baa3486a454c2d7d0351ee556a82ac1ee868ac2569b08aa6e4:sha256-length-comparator-unconstrained:6a0fe26d818284aaae214e56510ae7f7e88f4e362e31f2a238224f6a4095e6a4",
+      "finding": {
+        "cwe": "CWE-345",
+        "path": "sha.circom",
+        "line": 258,
+        "severity": "high",
+        "title": "Prover-controlled preHash lets Sha256Partial forge hash statements (length extension)",
+        "evidence": "Sha256BytesPartial/Sha256Partial expose the SHA-256 chaining state as an unconstrained witness input (signal input preHash[32]/[256]; sha.circom:51,220). It is fed directly as the initial hash value of the first compression block at line 258 (sha256compression[i].hin[...] <== preHash[...]) with no constraint binding it to a legitimate intermediate state produced by hashing a validated prefix, and the number of absorbed 512-bit blocks / which compression output is returned is also attacker-chosen via paddedInLength -> inBlockIndex (lines 233-234, 288-293). A malicious prover who knows any SHA-256 chaining state (e.g., derived from a public DKIM-signed digest) can therefore compute out = Compress(preHash, attacker_chosen_blocks) and satisfy the circuit for a message that is an arbitrary extension of a known prefix, without ever finding a preimage. This breaks the soundness of the hash computation the downstream email/DKIM authentication logic relies on. The in-file rationale (lines 130-131: 'guessing a valid SHA2 preimage is hard anyways, we'll just do it outside the circuit') does not hold here, because for the partial variant the prover supplies the starting state instead of having to invert the hash."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-2-default",
+      "variant": "default",
+      "review_id": "6c38677f7c13e6baa3486a454c2d7d0351ee556a82ac1ee868ac2569b08aa6e4:sha256-length-comparator-unconstrained:6912362ae1d3bf6f4867bed08129a820d42200454e8830f78ef51c8aa08a635d",
+      "finding": {
+        "cwe": "CWE-345",
+        "path": "sha.circom",
+        "line": 111,
+        "severity": "medium",
+        "title": "Sha256General does not verify SHA-256 padding / embedded length field",
+        "evidence": "paddedInLength is a prover-supplied input constrained only to be a multiple of 512 and <= maxBitLength (sha.circom:110-111, 125-128). Nothing verifies a SHA-256 pad: there is no constraint that the last block's 0x80 terminator and 64-bit big-endian length field match paddedInLength or that the message ends where the padding begins (explicitly delegated at lines 130-145). The returned value is the output of the attacker-selected compression block (arraySelectors[k].index <== inBlockIndex - 1, lines 195/292), so `out` can be any state in the compression chain, not a canonical SHA-256 digest of a correctly padded message. A consumer that treats `out` as the digest of the declared bytes (e.g., compares it to a DKIM-signed digest) therefore computes the hash over a message whose boundary and padding are unconstrained, allowing truncation/non-canonical message encoding to go unnoticed. The only block-selection bound is index < maxBlocks via ItemAtIndex (array.circom:25-28); there is no bound tying the hashed prefix to valid padding."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-default",
+      "variant": "default",
+      "review_id": "10b3ac606f56776e9f8da787987e5cdf6d4288e644261d7168c2901f28f17231:argon2i32-small-block-count:189343145875c3f2cd79e5505e12318c0af9e92c143c450150d98b2b9ccb3bdc",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "Unvalidated blake2b key length overflows Monocypher's 128-byte stack key block",
+        "evidence": "blake2b() forwards the caller-supplied key and len(key) to crypto_blake2b_keyed without enforcing Monocypher's BLAKE2b key limit (<=64 bytes). Monocypher's crypto_blake2b_keyed_init stores the key in a local u8 key_block[128] and executes COPY(key_block, key, key_size) (monocypher.c lines 543-545), so any key longer than 128 bytes writes past that stack buffer. The identical unvalidated call is present in Blake2b.__init__ at line 297. The key is attacker-controllable whenever an application hashes with a user-supplied password or passphrase as the key; a long input corrupts the C stack and can lead to code execution."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-default",
+      "variant": "default",
+      "review_id": "10b3ac606f56776e9f8da787987e5cdf6d4288e644261d7168c2901f28f17231:argon2i32-small-block-count:daf19c7c3cecbb329933c4379b64dd9d7d6eeef796cb74214d4e0b7576ab4319",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 347,
+        "severity": "medium",
+        "title": "argon2i_32 writes two 1024-byte blocks into an undersized work area when nb_blocks < 2",
+        "evidence": "argon2i_32 assigns config.nb_blocks directly from the unvalidated nb_blocks argument and allocates malloc(nb_blocks * 1024) at line 345. Monocypher's crypto_argon2 unconditionally fills the first two 1024-byte blocks of each lane (blocks[0] and blocks[1]) before honoring the rounded-down lane size. For nb_blocks=1 the allocation is 1024 bytes but 2048 bytes are written; for nb_blocks=0 malloc(0) yields an undersized or NULL buffer that is also written. The wrapper never enforces Monocypher's required minimum of 8 blocks per lane, so a caller-controlled cost parameter causes heap corruption at the line 347 call site."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-default",
+      "variant": "default",
+      "review_id": "10b3ac606f56776e9f8da787987e5cdf6d4288e644261d7168c2901f28f17231:argon2i32-small-block-count:0578f1deb4f6acb2b64af070f4d4f884e975b72512249e73f84dc9dcfa3be9fd",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 429,
+        "severity": "medium",
+        "title": "Missing fixed-size length checks let untrusted inputs drive out-of-bounds reads",
+        "evidence": "signature_check passes attacker-supplied signature and public_key bytes to crypto_eddsa_check without verifying len(signature)==64 or len(public_key)==32. The Cython extern declarations fix these parameters as const uint8_t[64]/[32], and generated C converts the Python objects with __Pyx_PyObject_AsUString without any length check, so a 1-byte argument makes the C verifier read 63/31 bytes past the object. The same missing-length-validation pattern affects lock (line 181), unlock (line 199), chacha20 (lines 267/269), compute_key_exchange_public_key (line 362), and key_exchange (line 375), where attacker-controlled ciphertext MACs or public keys can likewise cause heap out-of-bounds reads or crashes."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-default",
+      "variant": "default",
+      "review_id": "002ec4839e7796c47ec18ae75811542c59c5e79996e3de64e510136410f64513:iss-array-loose-match:9e1eeff43759bc593818a07ea5d640a200d8a0a4ddabc85e0edb0ecabacc8560",
+      "finding": {
+        "cwe": "CWE-347",
+        "path": "src/verifier.js",
+        "line": 139,
+        "severity": "high",
+        "title": "Signature verification is skipped when the configured key is an empty string, accepting unsigned attacker-forged tokens",
+        "evidence": "Root cause: the guard in validateAlgorithmAndSignature is written as `if (signature && !verifySignature(header.alg, key, input, signature))` (line 139), so the signature check is only performed when the token carries a truthy signature. verifyToken decides whether a key exists with `const hasKey = key instanceof Buffer ? key.length : !!key` (line 180); when the key material is the empty string, hasKey is false, so the `if (hasKey && !signature)` rejection (line 182) does not fire, line 188 invokes validateAlgorithmAndSignature, `signature &&` short-circuits, and verifySignature is never called at all. The attacker input is a completely unsigned token: `base64url({\"alg\":\"HS256\",\"typ\":\"JWT\"}).base64url({\"admin\":true,\"uid\":999}).` (two segments, empty signature). The failed protection is twofold: (a) line 139 lets a missing signature bypass cryptographic verification instead of failing, and (b) createVerifier skips key preparation for a falsy key via `if (key && keyType !== 'function')` (line 399), so no KeyObject is produced and no error is raised for the empty/blank secret, leaving the verifier fail-open. Required configuration: the verifier is created with an empty-string key and an explicit algorithm allow-list (e.g. a JWT_SECRET/config value that is present but blank), which is a realistic misconfiguration. PoC executed against the code (node, src loaded with stubbed deps): createVerifier({ key: '', algorithms: ['HS256'] }) then verifier('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbjp0cnVlLCJ1aWQiOjk5OX0.') returned {\"admin\":true,\"uid\":999}, i.e. an unauthenticated caller fully controls the accepted payload. Control runs with a non-empty secret rejected the same unsigned token (FAST_JWT_MISSING_SIGNATURE) and rejected it again when the signature was tampered (FAST_JWT_INVALID_SIGNATURE), showing the bypass is specific to the falsy-key path."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-default",
+      "variant": "default",
+      "review_id": "002ec4839e7796c47ec18ae75811542c59c5e79996e3de64e510136410f64513:iss-array-loose-match:cbbb26239e02169a0ebb5ef7715830be9c3caba023434dfbb61173e3bad10fcf",
+      "finding": {
+        "cwe": "CWE-613",
+        "path": "src/verifier.js",
+        "line": 89,
+        "severity": "medium",
+        "title": "Cache serves cached payload after token expiration when the token has no numeric iat",
+        "evidence": "Root cause: cacheSet computes the cached result's validity window only inside the `if (hasIat)` block, where `const hasIat = payload && typeof payload.iat === 'number'` (line 89). The `exp` bound that would make the cached entry expire with the token is written inside that block (lines 95-101: `cacheValue[2] = payload.exp * 1000 + clockTolerance`), so a token whose payload has `exp` but no numeric `iat` keeps cacheValue[2] === 0 and line 105-106 replaces it with `maxTTL = clockTimestamp + clockTolerance + cacheTTL`. verify() later trusts this value: the cache-hit test at lines 262-272 accepts any entry where `min === 0 || ...` and `(max === 0 || now <= max)`, and returns the stored payload via handleCachedResult without re-running the exp validator. Attacker input: any token the attacker legitimately holds (or a token issued by an app/issuer that omits `iat`, e.g. a signer configured with noTimestamp) that is presented once while still valid and then replayed after its `exp` passed. A cached hit therefore yields an expired token being treated as valid for up to the configured cacheTTL (600000 ms by default). Required configuration: caching enabled (`cache` option) - the default errorCacheTTL/clockTolerance path does not matter here. PoC executed against the code: with createVerifier({ key: secret, algorithms:['HS256'], cache: 100, cacheTTL: 60000 }) and a token signed with `noTimestamp: true` plus `exp = now+1`, the first call returned the payload; after waiting ~2.5 s (exp already in the past) the same token was still ACCEPTED from cache ({\"uid\":9,\"exp\":...}), while the otherwise identical token that included `iat` was rejected at the same moment with FAST_JWT_EXPIRED, proving the cached entry is not bounded by the token's expiration when iat is absent."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "lock-symlink-truncation-4-default",
+      "variant": "default",
+      "review_id": "89297e52cbe15ff50b5c4fccfd9a570d9935794818c4ba1c337831f0f0a36adb:lock-symlink-truncation:c278e6c3918c6d6a0551e16b7c3965546872be0face85692f484c9431c49c743",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_unix.py",
+        "line": 44,
+        "severity": "medium",
+        "title": "Unix lock file opened with O_TRUNC without O_NOFOLLOW, enabling symlink-following truncation/permission change of arbitrary files",
+        "evidence": "UnixFileLock is the default lock on non-win32 when fcntl is available (filelock/__init__.py:37-39), so attacker-reachable path handling here is the default behavior. In _acquire (filelock/_unix.py:39-55) the caller-supplied path is used directly: open_flags is built as os.O_RDWR | os.O_TRUNC (line 41), the existence guard Path(self.lock_file).exists() (line 42) resolves symlinks and only decides whether to add O_CREAT, and os.open(self.lock_file, open_flags, self._context.mode) (line 44) is invoked with no O_NOFOLLOW and no O_EXCL. If an attacker can create or replace the lock path with a symlink (e.g. the lock file lives in a shared/world-writable directory such as a temp dir) pointing at a victim-owned file the process can write, the kernel follows the link and the target is opened read-write and truncated to zero bytes; os.fchmod(fd, self._context.mode) (line 46, default mode 0o644) then rewrites the target's permission bits, additionally disclosing it. The existing mitigations do not help: raise_on_not_writable_file is only used by SoftFileLock (_soft.py:17) and WindowsFileLock (_windows.py:20) and is not called for the Unix lock, the Path.exists() check itself follows symlinks, and no symlink-refusing flag is ever passed to os.open. Required configuration: default UnixFileLock with a lock path an attacker can influence in a directory the attacker can write to, and a target file writable by the locking process; consequence is an integrity (and permission-confidentiality) violation on an arbitrary file outside the intended lock."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-4-default",
+      "variant": "default",
+      "review_id": "a65a99283fa550115f8597c281f44e5b3094436c7df60ac155827cc796b00311:intoiter-drop-panic-double-free:4ea23cca956b4684336cf6edba2fc3bd98a67d6465a58b506455c5b26768c8e0",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "Panic in an element destructor during `ThinVec::clear` leaves the old length in place, double-freeing elements on unwind",
+        "evidence": "`clear()` runs `ptr::drop_in_place(&mut self[..])` over all `len()` elements (src/lib.rs:1084) and only then sets the length to 0 (src/lib.rs:1085). The write access to the vector contents ends exactly when a user destructor panics, but the header length still counts every element, including those already dropped. When the panic unwinds and the owning `ThinVec` is dropped, `Drop for ThinVec` (src/lib.rs:1917) executes `ptr::drop_in_place(&mut this[..])` over the same unchanged length, running destructors a second time on values that were already destroyed; for heap-owning element types this frees the same allocation twice. The neighbouring `truncate` (src/lib.rs:1058-1063) shows the intended guard: it decrements the length with `set_len_non_singleton` *before* each `drop_in_place`, so a panicking destructor cannot cause a re-drop \u2014 `clear` omits that protection. No special configuration is needed: any safe caller that holds a `ThinVec<T>` whose `T::drop` can panic triggers it. PoC built against this exact source and executed: a `ThinVec<Bomb>` (where `Bomb` owns a `Box<u64>` and panics in `Drop` for one element) cleared inside `std::panic::catch_unwind` never reaches the recovery point \u2014 the process terminates abnormally (exit 127, no `survived` line). The control using `truncate(1)` on the identical data unwinds cleanly and prints `survived, panicked=true` (exit 0), isolating the missing length update in `clear` as the root cause. Upstream fixed this by wrapping the drop in a guard that restores `len = 0` on unwind (0.2.16)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-4-default",
+      "variant": "default",
+      "review_id": "a65a99283fa550115f8597c281f44e5b3094436c7df60ac155827cc796b00311:intoiter-drop-panic-double-free:c7976994205e568c6fd2322bb8feff8833d10f6d2b66d0600d62dc6cbaef5a5e",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "Panic in an element destructor during `IntoIter` drop double-drops already-read and already-destroyed elements",
+        "evidence": "`IntoIter::drop` delegates to `drop_non_singleton`, which first moves the iterator's `ThinVec` into a local via `mem::replace(&mut this.vec, ThinVec::new())` (src/lib.rs:2546) and then calls `ptr::drop_in_place(&mut vec[this.start..])` (src/lib.rs:2547) before setting the length to 0 (src/lib.rs:2548). If any destructor panics, the local `vec` is itself dropped while unwinding, running `Drop for ThinVec`, which drops `vec[..]` \u2014 every element, not just the remaining tail. This re-drops (a) elements already yielded by `IntoIter::next` and logically moved out via `ptr::read` (src/lib.rs:2510) and (b) the elements `drop_in_place` already destroyed, so heap-owning elements are freed twice. The fallible drop is not performed through a guard and the length is not cleared beforehand, so unwinding re-enters the destructor path on the same storage. Reachable from entirely safe code using `into_iter()` plus any `T` whose `Drop` can panic; default build, no feature flags. PoC built and executed against this source: consume one element of a `ThinVec<Bomb>` whose second element panics in `Drop`, then drop the `IntoIter` inside `std::panic::catch_unwind` \u2014 the process aborts during unwinding (exit 127, no `survived` output) instead of recovering, whereas the same `Bomb` type unwinds cleanly through the guarded `truncate` path (control exits 0 and prints `survived, panicked=true`). Upstream 0.2.16 replaced this with a guard that only calls `set_len_non_singleton(0)` on unwind."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-3-default",
+      "variant": "default",
+      "review_id": "85562c191e73d59aef7baef5edbd54616f7f9666f16aa185160d552c43cf5c99:sha256-length-comparator-unconstrained:6eb8a1139bddfdaaf6eafce4ac59396933a0d781886849c5f4351b2b0a62ba8e",
+      "finding": {
+        "cwe": "CWE-345",
+        "path": "sha.circom",
+        "line": 110,
+        "severity": "high",
+        "title": "Non-deterministic block index in Sha256General is not constrained to the intended floor, letting the prover pick which compression output is returned",
+        "evidence": "Sha256General derives the block that determines the whole output from a prover-supplied value using the non-deterministic witness operator: line 110 `inBlockIndex <-- (paddedInLength >> 9)` computes the floor of `paddedInLength/512` with `<--` (no constraint), and the checks whose stated purpose is to make this the uniquely correct floor value are commented out (lines 114-122). The only constraint left tying `inBlockIndex` to the input is line 111 `paddedInLength === inBlockIndex * 512`, a single field equality over two attacker-controlled signals: `paddedInLength` is a free input signal and `inBlockIndex` is freely chosen by the witness, so a malicious prover can set `inBlockIndex` to any block number 1..maxBlocks and matching `paddedInLength = 512*inBlockIndex` (only incidentally bounded by the `LessThan(bitLength)` range check inside `ItemAtIndex`). That value is then used as the selection index at line 195 (`arraySelectors[k].index <== inBlockIndex - 1`) and drives the output at line 196 (`out[k] <== arraySelectors[k].out`), so the returned hash is the compression output of whichever block the prover selects, decoupled from any trustworthy notion of the message length. Since `paddedIn`/`paddedInLength` are not otherwise tied to the real message content or a fixed expected length, the circuit does not establish the intended relation between the declared length and the returned digest, breaking the soundness the calling circuit (e.g. email-verifier.circom) relies on."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-3-default",
+      "variant": "default",
+      "review_id": "85562c191e73d59aef7baef5edbd54616f7f9666f16aa185160d552c43cf5c99:sha256-length-comparator-unconstrained:3d8a5476a05d380ef737228aeca7dd0d7caf57036ddd225098827858ec47e97f",
+      "finding": {
+        "cwe": "CWE-345",
+        "path": "sha.circom",
+        "line": 233,
+        "severity": "high",
+        "title": "Same non-deterministic block index in Sha256Partial (used for partial/body hashing)",
+        "evidence": "Sha256Partial repeats the identical pattern: line 233 `inBlockIndex <-- (paddedInLength >> 9)` assigns the block index with the non-deterministic `<--` operator and the intended floor verifications are again absent; the only binding constraint is line 234 `paddedInLength === inBlockIndex * 512` over two prover-controlled signals. `inBlockIndex` is then consumed at line 292 (`arraySelectors[k].index <== inBlockIndex - 1`) to select which compression output becomes `out` at line 293. Because `Sha256BytesPartial` (the template actually instantiated by the email verifier for body hashing) feeds this path and neither `paddedIn` nor `paddedInLength` is constrained to a valid padded message of a fixed length, a malicious prover can choose the returned block and the claimed padded length rather than being forced to the honest floor of the length. The missing constraint (the commented/omitted floor verifiers) leaves the output selection driven by an attacker-influenced witness value, an integrity/soundness gap in the hash circuit."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-4-default",
+      "variant": "default",
+      "review_id": "f110356b68da85b9eeeab63f95ca7477ed46ce811f203e3fe7055674e4461f64:argon2i32-small-block-count:dde6917cfae3d2616f9dfe3b1608f6384209244959d803c609dc21e37cd82636",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "Unvalidated BLAKE2b key length overflows a 128-byte stack buffer",
+        "evidence": "blake2b(msg, key) (line 281) and Blake2b.__init__ (line 297) forward the caller-supplied key and its raw length (len(key)) to monocypher with no upper bound; the docstring only mentions a 32/64-byte key. monocypher.c:638-645 crypto_blake2b_keyed -> crypto_blake2b_keyed_init, and monocypher.c:545-546 do `u8 key_block[128] = {0}; COPY(key_block, key, key_size);`. COPY is a byte-by-byte loop copying key_size bytes, so any key longer than 128 bytes writes past key_block on the stack. Path: attacker-influenced key material (e.g. a long password supplied as the BLAKE2b key) -> blake2b()/Blake2b() -> key_size=len(key) -> memcpy-like COPY into key_block[128] -> stack corruption/crash (RCE potential). No length check exists anywhere in the binding or the C routine, and the class path stores the corruptible context in a Cython struct, so both entry points are affected."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-4-default",
+      "variant": "default",
+      "review_id": "f110356b68da85b9eeeab63f95ca7477ed46ce811f203e3fe7055674e4461f64:argon2i32-small-block-count:7e8a1e7be34f6ba56fc1d02ed62d21c30198f1a58c436518eec201e1e0b69d93",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 345,
+        "severity": "medium",
+        "title": "argon2i_32 unvalidated nb_blocks causes heap overflow / NULL dereference",
+        "evidence": "argon2i_32 accepts an arbitrary nb_blocks and does `work_area = malloc((<size_t> nb_blocks) * 1024)` with no minimum/maximum validation and no NULL check (line 345), then sets config.nb_blocks = nb_blocks (line 328) and passes it to crypto_argon2 (line 347). In monocypher.c:747-751 segment_size = nb_blocks/1/4 and lane_size = segment_size*4, but monocypher.c:773-781 unconditionally writes the first two 1024-byte blocks via `load64_le_buf(blocks[l * lane_size + i].a, hash_area, 128)`. For nb_blocks==1 segment_size==0 so a 1024-byte allocation receives 2048 bytes (heap overflow), and for very large nb_blocks malloc fails and the NULL pointer is dereferenced. Path: caller/attacker-controlled KDF cost parameter -> malloc size -> out-of-bounds heap write or NULL deref. The unvalidated hash/password/salt sizes are checked via _validate_u32 but nb_blocks is not."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-4-default",
+      "variant": "default",
+      "review_id": "f110356b68da85b9eeeab63f95ca7477ed46ce811f203e3fe7055674e4461f64:argon2i32-small-block-count:d99b9c07ed7cdf1cdf982d6dfa370ae78e93143849c8b7bcee5644288df10ca6",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 429,
+        "severity": "medium",
+        "title": "Fixed-size crypto inputs are not length-validated, causing out-of-bounds reads",
+        "evidence": "signature_check passes attacker-supplied signature/public_key and only len(message) to crypto_eddsa_check (line 429), which unconditionally reads 64 bytes of signature and 32 bytes of public_key (monocypher.c crypto_eddsa_check -> hash_reduce -> crypto_eddsa_check_equation). A short signature or public_key therefore reads adjacent heap memory. The same missing-validation defect exists in the module-level unlock, where mac is forwarded unvalidated to crypto_aead_unlock (line 199, which reads mac[16]) and in key_exchange, where their_public_key is forwarded unvalidated to crypto_x25519 (line 375, reads 32 bytes). These are exactly the arguments an untrusted peer controls (a signature to verify, a MAC attached to ciphertext, a peer public key), and the class IncrementalAuthenticatedEncryption.unlock (line 246) does validate mac length, confirming the omission elsewhere is a defect rather than intended behavior."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-4-default",
+      "variant": "default",
+      "review_id": "6d1b0b57bd18d21453a5b9873f66e883c95c153f4da03cd8123732af90cade2b:iss-array-loose-match:d8ed52af7fb8a913a360c8987fed41bb4c089bee240c298f6b1cab5c73ab9cbf",
+      "finding": {
+        "cwe": "CWE-347",
+        "path": "src/verifier.js",
+        "line": 399,
+        "severity": "high",
+        "title": "Empty/null key with an explicit algorithm allowlist accepts forged unsigned tokens",
+        "evidence": "createVerifier only validates the key type (lines 391-397) and then guards key preparation with `if (key && keyType !== 'function')` (line 399), so a falsy key (e.g. key:'') is never rejected and context.key stays ''. verifyToken then computes hasKey = !!key = false (line 180) and only throws missingKey when a signature is present (line 184); an unsigned token ('header.payload.' -> signature '') takes neither branch. validateAlgorithmAndSignature (line 139) skips verification entirely because `signature` is falsy, while header.alg passes the user-supplied allowlist at line 134. Net effect: anyone can mint an unsigned JWT whose alg is an allowed value and whose claims are arbitrary, and the verifier returns it as valid. PoC executed: createVerifier({key:'', algorithms:['HS256']}) accepted the unsigned token for header {alg:'HS256'} and payload {sub:'admin',role:'admin'}, returning that payload; a control verifier with a real secret rejected a bad signature with FAST_JWT_INVALID_SIGNATURE, showing normal verification is otherwise enforced yet absent here."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-4-default",
+      "variant": "default",
+      "review_id": "6d1b0b57bd18d21453a5b9873f66e883c95c153f4da03cd8123732af90cade2b:iss-array-loose-match:0c9c503fdbab00d7703498aec77c7cd5e21fd427a977338f0a4ab90a90b2c009",
+      "finding": {
+        "cwe": "CWE-347",
+        "path": "src/verifier.js",
+        "line": 36,
+        "severity": "high",
+        "title": "Zero-length secret is used as HMAC key, making signatures forgeable",
+        "evidence": "prepareKeyOrSecret (line 36) converts a symmetric key straight into createSecretKey(key) with no emptiness check. Any truthy key is classified by detectPublicKeyAlgorithms (line 401), and for a zero-length Buffer it returns hsAlgorithms, so allowedAlgorithms becomes ['HS256','HS384','HS512'] (line 406) and prepareKeyOrSecret(key,true) builds an empty secret key (line 409). Reachable inputs include key:Buffer.alloc(0) in options and an async key fetcher (lines 326-350) resolving to '' which is turned into an empty Buffer at line 327. Node allows createSecretKey(Buffer.alloc(0)) and HMACs over an empty key, so the 'secret' is public: an attacker computes HMAC-SHA* over 'header.payload' with an empty key and the verifier accepts it through verifySignature (line 139). PoC executed: createVerifier({key:Buffer.alloc(0)}) accepted a token whose HS256 signature was computed with crypto.createHmac('sha256', Buffer.alloc(0)), returning {sub:'admin'}."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-4-default",
+      "variant": "default",
+      "review_id": "6d1b0b57bd18d21453a5b9873f66e883c95c153f4da03cd8123732af90cade2b:iss-array-loose-match:99485fac74481ba4fee4aafce037fba1dd9af883b1608808d899583848c04d75",
+      "finding": {
+        "cwe": "CWE-1333",
+        "path": "src/verifier.js",
+        "line": 47,
+        "severity": "medium",
+        "title": "User-supplied RegExp is executed unchecked against attacker-influenced claims (ReDoS)",
+        "evidence": "ensureStringClaimMatcher returns any value with a .test function unchanged (lines 47-48), so a developer-configured RegExp for allowedJti/allowedAud/allowedIss/allowedSub/allowedNonce is used as-is, and validateClaimValues runs it against the decoded claim with `allowed.some(a => a.test(v))` (line 159) with no complexity or safe-regex check (upstream later added safe-regex2 validation and lastIndex reset). An attacker who can influence the checked claim in a token they legitimately obtain triggers catastrophic backtracking that blocks the Node event loop. PoC executed with allowedIss=/^(a+)+$/ and a correctly signed token whose iss is 'a'*n+'X': elapsed times were 100 ms (n=22), 178 ms (n=26), 689 ms (n=28) and 2755 ms (n=30), i.e. exponential growth in the attacker-controlled claim length; each such verify monopolizes the process. Signature verification still precedes claim validation, so the prerequisite is a validly signed token carrying an attacker-controlled claim."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-4-default",
+      "variant": "default",
+      "review_id": "c14ad03f00fddc9d63a8a06687a668171bd3e79e8ad2f362f9df1283d44deba7:sha256-length-comparator-unconstrained:3384a85abf24f5722ff9b78ed6ba208963b898f405fee74b52f9a388bbf6f28e",
+      "finding": {
+        "cwe": "CWE-345",
+        "path": "sha.circom",
+        "line": 111,
+        "severity": "medium",
+        "title": "SHA-256 digest is selected by a prover-chosen length that is never bound to the message or its padding",
+        "evidence": "Sha256Bytes accepts `paddedInLength` as a free input (sha.circom:19) and only forwards it as `sha.paddedInLength <== paddedInLength * 8` (sha.circom:33); Sha256General/Sha256Partial then constrain it only to be a multiple of the block size (`inBlockIndex <-- (paddedInLength >> 9); paddedInLength === inBlockIndex * 512;`, sha.circom:110-111) and to be `<= maxBitLength` via LessEqThan (sha.circom:125-128 in Sha256General, 237-240 in Sha256Partial). No constraint relates `paddedInLength` to the contents of `paddedIn` (the 64-bit message-length field and the 0x80/zero padding of the final SHA-256 block are never verified; the source itself notes at sha.circom:130-131 that padded verification is deferred 'outside the circuit'). The digest is then taken from the compression output of block `inBlockIndex - 1`: `arraySelectors[k].index <== inBlockIndex - 1; out[k] <== arraySelectors[k].out;` (sha.circom:195-196). Because the prover controls both the block array and the length that picks which intermediate compression state becomes `out`, the same witness can be satisfied with different `paddedInLength` values, i.e. the circuit will return the SHA-256 state after an arbitrary number of attacker-chosen blocks. Protections that do exist are insufficient for this property: LessEqThan only bounds the numeric length (it does not tie it to data), ItemAtIndex (array.circom:15-46, reached from sha.circom:191/288) only verifies `index < maxBlocks`, and Num2Bits(8) on each byte only constrains byte values. A malicious prover can therefore satisfy this circuit with a `paddedIn` whose length/padding is inconsistent with the claimed length (truncating or extending which blocks are hashed), producing a valid proof for a digest that is not the hash of the byte string the relying protocol assumes, which breaks any integrity/authentication check that uses this circuit to bind bytes to a digest."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    }
+  ],
+  "usage_note": "Provider-reported totals; zero/missing usage is unknown, not free. No cost claim."
+}

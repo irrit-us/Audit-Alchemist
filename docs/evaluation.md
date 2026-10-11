@@ -117,6 +117,16 @@ Reviewed secondary root causes are also dataset cases, so the same fixture can
 carry several cases with one expected key each. A safe control carries no
 expected finding and measures false-positive behavior directly.
 
+**Primary detection is the headline metric.** The seven primary fixture keys in
+the table above are the dataset's intended expected content. Promoted secondary
+cases, reviewed `unexpected_valid` counts, and the aggregate exact F1 must not be
+presented as a substitute for them: the mixed 18-case F1 is carried by secondary
+cases and near-miss labels. Capability and round-over-round tuning should be
+judged by the exact and line detection rate over the seven primary labels with
+its sample size. In campaign rounds 18-22 the pooled primary rate was 17/140
+exact (12.1%) and 35/140 line (25.0%), while no configuration exceeded two of
+the seven distinct issues.
+
 ## Reproducibility
 
 Record the model, prompt, dataset revision, limits, and repeat runs when

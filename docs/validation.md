@@ -1,5 +1,48 @@
 # Validation
 
+## Optimization campaign rounds 18-22: 2026-10-11
+
+Five rounds testing widely used tuning methods against the **seven primary
+fixture labels** (the dataset's intended expected content), under the blind
+seven-case instruction. Each round changed one variable; the plan, model,
+baseline prompt, and unrelated limits were held fixed and all trials retained.
+Model `deepseek-flash`, `--max-tools 16` unless varied, `--max-tokens 32768`,
+`--reasoning-effort` per round, 2 trials x 7 cases (round 22 used 4 samples).
+
+| Round | Variable | Config | Exact | Line | Distinct exact | Failures | Tokens |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 18 | reasoning effort | low | 2/14 | 4/14 | 1/7 | 0 | 4.95M |
+| 18 | | high | 2/14 | 3/14 | 2/7 | 3 | 5.80M |
+| 19 | stream cap | high, 8 MiB | 2/14 | 4/14 | 2/7 | 1 | 5.49M |
+| 19 | | high, 32 MiB | 1/14 | 4/14 | 1/7 | 1 | 5.57M |
+| 20 | system prompt | `audit.txt` | 2/14 | 4/14 | 1/7 | 2 | 6.25M |
+| 20 | | systematic enumeration | 1/14 | 3/14 | 1/7 | 3 | 6.09M |
+| 21 | tool budget | high, 16 calls | 1/14 | 3/14 | 1/7 | 0 | 6.44M |
+| 21 | | high, 32 calls | 2/14 | 3/14 | 1/7 | 2 | 16.04M |
+| 22 | self-consistency | 4 samples | 4/28 | 7/28 | 1/7 | 3 | 12.24M |
+
+Pooled over the nine evaluated configurations, exact detection was 17/140
+(12.1%) and line detection 35/140 (25.0%) of the seven expected issues.
+Distinct exact coverage never exceeded 2/7 in any configuration and 3/7 across
+the union of the whole campaign (`chunked-trailer-not-validated`,
+`argon2i32-small-block-count`, `sha256-length-comparator-unconstrained`).
+`unsettled-bad-debt-liquidation`, `lock-symlink-truncation`, and
+`intoiter-drop-panic-double-free` were never found by exact or line match;
+`iss-array-loose-match` was located by line but never labeled correctly.
+
+Higher reasoning effort, a 32 MiB stream cap, systematic enumeration prompt
+theme, a doubled tool budget, and four-sample self-consistency did not raise
+detection. Higher effort increased cost and introduced execution failures
+(`model stream exceeds --max-stream-bytes` and `finish_reason length`) without a
+detection gain. Test-time compute, stream budget, prompt strategy, tool budget,
+and sampling are not the bottleneck for these seven issues. (An initial round-20
+attempt to raise `--max-tokens` to 65536 was rejected by the CLI, whose limit is
+1..=32768; that attempt was discarded and the round was repurposed for the
+system-prompt variable.) Summaries are in
+[round 18](reports/tiny-campaign-round18.json), [19](reports/tiny-campaign-round19.json),
+[20](reports/tiny-campaign-round20.json), [21](reports/tiny-campaign-round21.json),
+and [22](reports/tiny-campaign-round22.json); plans are `examples/campaign-r18..22.toml`.
+
 ## Confirmation and stable-reporting rounds 14-17: 2026-10-10
 
 - **Round 14 - smaller-budget replication (16 vs 12, 7 cases x 3).** The 12-call

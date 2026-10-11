@@ -5,6 +5,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Five-round tuning campaign (rounds 18-22) scored against the **seven primary
+dataset labels** rather than the mixed 18-case set: reasoning effort, stream
+cap, systematic-enumeration prompt, tool budget, and self-consistency sampling.
+No configuration improved primary detection (pooled 17/140 exact, 35/140 line;
+at most 2 of 7 distinct issues per configuration). Reports are
+`docs/reports/tiny-campaign-round18.json` through `round22.json`; reproducible
+plans are `examples/campaign-r18.toml` through `campaign-r22.toml`, with the
+candidate prompt `prompts/audit-systematic.txt`. [Evaluation](docs/evaluation.md)
+now states that the seven primary labels are the headline capability metric and
+that reviewed `unexpected_valid` / mixed-set exact F1 must not replace them.
+
 ## [0.1.2] - 2026-10-11
 
 ### Added

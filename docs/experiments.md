@@ -42,6 +42,11 @@ distinct metrics are reported alongside it and never folded into exact F1:
 | 15 | Context cap 2 MiB vs 128 KiB | 14/14, 10/14 | .125 / .000 | 14 / 11 | Aggressive pruning fails 4/14 with `conversation exceeds` and loses recall; rejected. |
 | 16 | Stable 18-case report, 2 trials | 36/36 | .329 | 27 | Line F1 .493; clean control empty; 6 repairs fired. Headline capability. |
 | 17 | Read-only settlement, 16 vs 12 calls | 14/14, 13/14 | .200 / .200 | 11 / 13 | Settlement fired 17 times and used 3 read-only calls; the 12-call variant stayed ~38% cheaper. |
+| 18 | Reasoning effort low vs high (7 primary labels) | 14/14, 11/14 | .118 / .125 | unreviewed | High effort hit the 8 MiB stream cap; exact flat, distinct 1/7 vs 2/7, +cost. |
+| 19 | Stream cap 8 vs 32 MiB at high effort | 13/14, 13/14 | .125 / .061 | unreviewed | Larger cap removed some aborts; detection flat (1-2/14). |
+| 20 | Systematic-enumeration system prompt | 12/14, 11/14 | .125 / .057 | unreviewed | Generic class checklist did not surface the missed issues. |
+| 21 | Tool budget 16 vs 32 at high effort | 14/14, 12/14 | .061 / .105 | unreviewed | 32 calls used ~2.5x tokens with the same 1/7 distinct coverage. |
+| 22 | Self-consistency, 4 samples | 25/28 | .118 | unreviewed | More samples did not recover ajna/filelock/thin-vec; distinct exact 1/7. |
 
 ## Accumulated experience
 
@@ -110,6 +115,15 @@ distinct metrics are reported alongside it and never folded into exact F1:
     fingerprint) are pinned by mock-provider tests; a live round is used only to
     show the class occurs and the path fires.
 
+13. **Compute, prompt, budget, and sampling tuning did not move the seven
+    primary issues (rounds 18-22).** Pooled exact detection was 17/140 (12.1%)
+    and line 35/140 (25.0%) across nine configurations. Distinct exact coverage
+    stayed at 1-2 of 7 per configuration; only `h11`, `pymonocypher`, and
+    `zk-email` were ever hit exactly. Higher reasoning effort added cost and
+    stream-cap/`finish_reason length` failures without a gain. The bottleneck
+    for `ajna`, `filelock`, and `thin-vec` is the model's hypotheses and the
+    evidence it chooses to trust, not the available budget.
+
 ## Decision policy for future rounds
 
 - Fix completion/contract failures before tuning quality; a run that dies cannot
@@ -143,9 +157,10 @@ distinct metrics are reported alongside it and never folded into exact F1:
 
 1. **Investigate the remaining execution failures.** Completion is 36/36 on the
    promoted set but lower on the blind budget rounds; the observed classes are
-   stream-cap (`reasoning` SSE over 8 MiB) and repeated unobserved-line citations.
-   Add run-level diagnostics and test whether a larger stream cap or clearer
-   repair feedback removes them. Accept only on measured completion gains.
+   stream-cap (`reasoning` SSE over 8 MiB), `finish_reason length`, and repeated
+   unobserved-line citations. Round 19 raised the cap to 32 MiB without a
+   detection gain, so treat larger caps as reliability only and accept on
+   measured completion, not quality.
 2. **Reduce turn count without a tighter context cap.** The 12-call result shows
    fewer turns are cheaper; test an earlier "finalize now" prompt or a tighter
    per-turn tool-result budget against line recall, not a context cap.
@@ -153,3 +168,10 @@ distinct metrics are reported alongside it and never folded into exact F1:
    add cross-file, injected-instruction, and safe-control cases that do not map
    to the already-reviewed sinks, then re-measure exact, line, and reviewed
    metrics at 2-3 trials.
+4. **Target the three never-found primary issues directly.** Rounds 18-22 show
+   that effort, stream budget, prompt strategy, tool budget, and sampling do not
+   recover `unsettled-bad-debt-liquidation`, `lock-symlink-truncation`, or
+   `intoiter-drop-panic-double-free`. Pre-register per-issue experiments
+   (evidence chosen, hypotheses formed, verification step) and score them by the
+   seven-label exact/line rate, not by reviewed `unexpected_valid` counts or the
+   mixed 18-case F1.

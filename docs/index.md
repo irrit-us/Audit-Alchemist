@@ -31,6 +31,7 @@ Start with the [README](../README.md) for installation and a first run.
 | [Confirmation rounds 14-15](reports/tiny-round14.json), [15](reports/tiny-round15.json) | Budget replication and rejected context-cap experiment |
 | [Stable capability round 16](reports/tiny-round16.json) | 18-case, 2-trial exact/line/reviewed baseline |
 | [Settlement round 17](reports/tiny-round17.json) | Read-only settlement after the action budget |
+| [Campaign rounds 18-22](reports/tiny-campaign-round18.json), [19](reports/tiny-campaign-round19.json), [20](reports/tiny-campaign-round20.json), [21](reports/tiny-campaign-round21.json), [22](reports/tiny-campaign-round22.json) | Five tuning rounds (effort, stream cap, prompt, budget, sampling) scored on the seven primary labels; no detection gain |
 | [Round 4 reviews](reports/round4-reviews.json) | Per-finding verdicts for the round-4 non-exact matches |
 | [Round 5 reviews](reports/round5-reviews.json) | Per-finding verdicts for the round-5 non-exact matches |
 | [Round 6 reviews](reports/round6-reviews.json) | Per-finding verdicts for the round-6 non-exact matches |

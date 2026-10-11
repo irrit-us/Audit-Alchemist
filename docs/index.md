@@ -13,11 +13,13 @@ Start with the [README](../README.md) for installation and a first run.
 | [Workflow integration API](api.md) | Process contract, command endpoints, JSON payloads, exit codes, and versioning for the calling workflow manager |
 | [Protocol](protocol.md) | Version 1 agent request/response and dataset contract |
 | [Evaluation](evaluation.md) | Matching, scoring, metrics, and reproducibility |
+| [Cross-harness baselines](baselines.md) | Codex, Claude Code, DSH, and Pi on the seven primary labels: method, results, context/task comparison, and constraints |
 | [Constraints](constraints.md) | Required harness invariants, existing checks, and enforcement gaps |
 | [Harness design research](harness-design.md) | Primary-source findings, project applications, and optimization acceptance criteria |
 | [Validation](validation.md) | Recorded live rounds, checks, and per-round results |
 | [Experiment log](experiments.md) | Round ledger, accumulated experience, and future directions |
 | [Reports](reports/deepseek-evaluation.json) | Committed evaluation artifact |
+| [Harness baselines](reports/harness-baselines.json) | One-trial and three-trial blind baselines for Codex, Claude Code, DSH, and Pi |
 | [Tiny baseline round 1](reports/tiny-baseline-round1.json) | Blind live evaluation over the seven submodule fixtures |
 | [Tiny baseline round 2](reports/tiny-baseline-round2.json) | Same blind run after the JSON-mode and reasoning-effort fixes |
 | [Tiny baseline round 3](reports/tiny-baseline-round3.json) | Same blind run after the configurable stream cap |

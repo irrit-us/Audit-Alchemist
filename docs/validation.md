@@ -1,5 +1,65 @@
 # Validation
 
+## Cross-harness baselines: 2026-10-11
+
+First same-model comparison of the built-in auditor against four external
+coding-agent harnesses on the **seven primary fixture labels**, blind
+instruction, per-case staging, all trials retained. **All four harnesses run
+`deepseek-flash`**, the built-in agent's blind model, so the comparison isolates
+harness design. Method, invocation, and the full context/task analysis are in
+[Cross-harness baselines](baselines.md); the raw aggregate is
+[harness-baselines.json](reports/harness-baselines.json).
+
+| Harness (`deepseek-flash`) | Trials | Success | Exact TP/FP/FN | Exact F1 | Line F1 | Distinct | Timeouts |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: |
+| Codex | 3 | 21/21 | 21/0/0 | **1.000** | 1.000 | 7/7 | 0 |
+| Claude Code | 3 | 21/21 | 21/4/0 | .913 | .913 | 7/7 | 0 |
+| DSH | 3 | 21/21 | 20/3/1 | .909 | .909 | 7/7 | 0 |
+| Pi | 3 | 19/21 | 19/0/2 | .950 | .950 | 7/7 | 2 |
+
+Built-in reference (`deepseek-flash`, blind, rounds 18-22): 17/140 exact (12.1%)
+and 35/140 line (25.0%); no configuration exceeded two of seven distinct issues.
+Every external harness covers all seven distinct issues with the same model, so
+the gap is harness context and task management, not the model. External
+tool-call depth was 12-34 native calls per case versus a built-in budget of 16.
+Codex was the only harness with no failed run and exact precision 1.000; Pi's
+two failures were adapter wall-clock timeouts on the largest fixture, not
+detection errors. An earlier mixed-model run (Codex on `gpt-5.6-sol`) was
+superseded by this same-model baseline.
+
+Constraints implemented from this comparison:
+
+- `benchmark --isolate` now stages each case from the existing `evaluate`
+  staging path, so an external agent cannot read the label manifest or mutate
+  the source tree. Parse- and format-checked with `rustfmt`; not compiled in
+  this environment (no MSVC/Windows SDK, incomplete GNU toolchain).
+- The adapter writes a per-case side file, removing cross-case contamination
+  under `benchmark --jobs > 1`.
+- `scripts/run_harness_baseline.py` defaults to three trials and records
+  per-case elapsed time, adapter timeouts, resolved instructions, and pinned
+  revisions, with `--summarize` for no-model re-summaries.
+
+Network policy and public-CVE recall remain uncontrolled and are documented as
+requirements for the next round, not silently assumed away.
+
+### Optimization round 24: soft in-band deadline
+
+Hypothesis: a soft wall-clock budget in the adapter brief reduces the adapter
+timeouts Pi hit on the largest fixture without reducing distinct detection.
+Pi x 7 x 3, same `deepseek-flash`, off vs a 15-minute brief deadline:
+
+| Variant | Success | Exact TP/FP/FN | Exact F1 | Distinct | Timeouts | Total wall-clock |
+| --- | ---: | --- | ---: | ---: | ---: | ---: |
+| no deadline | 19/21 | 19/0/2 | .950 | 7/7 | 2 | 5468 s |
+| 15 min soft | 21/21 | 21/1/0 | .977 | 7/7 | 0 | 2592 s |
+
+The deadline removed both timeouts, roughly halved total wall-clock, and kept
+7/7 distinct. The runs were sequential rather than a simultaneous A/B, so
+provider variance is a caveat; the change only adds a paragraph to the adapter
+brief, is opt-in (`--deadline-minutes`), and is the recommended configuration
+for future baselines. Raw metrics are in `harness-baselines.json`
+(`optimization_round_24`).
+
 ## Optimization campaign rounds 18-22: 2026-10-11
 
 Five rounds testing widely used tuning methods against the **seven primary

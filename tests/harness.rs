@@ -315,6 +315,91 @@ fn report_destination_is_checked_before_execution() {
     assert!(output.stdout.is_empty());
 }
 
+fn bash_agent() -> (std::path::PathBuf, Vec<String>) {
+    #[cfg(unix)]
+    let executable = std::path::PathBuf::from("/bin/sh");
+    #[cfg(windows)]
+    let executable = std::env::var_os("AUDIT_BASH")
+        .map(std::path::PathBuf::from)
+        .or_else(|| {
+            std::env::var_os("ProgramFiles")
+                .map(|root| std::path::PathBuf::from(root).join("Git/bin/bash.exe"))
+                .filter(|path| path.is_file())
+        })
+        .unwrap_or_else(|| "bash".into());
+    #[cfg(not(any(unix, windows)))]
+    let executable = std::path::PathBuf::from("bash");
+    (
+        executable,
+        vec![
+            "-c".into(),
+            "cat >/dev/null; printf mutated > mutated.txt; printf '%s' '{\"schema_version\":1,\"findings\":[]}'"
+                .into(),
+        ],
+    )
+}
+
+fn run_benchmark(dir: &std::path::Path, isolate: bool) -> std::process::Output {
+    let manifest = dir.join("dataset.json");
+    let (bash, args) = bash_agent();
+    let mut command = std::process::Command::new(env!("CARGO_BIN_EXE_alchemist"));
+    command
+        .arg("benchmark")
+        .arg("--dataset")
+        .arg(&manifest)
+        .arg("--agent")
+        .arg(&bash)
+        .arg("--jobs")
+        .arg("1");
+    if isolate {
+        command.arg("--isolate");
+    }
+    for arg in &args {
+        command.arg("--agent-arg").arg(arg);
+    }
+    command.output().unwrap()
+}
+
+#[test]
+fn benchmark_isolate_stages_each_case_away_from_the_source_tree() {
+    let manifest = r#"{"schema_version":1,"name":"isolate-v1","cases":[{"id":"case","target":"a.py","instruction":"audit","expected":[]}]}"#;
+
+    // Without isolation the external agent works in the dataset root itself.
+    let plain = tempfile::tempdir().unwrap();
+    std::fs::write(plain.path().join("dataset.json"), manifest).unwrap();
+    std::fs::write(plain.path().join("a.py"), "pass\n").unwrap();
+    let output = run_benchmark(plain.path(), false);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(plain.path().join("mutated.txt").exists());
+
+    // With isolation the same agent writes into a temporary copy, and the
+    // dataset manifest is not part of that copy.
+    let staged = tempfile::tempdir().unwrap();
+    std::fs::write(staged.path().join("dataset.json"), manifest).unwrap();
+    std::fs::write(staged.path().join("a.py"), "pass\n").unwrap();
+    let output = run_benchmark(staged.path(), true);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(
+        !staged.path().join("mutated.txt").exists(),
+        "isolated agent mutated the source tree"
+    );
+    assert_eq!(
+        std::fs::read_to_string(staged.path().join("a.py")).unwrap(),
+        "pass\n"
+    );
+    let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(report["metrics"]["successful_cases"], 1);
+    assert_eq!(report["metrics"]["exact_match_cases"], 1);
+}
+
 #[cfg(target_os = "linux")]
 fn process_is_running(pid: u32) -> bool {
     // A killed orphan can briefly remain as a zombie until the system reaps it.

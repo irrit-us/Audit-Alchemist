@@ -16,6 +16,9 @@ TRACE = ROOT / "skills/foundry-debugging/scripts/forge_trace.py"
 SPEC = importlib.util.spec_from_file_location("tube_probe", ROOT / "skills/pwntools-debugging/scripts/tube_probe.py")
 PROBE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(PROBE)
+ADAPTER_SPEC = importlib.util.spec_from_file_location("external_agent", ROOT / "scripts/external_agent.py")
+ADAPTER = importlib.util.module_from_spec(ADAPTER_SPEC)
+ADAPTER_SPEC.loader.exec_module(ADAPTER)
 
 
 class Tube:
@@ -165,6 +168,43 @@ contract RawCapabilityTest {
                 capture_output=True, text=True, encoding="utf-8", timeout=120)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("typed-debug-compatible", result.stdout)
+
+
+class HarnessAdapterTests(unittest.TestCase):
+    """The cross-harness adapter's pure parsing and normalization."""
+
+    def test_extract_response_prefers_last_valid_object(self):
+        text = ('analysis {"findings": []} more\n```json\n'
+                '{"schema_version":1,"findings":[{"cwe":"CWE-78"}]}\n```')
+        value = ADAPTER.extract_response(text)
+        self.assertEqual(len(value["findings"]), 1)
+        self.assertIsNone(ADAPTER.extract_response("no object here"))
+
+    def test_normalize_finding_repairs_form_and_rejects_bad_entries(self):
+        root = Path(tempfile.mkdtemp())
+        fixed = ADAPTER.normalize_finding(
+            {"cwe": "cwe 78", "path": "./sources/x.py", "line": "5",
+             "severity": "CRITICAL", "title": "t", "evidence": "e"}, root)
+        self.assertEqual(
+            (fixed["cwe"], fixed["path"], fixed["line"], fixed["severity"]),
+            ("CWE-78", "sources/x.py", 5, "critical"), fixed)
+        self.assertIsNone(ADAPTER.normalize_finding(
+            {"cwe": "CWE-78", "path": "../x.py", "line": 1}, root))
+        self.assertIsNone(ADAPTER.normalize_finding(
+            {"cwe": "not-a-cwe", "path": "x.py", "line": 1}, root))
+        self.assertIsNone(ADAPTER.normalize_finding(
+            {"cwe": "CWE-78", "path": "x.py", "line": 0}, root))
+
+    def test_brief_names_the_per_case_side_file(self):
+        text = ADAPTER.brief("t.py", "audit", ".audit-findings-case.json")
+        self.assertIn(".audit-findings-case.json", text)
+        self.assertIn('"schema_version": 1', text)
+        self.assertNotIn("Time budget", text)
+
+    def test_brief_includes_soft_deadline_when_set(self):
+        text = ADAPTER.brief("t.py", "audit", ".audit-findings-case.json", 15)
+        self.assertIn("15 minutes", text)
+        self.assertIn("Time budget", text)
 
 
 if __name__ == "__main__":

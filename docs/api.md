@@ -57,7 +57,10 @@ retries across nodes, and cross-node state.
 
 `evaluate` and `benchmark` share the same report shape. `evaluate` runs the
 built-in agent in isolated per-case workspaces; `benchmark` runs an external
-executable implementing the [Version 1 protocol](protocol.md) verbatim.
+executable implementing the [Version 1 protocol](protocol.md) verbatim. Pass
+`benchmark --isolate` to stage each case in a fresh copy of the dataset root
+(excluding the label manifest and build/dependency directories) before the
+external agent runs.
 
 ## Shared types
 

@@ -54,7 +54,10 @@ to each child along with effective provider/budget flags. The snapshot survives
 until workers finish and is then removed. An MCP server without `cwd` starts in
 each staged audit workspace; an explicit `cwd` remains an intentional override.
 `benchmark` runs the external agent exactly as configured through `agent_arg`;
-it does not inject this harness's prompts/tools into another executable.
+it does not inject this harness's prompts/tools into another executable. Pass
+`--isolate` to give each case a fresh staged copy of the dataset root (the same
+staging `evaluate` uses), so the external agent cannot read the label manifest
+or mutate the source tree.
 
 ### MCP stdio servers
 
@@ -271,6 +274,7 @@ A 401 from the Codex backend triggers one forced re-authentication and retry.
 | `--instruction <TEXT>` | generic audit instruction (`audit`) | Scope and threat model for the case. |
 | `--dataset <PATH>` | required (`evaluate`, `benchmark`, `validate`) | Dataset file; paths resolve relative to its directory. |
 | `--agent <PATH>` | required (`benchmark`) | Executable implementing the protocol. |
+| `--isolate` | off (`benchmark`) | Stage a fresh copy of the dataset root per case (excludes the label manifest and build/dependency directories). |
 | `--dry-run` | off (`audit`) | Assemble and report the context without calling the model. |
 
 ## Reports and output

@@ -101,6 +101,10 @@ enum Action {
         agent: PathBuf,
         #[arg(long, allow_hyphen_values = true)]
         agent_arg: Vec<String>,
+        /// Stage an isolated writable copy of each case so the agent cannot read
+        /// the dataset manifest or mutate the source tree.
+        #[arg(long)]
+        isolate: bool,
         #[command(flatten)]
         limits: Limits,
     },
@@ -313,8 +317,9 @@ async fn execute(cli: Cli) -> Result<bool> {
             dataset,
             agent,
             agent_arg,
+            isolate,
             limits,
-        } => benchmark(dataset, agent, agent_arg, limits, false).await,
+        } => benchmark(dataset, agent, agent_arg, limits, isolate).await,
         Action::Evaluate {
             dataset,
             llm,

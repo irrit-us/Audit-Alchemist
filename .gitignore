@@ -1,3 +1,5 @@
 /target/
 /reports/
 KEY_FOR_TEST
+__pycache__/
+*.pyc

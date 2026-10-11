@@ -18,7 +18,8 @@ temporary workspace after the case. This prevents ordinary cross-case mutation
 and accidental reading of the label manifest. Bash still has host permissions;
 for strict held-out evaluation, use an OS/container boundary that hides labels
 and unrelated files. `benchmark` retains its external-agent working-directory
-contract and does not stage copies.
+contract and does not stage copies by default; `benchmark --isolate` opts into
+the same per-case staging as `evaluate`.
 
 ## Matching and scoring
 

@@ -47,8 +47,8 @@ distinct metrics are reported alongside it and never folded into exact F1:
 | 20 | Systematic-enumeration system prompt | 12/14, 11/14 | .125 / .057 | unreviewed | Generic class checklist did not surface the missed issues. |
 | 21 | Tool budget 16 vs 32 at high effort | 14/14, 12/14 | .061 / .105 | unreviewed | 32 calls used ~2.5x tokens with the same 1/7 distinct coverage. |
 | 22 | Self-consistency, 4 samples | 25/28 | .118 | unreviewed | More samples did not recover ajna/filelock/thin-vec; distinct exact 1/7. |
-| 23 | Cross-harness baselines (Codex, Claude Code, DSH, Pi) | 19-21/21 each | 1.00 / .913 / .909 / .950 | unreviewed | All four run `deepseek-flash`, cover 7/7 distinct; the built-in agent with the same model never exceeded 1-2/7. Harness context/task management dominates. |
-| 24 | Soft in-band deadline (Pi, off vs 15 min) | 19/21 vs 21/21 | .950 vs .977 | unreviewed | Deadline removed both adapter timeouts, cut total wall-clock 53% (91 vs 43 min), kept 7/7 distinct. Adopt as a task-management lever. |
+| 23 | Cross-harness baselines (Codex, Claude Code, DSH, Pi) | 21/21 each | .333 / .129 / .129 / .033 | unreviewed | Leak-free, same model: Pi best (4/7 distinct); Codex and DSH tie, Claude worst. The built-in agent already matches Codex/DSH. The first run leaked `expected` labels to the agent and was retracted. |
+| 24 | Soft in-band deadline (Pi, off vs 15 min) | 19/21 vs 21/21 | - | unreviewed | Deadline removed both adapter timeouts and halved total wall-clock (91 vs 43 min). Detection numbers predate the leak correction; the timeout effect is leak-independent. |
 
 ## Accumulated experience
 
@@ -125,23 +125,22 @@ distinct metrics are reported alongside it and never folded into exact F1:
     stream-cap/`finish_reason length` failures without a gain. The bottleneck
     for `ajna`, `filelock`, and `thin-vec` is the model's hypotheses and the
     evidence it chooses to trust, not the available budget.
-14. **The harness, not the model, carries the seven-label gap (round 23).**
-    With all four external harnesses pinned to `deepseek-flash` and the built-in
-    agent on the same model, the harnesses cover 7/7 distinct issues (Codex
-    21/21 exact, Claude 21/21, DSH 20/21, Pi 19/21) while the built-in blind
-    rounds never exceeded two. External harnesses used 12-34 native tool calls
-    and chose reads, searches, and local execution adaptively. The only external
-    failures were wall-clock timeouts on the largest fixture. An earlier mixed
-    model run was superseded. Isolation (`benchmark --isolate`), a per-case
-    adapter side file, pinned provider/model selection, and recorded
-    elapsed/timeout metadata are now implemented; network policy and held-out,
-    non-public fixtures remain open.
+14. **The first cross-harness numbers were a label-leak artifact (round 23).**
+    The Python runner wrote the per-case manifest, including `expected` labels,
+    into the agent workspace; Codex and others read it and reproduced the keys.
+    After hiding the manifest (`--hide-labels`), the same deepseek-flash runs
+    collapsed to Pi .333 exact F1 (4/7 distinct), Codex .129 (3/7), DSH .129
+    (3/7), and Claude .033 (1/7). The built-in agent's blind rounds (~.118 exact,
+    1-2/7 distinct) already match Codex/DSH; Pi is the outlier. No harness found
+    `intoiter-drop-panic-double-free` exactly or by line, and most misses were
+    adjacent lines or alternate CWEs. Exact CWE labeling, not sink discovery,
+    dominates this benchmark. Label isolation must be verified, not assumed.
 15. **A soft in-band deadline is a safe task-management lever (round 24).**
-    Pi's 15-minute brief deadline removed both adapter timeouts, raised exact F1
-    .950 to .977 (one false positive instead of two lost runs), kept 7/7
-    distinct, and cut total adapter wall-clock 53% (91 to 43 minutes). The
-    change only adds a paragraph to the adapter brief and is opt-in; it directly
-    targets the observed failure mode rather than adding retries or budget.
+    A 15-minute brief deadline removed both Pi adapter timeouts and cut total
+    adapter wall-clock 53% (91 to 43 minutes). The detection numbers from that
+    experiment predate the leak correction, so only the completion/timeout
+    effect is used; the change is opt-in and directly targets the observed
+    failure mode rather than adding retries or budget.
 
 ## Decision policy for future rounds
 

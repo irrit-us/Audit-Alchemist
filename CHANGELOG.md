@@ -10,16 +10,16 @@ All notable changes to this project are documented here. The format follows
 - Cross-harness evaluation baselines for Codex, Claude Code, DSH, and Pi on
   the seven primary `alchemist-dataset-tiny` labels, with a Version 1 protocol
   adapter (`scripts/external_agent.py`) and a staged, multi-trial runner
-  (`scripts/run_harness_baseline.py`). All four harnesses are pinned to
-  `deepseek-flash`, the built-in agent's blind model, so the comparison isolates
-  harness design. Three-trial exact results: Codex 21/21 (F1 1.000), Claude Code
-  21/21 (F1 .913), DSH 20/21 (F1 .909), Pi 19/21 (F1 .950), each covering all
-  seven distinct issues, versus a built-in blind rate of 1-2/7. Raw results are
-  `docs/reports/harness-baselines.json`; method, results, and the network /
+  (`scripts/run_harness_baseline.py`). All four harnesses run `deepseek-flash`
+  with the case labels hidden. Three-trial exact results: Pi 8/21 (F1 .333,
+  4/7 distinct), Codex 4/21 (.129, 3/7), DSH 4/21 (.129, 3/7), Claude Code
+  1/21 (.033, 1/7). The built-in agent's blind rounds (~.118 exact, 1-2/7
+  distinct) already match Codex/DSH; Pi is the outlier. Raw results are
+  `docs/reports/harness-baselines.json`; method, correction, and the network /
   public-CVE constraints are in [Cross-harness baselines](docs/baselines.md).
 - A soft in-band adapter deadline (`--deadline-minutes`) that removed Pi's two
-  adapter timeouts, kept 7/7 distinct, and halved total wall-clock (91 to 43
-  minutes); recorded as optimization round 24 in [Validation](docs/validation.md).
+  adapter timeouts and halved total wall-clock (91 to 43 minutes); recorded as
+  optimization round 24 in [Validation](docs/validation.md).
 - `benchmark --isolate`, exposing the per-case staging path already used by
   `evaluate` so an external agent cannot read the label manifest or mutate the
   source tree. Covered by
@@ -51,6 +51,15 @@ plans are `examples/campaign-r18.toml` through `campaign-r22.toml`, with the
 candidate prompt `prompts/audit-systematic.txt`. [Evaluation](docs/evaluation.md)
 now states that the seven primary labels are the headline capability metric and
 that reviewed `unexpected_valid` / mixed-set exact F1 must not replace them.
+
+### Fixed
+
+- The external-harness runner wrote the per-case dataset manifest, including
+  the `expected` labels, into the agent's staged working directory, so the first
+  published cross-harness baselines leaked the answer. `external_agent.py
+  --hide-labels` now moves the manifest out of the workspace for each run (the
+  runner enables it by default), and `HarnessAdapterTests` covers move/restore.
+  The leak-free rerun is recorded in [Cross-harness baselines](docs/baselines.md).
 
 ## [0.1.2] - 2026-10-11
 

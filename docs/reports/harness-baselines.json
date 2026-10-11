@@ -1,58 +1,55 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "model": "deepseek-flash (all harnesses)",
   "dataset": "alchemist-dataset-tiny primary labels (7 cases)",
   "instruction": "blind (one generic instruction for every case)",
   "metric": "exact (CWE, path, line) and line (path, line); all trials retained",
-  "note": "Supersedes the first mixed-model run (Codex on gpt-5.6-sol, Claude on deepseek-v4-pro); see git history.",
+  "correction": {
+    "issue": "The first published external baselines leaked the case labels into the agent workspace.",
+    "cause": "scripts/run_harness_baseline.py staged the audit tree and then wrote the per-case dataset manifest, including the `expected` labels, into the same directory used as the agent's working directory. Codex and others read it, so results such as Codex 21/21 exact were not independent discovery.",
+    "fix": "scripts/external_agent.py --hide-labels moves dataset.json out of the workspace for the duration of each harness run and restores it afterwards; the runner passes it by default. The clean window showed zero manifest reads.",
+    "superseded": "The deepseek-flash 'samemodel-*' runs (Codex 21/21, Claude 21/21, DSH 20/21, Pi 19/21) and the earlier mixed-model runs are invalid for detection and retained only in git history."
+  },
   "harnesses": {
     "codex": {
-      "validation_3_trials": {
+      "clean_validation_3_trials": {
         "model": "deepseek-flash",
         "trials": 21,
         "success": 21,
         "failed": 0,
         "adapter_timeouts": 0,
         "elapsed_ms": {
-          "mean": 148240.85714285713,
-          "max": 664533,
-          "total": 3113058
+          "mean": 183871.85714285713,
+          "max": 551875,
+          "total": 3861309
         },
         "exact": {
-          "tp": 21,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 21,
-          "line_fp": 0,
-          "line_fn": 0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
+          "tp": 4,
+          "fp": 37,
+          "fn": 17,
+          "line_tp": 6,
+          "line_fp": 34,
+          "line_fn": 15,
+          "precision": 0.0975609756097561,
+          "recall": 0.19047619047619047,
+          "f1": 0.12903225806451613,
           "distinct_hits": [
             "argon2i32-small-block-count",
-            "chunked-trailer-not-validated",
-            "intoiter-drop-panic-double-free",
             "iss-array-loose-match",
-            "lock-symlink-truncation",
-            "sha256-length-comparator-unconstrained",
-            "unsettled-bad-debt-liquidation"
+            "sha256-length-comparator-unconstrained"
           ]
         },
         "line": {
-          "line_tp": 21,
-          "line_fp": 0,
-          "line_fn": 0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
+          "line_tp": 6,
+          "line_fp": 34,
+          "line_fn": 15,
+          "precision": 0.15,
+          "recall": 0.2857142857142857,
+          "f1": 0.19672131147540983,
           "distinct_hits": [
             "argon2i32-small-block-count",
-            "chunked-trailer-not-validated",
-            "intoiter-drop-panic-double-free",
             "iss-array-loose-match",
-            "lock-symlink-truncation",
-            "sha256-length-comparator-unconstrained",
-            "unsettled-bad-debt-liquidation"
+            "sha256-length-comparator-unconstrained"
           ]
         },
         "cases": [
@@ -60,483 +57,52 @@
             "case_id": "argon2i32-small-block-count",
             "trial": 1,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 82515,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 61101,
-            "findings": [
-              {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 118374,
-            "findings": [
-              {
-                "cwe": "CWE-415",
-                "path": "src/lib.rs",
-                "line": 2546
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "iss-array-loose-match",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 54993,
-            "findings": [
-              {
-                "cwe": "CWE-290",
-                "path": "src/verifier.js",
-                "line": 159
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "lock-symlink-truncation",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 35266,
-            "findings": [
-              {
-                "cwe": "CWE-59",
-                "path": "filelock/_unix.py",
-                "line": 41
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "sha256-length-comparator-unconstrained",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 81394,
-            "findings": [
-              {
-                "cwe": "CWE-1284",
-                "path": "sha.circom",
-                "line": 126
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 412247,
-            "findings": [
-              {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "argon2i32-small-block-count",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 170814,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 77092,
-            "findings": [
-              {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 115167,
-            "findings": [
-              {
-                "cwe": "CWE-415",
-                "path": "src/lib.rs",
-                "line": 2546
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "iss-array-loose-match",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 81607,
-            "findings": [
-              {
-                "cwe": "CWE-290",
-                "path": "src/verifier.js",
-                "line": 159
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "lock-symlink-truncation",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 71009,
-            "findings": [
-              {
-                "cwe": "CWE-59",
-                "path": "filelock/_unix.py",
-                "line": 41
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "sha256-length-comparator-unconstrained",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 150457,
-            "findings": [
-              {
-                "cwe": "CWE-1284",
-                "path": "sha.circom",
-                "line": 126
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 363626,
-            "findings": [
-              {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "argon2i32-small-block-count",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 90348,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 78686,
-            "findings": [
-              {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 107625,
-            "findings": [
-              {
-                "cwe": "CWE-415",
-                "path": "src/lib.rs",
-                "line": 2546
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "iss-array-loose-match",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 143884,
-            "findings": [
-              {
-                "cwe": "CWE-290",
-                "path": "src/verifier.js",
-                "line": 159
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "lock-symlink-truncation",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 37015,
-            "findings": [
-              {
-                "cwe": "CWE-59",
-                "path": "filelock/_unix.py",
-                "line": 41
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "sha256-length-comparator-unconstrained",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 115305,
-            "findings": [
-              {
-                "cwe": "CWE-1284",
-                "path": "sha.circom",
-                "line": 126
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 664533,
-            "findings": [
-              {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
-              }
-            ],
-            "error": null
-          }
-        ]
-      }
-    },
-    "claude": {
-      "validation_3_trials": {
-        "model": "deepseek-flash",
-        "trials": 21,
-        "success": 21,
-        "failed": 0,
-        "adapter_timeouts": 0,
-        "elapsed_ms": {
-          "mean": 229381.66666666666,
-          "max": 730818,
-          "total": 4817015
-        },
-        "exact": {
-          "tp": 21,
-          "fp": 4,
-          "fn": 0,
-          "line_tp": 21,
-          "line_fp": 4,
-          "line_fn": 0,
-          "precision": 0.84,
-          "recall": 1.0,
-          "f1": 0.9130434782608695,
-          "distinct_hits": [
-            "argon2i32-small-block-count",
-            "chunked-trailer-not-validated",
-            "intoiter-drop-panic-double-free",
-            "iss-array-loose-match",
-            "lock-symlink-truncation",
-            "sha256-length-comparator-unconstrained",
-            "unsettled-bad-debt-liquidation"
-          ]
-        },
-        "line": {
-          "line_tp": 21,
-          "line_fp": 4,
-          "line_fn": 0,
-          "precision": 0.84,
-          "recall": 1.0,
-          "f1": 0.9130434782608695,
-          "distinct_hits": [
-            "argon2i32-small-block-count",
-            "chunked-trailer-not-validated",
-            "intoiter-drop-panic-double-free",
-            "iss-array-loose-match",
-            "lock-symlink-truncation",
-            "sha256-length-comparator-unconstrained",
-            "unsettled-bad-debt-liquidation"
-          ]
-        },
-        "cases": [
-          {
-            "case_id": "argon2i32-small-block-count",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 58081,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 100115,
-            "findings": [
-              {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
+            "tp": 0,
             "fp": 1,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 149308,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 134780,
+            "findings": [
+              {
+                "cwe": "CWE-787",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 97290,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 164
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 98705,
             "findings": [
               {
                 "cwe": "CWE-415",
                 "path": "src/lib.rs",
-                "line": 2546
+                "line": 2547
               },
               {
                 "cwe": "CWE-415",
@@ -550,16 +116,16 @@
             "case_id": "iss-array-loose-match",
             "trial": 1,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 166931,
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 107196,
             "findings": [
               {
                 "cwe": "CWE-290",
                 "path": "src/verifier.js",
-                "line": 159
+                "line": 475
               }
             ],
             "error": null
@@ -568,16 +134,31 @@
             "case_id": "lock-symlink-truncation",
             "trial": 1,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 50567,
+            "tp": 0,
+            "fp": 4,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 135933,
             "findings": [
               {
                 "cwe": "CWE-59",
                 "path": "filelock/_unix.py",
-                "line": 41
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_soft.py",
+                "line": 27
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_util.py",
+                "line": 22
               }
             ],
             "error": null
@@ -586,480 +167,49 @@
             "case_id": "sha256-length-comparator-unconstrained",
             "trial": 1,
             "outcome": "success",
-            "tp": 1,
-            "fp": 1,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 293170,
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 207274,
             "findings": [
               {
                 "cwe": "CWE-1284",
                 "path": "sha.circom",
-                "line": 126
+                "line": 128
               },
               {
                 "cwe": "CWE-1284",
                 "path": "sha.circom",
-                "line": 238
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 730818,
-            "findings": [
-              {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "argon2i32-small-block-count",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 77944,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 138265,
-            "findings": [
-              {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 94782,
-            "findings": [
-              {
-                "cwe": "CWE-415",
-                "path": "src/lib.rs",
-                "line": 2546
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "iss-array-loose-match",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 143639,
-            "findings": [
-              {
-                "cwe": "CWE-290",
-                "path": "src/verifier.js",
-                "line": 159
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "lock-symlink-truncation",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 67632,
-            "findings": [
-              {
-                "cwe": "CWE-59",
-                "path": "filelock/_unix.py",
-                "line": 41
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "sha256-length-comparator-unconstrained",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 571387,
-            "findings": [
-              {
-                "cwe": "CWE-1284",
-                "path": "sha.circom",
-                "line": 126
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 606126,
-            "findings": [
-              {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "argon2i32-small-block-count",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 1,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 213524,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
+                "line": 240
               },
               {
-                "cwe": "CWE-121",
-                "path": "c_monocypher.pyx",
-                "line": 281
+                "cwe": "CWE-1284",
+                "path": "array.circom",
+                "line": 28
               }
             ],
             "error": null
           },
           {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 3,
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 1,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 226348,
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 393956,
             "findings": [
               {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 1,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 211277,
-            "findings": [
-              {
-                "cwe": "CWE-415",
-                "path": "src/lib.rs",
-                "line": 2546
+                "cwe": "CWE-770",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 145
               },
               {
-                "cwe": "CWE-415",
-                "path": "src/lib.rs",
-                "line": 1084
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "iss-array-loose-match",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 129629,
-            "findings": [
-              {
-                "cwe": "CWE-290",
-                "path": "src/verifier.js",
-                "line": 159
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "lock-symlink-truncation",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 33890,
-            "findings": [
-              {
-                "cwe": "CWE-59",
-                "path": "filelock/_unix.py",
-                "line": 41
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "sha256-length-comparator-unconstrained",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 206129,
-            "findings": [
-              {
-                "cwe": "CWE-1284",
-                "path": "sha.circom",
-                "line": 126
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 547453,
-            "findings": [
-              {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
-              }
-            ],
-            "error": null
-          }
-        ]
-      }
-    },
-    "dsh": {
-      "validation_3_trials": {
-        "model": "deepseek-flash",
-        "trials": 21,
-        "success": 21,
-        "failed": 0,
-        "adapter_timeouts": 0,
-        "elapsed_ms": {
-          "mean": 179743.85714285713,
-          "max": 757337,
-          "total": 3774621
-        },
-        "exact": {
-          "tp": 20,
-          "fp": 3,
-          "fn": 1,
-          "line_tp": 20,
-          "line_fp": 3,
-          "line_fn": 1,
-          "precision": 0.8695652173913043,
-          "recall": 0.9523809523809523,
-          "f1": 0.9090909090909091,
-          "distinct_hits": [
-            "argon2i32-small-block-count",
-            "chunked-trailer-not-validated",
-            "intoiter-drop-panic-double-free",
-            "iss-array-loose-match",
-            "lock-symlink-truncation",
-            "sha256-length-comparator-unconstrained",
-            "unsettled-bad-debt-liquidation"
-          ]
-        },
-        "line": {
-          "line_tp": 20,
-          "line_fp": 3,
-          "line_fn": 1,
-          "precision": 0.8695652173913043,
-          "recall": 0.9523809523809523,
-          "f1": 0.9090909090909091,
-          "distinct_hits": [
-            "argon2i32-small-block-count",
-            "chunked-trailer-not-validated",
-            "intoiter-drop-panic-double-free",
-            "iss-array-loose-match",
-            "lock-symlink-truncation",
-            "sha256-length-comparator-unconstrained",
-            "unsettled-bad-debt-liquidation"
-          ]
-        },
-        "cases": [
-          {
-            "case_id": "argon2i32-small-block-count",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 49178,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 180543,
-            "findings": [
-              {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 59856,
-            "findings": [
-              {
-                "cwe": "CWE-415",
-                "path": "src/lib.rs",
-                "line": 2546
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "iss-array-loose-match",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 72569,
-            "findings": [
-              {
-                "cwe": "CWE-290",
-                "path": "src/verifier.js",
-                "line": 159
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "lock-symlink-truncation",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 27738,
-            "findings": [
-              {
-                "cwe": "CWE-59",
-                "path": "filelock/_unix.py",
-                "line": 41
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "sha256-length-comparator-unconstrained",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 207381,
-            "findings": [
-              {
-                "cwe": "CWE-1284",
-                "path": "sha.circom",
-                "line": 126
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 709951,
-            "findings": [
-              {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 486
               }
             ],
             "error": null
@@ -1068,14 +218,14 @@
             "case_id": "argon2i32-small-block-count",
             "trial": 2,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
             "line_tp": 1,
-            "elapsed_ms": 60220,
+            "elapsed_ms": 151074,
             "findings": [
               {
-                "cwe": "CWE-122",
+                "cwe": "CWE-787",
                 "path": "c_monocypher.pyx",
                 "line": 345
               }
@@ -1090,7 +240,7 @@
             "fp": 1,
             "fn": 1,
             "line_tp": 0,
-            "elapsed_ms": 139949,
+            "elapsed_ms": 93950,
             "findings": [
               {
                 "cwe": "CWE-444",
@@ -1104,16 +254,1554 @@
             "case_id": "intoiter-drop-panic-double-free",
             "trial": 2,
             "outcome": "success",
-            "tp": 1,
-            "fp": 1,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 60764,
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 55523,
             "findings": [
               {
                 "cwe": "CWE-415",
                 "path": "src/lib.rs",
-                "line": 2546
+                "line": 2547
+              },
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 1084
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "iss-array-loose-match",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 1,
+            "elapsed_ms": 280592,
+            "findings": [
+              {
+                "cwe": "CWE-863",
+                "path": "src/verifier.js",
+                "line": 159
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "lock-symlink-truncation",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 155110,
+            "findings": [
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_unix.py",
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "sha256-length-comparator-unconstrained",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 1,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 248631,
+            "findings": [
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 126
+              },
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 238
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 403663,
+            "findings": [
+              {
+                "cwe": "CWE-754",
+                "path": "ajna-v2/src/base/Pool.sol",
+                "line": 419
+              },
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 145
+              },
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 486
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "argon2i32-small-block-count",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 2,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 76428,
+            "findings": [
+              {
+                "cwe": "CWE-122",
+                "path": "c_monocypher.pyx",
+                "line": 345
+              },
+              {
+                "cwe": "CWE-476",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              },
+              {
+                "cwe": "CWE-190",
+                "path": "c_monocypher.pyx",
+                "line": 345
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 92236,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 164
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 131986,
+            "findings": [
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 2547
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "iss-array-loose-match",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 74187,
+            "findings": [
+              {
+                "cwe": "CWE-290",
+                "path": "src/verifier.js",
+                "line": 159
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "lock-symlink-truncation",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 52030,
+            "findings": [
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_unix.py",
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "sha256-length-comparator-unconstrained",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 2,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 318890,
+            "findings": [
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 126
+              },
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 195
+              },
+              {
+                "cwe": "CWE-1284",
+                "path": "array.circom",
+                "line": 28
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 4,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 551875,
+            "findings": [
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 145
+              },
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 486
+              },
+              {
+                "cwe": "CWE-670",
+                "path": "ajna-v2/src/libraries/external/KickerActions.sol",
+                "line": 235
+              },
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/BorrowerActions.sol",
+                "line": 381
+              }
+            ],
+            "error": null
+          }
+        ]
+      }
+    },
+    "claude": {
+      "clean_validation_3_trials": {
+        "model": "deepseek-flash",
+        "trials": 21,
+        "success": 21,
+        "failed": 0,
+        "adapter_timeouts": 0,
+        "elapsed_ms": {
+          "mean": 219796.47619047618,
+          "max": 665184,
+          "total": 4615726
+        },
+        "exact": {
+          "tp": 1,
+          "fp": 38,
+          "fn": 20,
+          "line_tp": 5,
+          "line_fp": 32,
+          "line_fn": 16,
+          "precision": 0.02564102564102564,
+          "recall": 0.047619047619047616,
+          "f1": 0.03333333333333333,
+          "distinct_hits": [
+            "iss-array-loose-match"
+          ]
+        },
+        "line": {
+          "line_tp": 5,
+          "line_fp": 32,
+          "line_fn": 16,
+          "precision": 0.13513513513513514,
+          "recall": 0.23809523809523808,
+          "f1": 0.1724137931034483,
+          "distinct_hits": [
+            "argon2i32-small-block-count",
+            "iss-array-loose-match"
+          ]
+        },
+        "cases": [
+          {
+            "case_id": "argon2i32-small-block-count",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 5,
+            "fn": 1,
+            "line_tp": 1,
+            "elapsed_ms": 142895,
+            "findings": [
+              {
+                "cwe": "CWE-787",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              },
+              {
+                "cwe": "CWE-125",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              },
+              {
+                "cwe": "CWE-457",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              },
+              {
+                "cwe": "CWE-476",
+                "path": "c_monocypher.pyx",
+                "line": 345
+              },
+              {
+                "cwe": "CWE-121",
+                "path": "c_monocypher.pyx",
+                "line": 281
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 117920,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 164
+              },
+              {
+                "cwe": "CWE-400",
+                "path": "h11/_connection.py",
+                "line": 123
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 177477,
+            "findings": [
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 2547
+              },
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 1084
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "iss-array-loose-match",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 1,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 184523,
+            "findings": [
+              {
+                "cwe": "CWE-290",
+                "path": "src/verifier.js",
+                "line": 159
+              },
+              {
+                "cwe": "CWE-863",
+                "path": "src/verifier.js",
+                "line": 216
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "lock-symlink-truncation",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 89270,
+            "findings": [
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_unix.py",
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "sha256-length-comparator-unconstrained",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 304034,
+            "findings": [
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 128
+              },
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 240
+              },
+              {
+                "cwe": "CWE-191",
+                "path": "sha.circom",
+                "line": 195
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 203370,
+            "findings": [],
+            "error": null
+          },
+          {
+            "case_id": "argon2i32-small-block-count",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 95854,
+            "findings": [
+              {
+                "cwe": "CWE-122",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 98213,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 164
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 129134,
+            "findings": [
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 2547
+              },
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 1084
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "iss-array-loose-match",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 1,
+            "elapsed_ms": 150241,
+            "findings": [
+              {
+                "cwe": "CWE-863",
+                "path": "src/verifier.js",
+                "line": 159
+              },
+              {
+                "cwe": "CWE-863",
+                "path": "src/verifier.js",
+                "line": 216
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "lock-symlink-truncation",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 116162,
+            "findings": [
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_unix.py",
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              },
+              {
+                "cwe": "CWE-367",
+                "path": "filelock/_soft.py",
+                "line": 27
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "sha256-length-comparator-unconstrained",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 215181,
+            "findings": [
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 125
+              },
+              {
+                "cwe": "CWE-129",
+                "path": "sha.circom",
+                "line": 195
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 665184,
+            "findings": [],
+            "error": null
+          },
+          {
+            "case_id": "argon2i32-small-block-count",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 1,
+            "elapsed_ms": 117400,
+            "findings": [
+              {
+                "cwe": "CWE-787",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              },
+              {
+                "cwe": "CWE-476",
+                "path": "c_monocypher.pyx",
+                "line": 345
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 227709,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 164
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 495448,
+            "findings": [
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 2547
+              },
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 1084
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "iss-array-loose-match",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 1,
+            "elapsed_ms": 66757,
+            "findings": [
+              {
+                "cwe": "CWE-863",
+                "path": "src/verifier.js",
+                "line": 159
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "lock-symlink-truncation",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 48427,
+            "findings": [
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_unix.py",
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "sha256-length-comparator-unconstrained",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 413581,
+            "findings": [
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 128
+              },
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 240
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 556946,
+            "findings": [
+              {
+                "cwe": "CWE-693",
+                "path": "ajna-v2/src/base/Pool.sol",
+                "line": 419
+              },
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 486
+              }
+            ],
+            "error": null
+          }
+        ]
+      }
+    },
+    "dsh": {
+      "clean_validation_3_trials": {
+        "model": "deepseek-flash",
+        "trials": 21,
+        "success": 21,
+        "failed": 0,
+        "adapter_timeouts": 0,
+        "elapsed_ms": {
+          "mean": 174114.47619047618,
+          "max": 710245,
+          "total": 3656404
+        },
+        "exact": {
+          "tp": 4,
+          "fp": 37,
+          "fn": 17,
+          "line_tp": 5,
+          "line_fp": 36,
+          "line_fn": 16,
+          "precision": 0.0975609756097561,
+          "recall": 0.19047619047619047,
+          "f1": 0.12903225806451613,
+          "distinct_hits": [
+            "chunked-trailer-not-validated",
+            "iss-array-loose-match",
+            "unsettled-bad-debt-liquidation"
+          ]
+        },
+        "line": {
+          "line_tp": 5,
+          "line_fp": 36,
+          "line_fn": 16,
+          "precision": 0.12195121951219512,
+          "recall": 0.23809523809523808,
+          "f1": 0.16129032258064516,
+          "distinct_hits": [
+            "chunked-trailer-not-validated",
+            "iss-array-loose-match",
+            "sha256-length-comparator-unconstrained",
+            "unsettled-bad-debt-liquidation"
+          ]
+        },
+        "cases": [
+          {
+            "case_id": "argon2i32-small-block-count",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 54781,
+            "findings": [
+              {
+                "cwe": "CWE-787",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 122971,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 164
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 63055,
+            "findings": [
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 2547
+              },
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 1084
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "iss-array-loose-match",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 1,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 129192,
+            "findings": [
+              {
+                "cwe": "CWE-290",
+                "path": "src/verifier.js",
+                "line": 159
+              },
+              {
+                "cwe": "CWE-1287",
+                "path": "src/decoder.js",
+                "line": 38
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "lock-symlink-truncation",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 71618,
+            "findings": [
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_unix.py",
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_util.py",
+                "line": 22
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "sha256-length-comparator-unconstrained",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 174539,
+            "findings": [
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 125
+              },
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 237
+              },
+              {
+                "cwe": "CWE-129",
+                "path": "array.circom",
+                "line": 25
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 2,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 522728,
+            "findings": [
+              {
+                "cwe": "CWE-841",
+                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+                "line": 168
+              },
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 145
+              },
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 486
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "argon2i32-small-block-count",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 116879,
+            "findings": [
+              {
+                "cwe": "CWE-122",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 72382,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 164
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 69753,
+            "findings": [
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 2547
+              },
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 1084
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "iss-array-loose-match",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 116483,
+            "findings": [
+              {
+                "cwe": "CWE-290",
+                "path": "src/verifier.js",
+                "line": 475
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "lock-symlink-truncation",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 131760,
+            "findings": [
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_unix.py",
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_soft.py",
+                "line": 27
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "sha256-length-comparator-unconstrained",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 1,
+            "elapsed_ms": 210569,
+            "findings": [
+              {
+                "cwe": "CWE-20",
+                "path": "sha.circom",
+                "line": 126
+              },
+              {
+                "cwe": "CWE-129",
+                "path": "sha.circom",
+                "line": 195
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 4,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 710245,
+            "findings": [
+              {
+                "cwe": "CWE-191",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 466
+              },
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 486
+              },
+              {
+                "cwe": "CWE-770",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 145
+              },
+              {
+                "cwe": "CWE-754",
+                "path": "ajna-v2/src/base/Pool.sol",
+                "line": 419
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "argon2i32-small-block-count",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 71241,
+            "findings": [
+              {
+                "cwe": "CWE-787",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 110892,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 197
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 64364,
+            "findings": [
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 2547
+              },
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 1084
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "iss-array-loose-match",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 118329,
+            "findings": [
+              {
+                "cwe": "CWE-290",
+                "path": "src/verifier.js",
+                "line": 159
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "lock-symlink-truncation",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 51486,
+            "findings": [
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_unix.py",
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "sha256-length-comparator-unconstrained",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 137485,
+            "findings": [
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 125
+              },
+              {
+                "cwe": "CWE-129",
+                "path": "array.circom",
+                "line": 25
+              },
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 237
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 3,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 535652,
+            "findings": [
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 145
+              },
+              {
+                "cwe": "CWE-682",
+                "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+                "line": 486
+              }
+            ],
+            "error": null
+          }
+        ]
+      }
+    },
+    "pi": {
+      "clean_validation_3_trials": {
+        "model": "deepseek-flash",
+        "trials": 21,
+        "success": 21,
+        "failed": 0,
+        "adapter_timeouts": 0,
+        "elapsed_ms": {
+          "mean": 141253.90476190476,
+          "max": 519160,
+          "total": 2966332
+        },
+        "exact": {
+          "tp": 8,
+          "fp": 19,
+          "fn": 13,
+          "line_tp": 10,
+          "line_fp": 17,
+          "line_fn": 11,
+          "precision": 0.2962962962962963,
+          "recall": 0.38095238095238093,
+          "f1": 0.3333333333333333,
+          "distinct_hits": [
+            "iss-array-loose-match",
+            "lock-symlink-truncation",
+            "sha256-length-comparator-unconstrained",
+            "unsettled-bad-debt-liquidation"
+          ]
+        },
+        "line": {
+          "line_tp": 10,
+          "line_fp": 17,
+          "line_fn": 11,
+          "precision": 0.37037037037037035,
+          "recall": 0.47619047619047616,
+          "f1": 0.4166666666666667,
+          "distinct_hits": [
+            "argon2i32-small-block-count",
+            "iss-array-loose-match",
+            "lock-symlink-truncation",
+            "sha256-length-comparator-unconstrained",
+            "unsettled-bad-debt-liquidation"
+          ]
+        },
+        "cases": [
+          {
+            "case_id": "argon2i32-small-block-count",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 1,
+            "elapsed_ms": 54024,
+            "findings": [
+              {
+                "cwe": "CWE-787",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              },
+              {
+                "cwe": "CWE-476",
+                "path": "c_monocypher.pyx",
+                "line": 345
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 59188,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 167
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 73064,
+            "findings": [
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 2547
+              },
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 1084
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "iss-array-loose-match",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 1,
+            "elapsed_ms": 167192,
+            "findings": [
+              {
+                "cwe": "CWE-843",
+                "path": "src/verifier.js",
+                "line": 159
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "lock-symlink-truncation",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 68209,
+            "findings": [
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_unix.py",
+                "line": 44
+              },
+              {
+                "cwe": "CWE-59",
+                "path": "filelock/_windows.py",
+                "line": 28
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "sha256-length-comparator-unconstrained",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 186955,
+            "findings": [
+              {
+                "cwe": "CWE-1284",
+                "path": "sha.circom",
+                "line": 126
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "unsettled-bad-debt-liquidation",
+            "trial": 1,
+            "outcome": "success",
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "line_tp": 1,
+            "elapsed_ms": 519160,
+            "findings": [
+              {
+                "cwe": "CWE-841",
+                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+                "line": 168
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "argon2i32-small-block-count",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 41925,
+            "findings": [
+              {
+                "cwe": "CWE-787",
+                "path": "c_monocypher.pyx",
+                "line": 347
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "chunked-trailer-not-validated",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 100606,
+            "findings": [
+              {
+                "cwe": "CWE-444",
+                "path": "h11/_readers.py",
+                "line": 164
+              }
+            ],
+            "error": null
+          },
+          {
+            "case_id": "intoiter-drop-panic-double-free",
+            "trial": 2,
+            "outcome": "success",
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 75457,
+            "findings": [
+              {
+                "cwe": "CWE-415",
+                "path": "src/lib.rs",
+                "line": 2547
               },
               {
                 "cwe": "CWE-415",
@@ -1131,7 +1819,7 @@
             "fp": 0,
             "fn": 0,
             "line_tp": 1,
-            "elapsed_ms": 60071,
+            "elapsed_ms": 173105,
             "findings": [
               {
                 "cwe": "CWE-290",
@@ -1149,7 +1837,7 @@
             "fp": 0,
             "fn": 0,
             "line_tp": 1,
-            "elapsed_ms": 65588,
+            "elapsed_ms": 66409,
             "findings": [
               {
                 "cwe": "CWE-59",
@@ -1167,7 +1855,7 @@
             "fp": 0,
             "fn": 0,
             "line_tp": 1,
-            "elapsed_ms": 83206,
+            "elapsed_ms": 125155,
             "findings": [
               {
                 "cwe": "CWE-1284",
@@ -1181,16 +1869,16 @@
             "case_id": "unsettled-bad-debt-liquidation",
             "trial": 2,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 757337,
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 200548,
             "findings": [
               {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
+                "cwe": "CWE-754",
+                "path": "ajna-v2/src/base/Pool.sol",
+                "line": 419
               }
             ],
             "error": null
@@ -1199,16 +1887,16 @@
             "case_id": "argon2i32-small-block-count",
             "trial": 3,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 56250,
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 68464,
             "findings": [
               {
-                "cwe": "CWE-122",
+                "cwe": "CWE-787",
                 "path": "c_monocypher.pyx",
-                "line": 345
+                "line": 347
               }
             ],
             "error": null
@@ -1217,16 +1905,16 @@
             "case_id": "chunked-trailer-not-validated",
             "trial": 3,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 71813,
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 146562,
             "findings": [
               {
                 "cwe": "CWE-444",
                 "path": "h11/_readers.py",
-                "line": 197
+                "line": 164
               }
             ],
             "error": null
@@ -1235,213 +1923,34 @@
             "case_id": "intoiter-drop-panic-double-free",
             "trial": 3,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 72068,
+            "tp": 0,
+            "fp": 2,
+            "fn": 1,
+            "line_tp": 0,
+            "elapsed_ms": 76862,
             "findings": [
               {
                 "cwe": "CWE-415",
                 "path": "src/lib.rs",
-                "line": 2546
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "iss-array-loose-match",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 74912,
-            "findings": [
-              {
-                "cwe": "CWE-290",
-                "path": "src/verifier.js",
-                "line": 159
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "lock-symlink-truncation",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 30370,
-            "findings": [
-              {
-                "cwe": "CWE-59",
-                "path": "filelock/_unix.py",
-                "line": 41
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "sha256-length-comparator-unconstrained",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 1,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 180176,
-            "findings": [
-              {
-                "cwe": "CWE-1284",
-                "path": "sha.circom",
-                "line": 126
+                "line": 2547
               },
               {
-                "cwe": "CWE-1284",
-                "path": "sha.circom",
-                "line": 238
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 754681,
-            "findings": [
-              {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
-              }
-            ],
-            "error": null
-          }
-        ]
-      }
-    },
-    "pi": {
-      "validation_3_trials": {
-        "model": "deepseek-flash",
-        "trials": 21,
-        "success": 19,
-        "failed": 2,
-        "adapter_timeouts": 2,
-        "elapsed_ms": {
-          "mean": 260402.2857142857,
-          "max": 1560801,
-          "total": 5468448
-        },
-        "exact": {
-          "tp": 19,
-          "fp": 0,
-          "fn": 2,
-          "line_tp": 19,
-          "line_fp": 0,
-          "line_fn": 2,
-          "precision": 1.0,
-          "recall": 0.9047619047619048,
-          "f1": 0.95,
-          "distinct_hits": [
-            "argon2i32-small-block-count",
-            "chunked-trailer-not-validated",
-            "intoiter-drop-panic-double-free",
-            "iss-array-loose-match",
-            "lock-symlink-truncation",
-            "sha256-length-comparator-unconstrained",
-            "unsettled-bad-debt-liquidation"
-          ]
-        },
-        "line": {
-          "line_tp": 19,
-          "line_fp": 0,
-          "line_fn": 2,
-          "precision": 1.0,
-          "recall": 0.9047619047619048,
-          "f1": 0.95,
-          "distinct_hits": [
-            "argon2i32-small-block-count",
-            "chunked-trailer-not-validated",
-            "intoiter-drop-panic-double-free",
-            "iss-array-loose-match",
-            "lock-symlink-truncation",
-            "sha256-length-comparator-unconstrained",
-            "unsettled-bad-debt-liquidation"
-          ]
-        },
-        "cases": [
-          {
-            "case_id": "argon2i32-small-block-count",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 37299,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 131836,
-            "findings": [
-              {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 1,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 42346,
-            "findings": [
-              {
                 "cwe": "CWE-415",
                 "path": "src/lib.rs",
-                "line": 2546
+                "line": 1084
               }
             ],
             "error": null
           },
           {
             "case_id": "iss-array-loose-match",
-            "trial": 1,
+            "trial": 3,
             "outcome": "success",
             "tp": 1,
             "fp": 0,
             "fn": 0,
             "line_tp": 1,
-            "elapsed_ms": 38232,
+            "elapsed_ms": 128235,
             "findings": [
               {
                 "cwe": "CWE-290",
@@ -1453,258 +1962,23 @@
           },
           {
             "case_id": "lock-symlink-truncation",
-            "trial": 1,
+            "trial": 3,
             "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 26575,
-            "findings": [
-              {
-                "cwe": "CWE-59",
-                "path": "filelock/_unix.py",
-                "line": 41
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "sha256-length-comparator-unconstrained",
-            "trial": 1,
-            "outcome": "nonzero_exit",
             "tp": 0,
-            "fp": 0,
+            "fp": 2,
             "fn": 1,
             "line_tp": 0,
-            "elapsed_ms": 1560683,
-            "findings": [],
-            "error": "agent exited with exit code: 3"
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 1,
-            "outcome": "nonzero_exit",
-            "tp": 0,
-            "fp": 0,
-            "fn": 1,
-            "line_tp": 0,
-            "elapsed_ms": 1560801,
-            "findings": [],
-            "error": "agent exited with exit code: 3"
-          },
-          {
-            "case_id": "argon2i32-small-block-count",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 27759,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 38802,
-            "findings": [
-              {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 123229,
-            "findings": [
-              {
-                "cwe": "CWE-415",
-                "path": "src/lib.rs",
-                "line": 2546
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "iss-array-loose-match",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 56964,
-            "findings": [
-              {
-                "cwe": "CWE-290",
-                "path": "src/verifier.js",
-                "line": 159
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "lock-symlink-truncation",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 25480,
+            "elapsed_ms": 34967,
             "findings": [
               {
                 "cwe": "CWE-59",
                 "path": "filelock/_unix.py",
-                "line": 41
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "sha256-length-comparator-unconstrained",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 162110,
-            "findings": [
-              {
-                "cwe": "CWE-1284",
-                "path": "sha.circom",
-                "line": 126
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "unsettled-bad-debt-liquidation",
-            "trial": 2,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 739959,
-            "findings": [
-              {
-                "cwe": "CWE-841",
-                "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-                "line": 168
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "argon2i32-small-block-count",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 132077,
-            "findings": [
-              {
-                "cwe": "CWE-122",
-                "path": "c_monocypher.pyx",
-                "line": 345
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "chunked-trailer-not-validated",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 103487,
-            "findings": [
-              {
-                "cwe": "CWE-444",
-                "path": "h11/_readers.py",
-                "line": 197
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "intoiter-drop-panic-double-free",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 39308,
-            "findings": [
-              {
-                "cwe": "CWE-415",
-                "path": "src/lib.rs",
-                "line": 2546
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "iss-array-loose-match",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 29876,
-            "findings": [
-              {
-                "cwe": "CWE-290",
-                "path": "src/verifier.js",
-                "line": 159
-              }
-            ],
-            "error": null
-          },
-          {
-            "case_id": "lock-symlink-truncation",
-            "trial": 3,
-            "outcome": "success",
-            "tp": 1,
-            "fp": 0,
-            "fn": 0,
-            "line_tp": 1,
-            "elapsed_ms": 22961,
-            "findings": [
+                "line": 44
+              },
               {
                 "cwe": "CWE-59",
-                "path": "filelock/_unix.py",
-                "line": 41
+                "path": "filelock/_windows.py",
+                "line": 28
               }
             ],
             "error": null
@@ -1717,7 +1991,7 @@
             "fp": 0,
             "fn": 0,
             "line_tp": 1,
-            "elapsed_ms": 94793,
+            "elapsed_ms": 333528,
             "findings": [
               {
                 "cwe": "CWE-1284",
@@ -1735,7 +2009,7 @@
             "fp": 0,
             "fn": 0,
             "line_tp": 1,
-            "elapsed_ms": 473871,
+            "elapsed_ms": 266717,
             "findings": [
               {
                 "cwe": "CWE-841",
@@ -1754,6 +2028,7 @@
     "blind_primary_rounds_18_22": {
       "exact": "17/140 (12.1%)",
       "line": "35/140 (25.0%)",
+      "exact_f1_range": "0.057-0.125 per configuration",
       "distinct_exact_per_configuration": "1-2 of 7",
       "note": "nine configurations; no gain"
     },
@@ -1765,864 +2040,9 @@
     }
   },
   "optimization_round_24": {
-    "hypothesis": "A soft in-band wall-clock budget reduces adapter timeouts without reducing distinct detection.",
-    "change": "--deadline-minutes inserts a time-budget paragraph in the adapter brief; opt-in.",
-    "harness": "pi",
-    "model": "deepseek-flash",
-    "trials": 3,
-    "cases": 7,
-    "baseline_no_deadline": {
-      "model": "deepseek-flash",
-      "trials": 21,
-      "success": 19,
-      "failed": 2,
-      "adapter_timeouts": 2,
-      "elapsed_ms": {
-        "mean": 260402.2857142857,
-        "max": 1560801,
-        "total": 5468448
-      },
-      "exact": {
-        "tp": 19,
-        "fp": 0,
-        "fn": 2,
-        "line_tp": 19,
-        "line_fp": 0,
-        "line_fn": 2,
-        "precision": 1.0,
-        "recall": 0.9047619047619048,
-        "f1": 0.95,
-        "distinct_hits": [
-          "argon2i32-small-block-count",
-          "chunked-trailer-not-validated",
-          "intoiter-drop-panic-double-free",
-          "iss-array-loose-match",
-          "lock-symlink-truncation",
-          "sha256-length-comparator-unconstrained",
-          "unsettled-bad-debt-liquidation"
-        ]
-      },
-      "line": {
-        "line_tp": 19,
-        "line_fp": 0,
-        "line_fn": 2,
-        "precision": 1.0,
-        "recall": 0.9047619047619048,
-        "f1": 0.95,
-        "distinct_hits": [
-          "argon2i32-small-block-count",
-          "chunked-trailer-not-validated",
-          "intoiter-drop-panic-double-free",
-          "iss-array-loose-match",
-          "lock-symlink-truncation",
-          "sha256-length-comparator-unconstrained",
-          "unsettled-bad-debt-liquidation"
-        ]
-      },
-      "cases": [
-        {
-          "case_id": "argon2i32-small-block-count",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 37299,
-          "findings": [
-            {
-              "cwe": "CWE-122",
-              "path": "c_monocypher.pyx",
-              "line": 345
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "chunked-trailer-not-validated",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 131836,
-          "findings": [
-            {
-              "cwe": "CWE-444",
-              "path": "h11/_readers.py",
-              "line": 197
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "intoiter-drop-panic-double-free",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 42346,
-          "findings": [
-            {
-              "cwe": "CWE-415",
-              "path": "src/lib.rs",
-              "line": 2546
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "iss-array-loose-match",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 38232,
-          "findings": [
-            {
-              "cwe": "CWE-290",
-              "path": "src/verifier.js",
-              "line": 159
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "lock-symlink-truncation",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 26575,
-          "findings": [
-            {
-              "cwe": "CWE-59",
-              "path": "filelock/_unix.py",
-              "line": 41
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "sha256-length-comparator-unconstrained",
-          "trial": 1,
-          "outcome": "nonzero_exit",
-          "tp": 0,
-          "fp": 0,
-          "fn": 1,
-          "line_tp": 0,
-          "elapsed_ms": 1560683,
-          "findings": [],
-          "error": "agent exited with exit code: 3"
-        },
-        {
-          "case_id": "unsettled-bad-debt-liquidation",
-          "trial": 1,
-          "outcome": "nonzero_exit",
-          "tp": 0,
-          "fp": 0,
-          "fn": 1,
-          "line_tp": 0,
-          "elapsed_ms": 1560801,
-          "findings": [],
-          "error": "agent exited with exit code: 3"
-        },
-        {
-          "case_id": "argon2i32-small-block-count",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 27759,
-          "findings": [
-            {
-              "cwe": "CWE-122",
-              "path": "c_monocypher.pyx",
-              "line": 345
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "chunked-trailer-not-validated",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 38802,
-          "findings": [
-            {
-              "cwe": "CWE-444",
-              "path": "h11/_readers.py",
-              "line": 197
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "intoiter-drop-panic-double-free",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 123229,
-          "findings": [
-            {
-              "cwe": "CWE-415",
-              "path": "src/lib.rs",
-              "line": 2546
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "iss-array-loose-match",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 56964,
-          "findings": [
-            {
-              "cwe": "CWE-290",
-              "path": "src/verifier.js",
-              "line": 159
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "lock-symlink-truncation",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 25480,
-          "findings": [
-            {
-              "cwe": "CWE-59",
-              "path": "filelock/_unix.py",
-              "line": 41
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "sha256-length-comparator-unconstrained",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 162110,
-          "findings": [
-            {
-              "cwe": "CWE-1284",
-              "path": "sha.circom",
-              "line": 126
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "unsettled-bad-debt-liquidation",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 739959,
-          "findings": [
-            {
-              "cwe": "CWE-841",
-              "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-              "line": 168
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "argon2i32-small-block-count",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 132077,
-          "findings": [
-            {
-              "cwe": "CWE-122",
-              "path": "c_monocypher.pyx",
-              "line": 345
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "chunked-trailer-not-validated",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 103487,
-          "findings": [
-            {
-              "cwe": "CWE-444",
-              "path": "h11/_readers.py",
-              "line": 197
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "intoiter-drop-panic-double-free",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 39308,
-          "findings": [
-            {
-              "cwe": "CWE-415",
-              "path": "src/lib.rs",
-              "line": 2546
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "iss-array-loose-match",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 29876,
-          "findings": [
-            {
-              "cwe": "CWE-290",
-              "path": "src/verifier.js",
-              "line": 159
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "lock-symlink-truncation",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 22961,
-          "findings": [
-            {
-              "cwe": "CWE-59",
-              "path": "filelock/_unix.py",
-              "line": 41
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "sha256-length-comparator-unconstrained",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 94793,
-          "findings": [
-            {
-              "cwe": "CWE-1284",
-              "path": "sha.circom",
-              "line": 126
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "unsettled-bad-debt-liquidation",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 473871,
-          "findings": [
-            {
-              "cwe": "CWE-841",
-              "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-              "line": 168
-            }
-          ],
-          "error": null
-        }
-      ]
-    },
-    "candidate_deadline_15min": {
-      "model": "deepseek-flash",
-      "trials": 21,
-      "success": 21,
-      "failed": 0,
-      "adapter_timeouts": 0,
-      "elapsed_ms": {
-        "mean": 123414.33333333333,
-        "max": 623333,
-        "total": 2591701
-      },
-      "exact": {
-        "tp": 21,
-        "fp": 1,
-        "fn": 0,
-        "line_tp": 21,
-        "line_fp": 1,
-        "line_fn": 0,
-        "precision": 0.9545454545454546,
-        "recall": 1.0,
-        "f1": 0.9767441860465116,
-        "distinct_hits": [
-          "argon2i32-small-block-count",
-          "chunked-trailer-not-validated",
-          "intoiter-drop-panic-double-free",
-          "iss-array-loose-match",
-          "lock-symlink-truncation",
-          "sha256-length-comparator-unconstrained",
-          "unsettled-bad-debt-liquidation"
-        ]
-      },
-      "line": {
-        "line_tp": 21,
-        "line_fp": 1,
-        "line_fn": 0,
-        "precision": 0.9545454545454546,
-        "recall": 1.0,
-        "f1": 0.9767441860465116,
-        "distinct_hits": [
-          "argon2i32-small-block-count",
-          "chunked-trailer-not-validated",
-          "intoiter-drop-panic-double-free",
-          "iss-array-loose-match",
-          "lock-symlink-truncation",
-          "sha256-length-comparator-unconstrained",
-          "unsettled-bad-debt-liquidation"
-        ]
-      },
-      "cases": [
-        {
-          "case_id": "argon2i32-small-block-count",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 28902,
-          "findings": [
-            {
-              "cwe": "CWE-122",
-              "path": "c_monocypher.pyx",
-              "line": 345
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "chunked-trailer-not-validated",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 94141,
-          "findings": [
-            {
-              "cwe": "CWE-444",
-              "path": "h11/_readers.py",
-              "line": 197
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "intoiter-drop-panic-double-free",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 30454,
-          "findings": [
-            {
-              "cwe": "CWE-415",
-              "path": "src/lib.rs",
-              "line": 2546
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "iss-array-loose-match",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 67598,
-          "findings": [
-            {
-              "cwe": "CWE-290",
-              "path": "src/verifier.js",
-              "line": 159
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "lock-symlink-truncation",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 15039,
-          "findings": [
-            {
-              "cwe": "CWE-59",
-              "path": "filelock/_unix.py",
-              "line": 41
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "sha256-length-comparator-unconstrained",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 136625,
-          "findings": [
-            {
-              "cwe": "CWE-1284",
-              "path": "sha.circom",
-              "line": 126
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "unsettled-bad-debt-liquidation",
-          "trial": 1,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 296715,
-          "findings": [
-            {
-              "cwe": "CWE-841",
-              "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-              "line": 168
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "argon2i32-small-block-count",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 36984,
-          "findings": [
-            {
-              "cwe": "CWE-122",
-              "path": "c_monocypher.pyx",
-              "line": 345
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "chunked-trailer-not-validated",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 43017,
-          "findings": [
-            {
-              "cwe": "CWE-444",
-              "path": "h11/_readers.py",
-              "line": 197
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "intoiter-drop-panic-double-free",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 29218,
-          "findings": [
-            {
-              "cwe": "CWE-415",
-              "path": "src/lib.rs",
-              "line": 2546
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "iss-array-loose-match",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 23994,
-          "findings": [
-            {
-              "cwe": "CWE-290",
-              "path": "src/verifier.js",
-              "line": 159
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "lock-symlink-truncation",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 15860,
-          "findings": [
-            {
-              "cwe": "CWE-59",
-              "path": "filelock/_unix.py",
-              "line": 41
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "sha256-length-comparator-unconstrained",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 139309,
-          "findings": [
-            {
-              "cwe": "CWE-1284",
-              "path": "sha.circom",
-              "line": 126
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "unsettled-bad-debt-liquidation",
-          "trial": 2,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 611154,
-          "findings": [
-            {
-              "cwe": "CWE-841",
-              "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-              "line": 168
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "argon2i32-small-block-count",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 27236,
-          "findings": [
-            {
-              "cwe": "CWE-122",
-              "path": "c_monocypher.pyx",
-              "line": 345
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "chunked-trailer-not-validated",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 46277,
-          "findings": [
-            {
-              "cwe": "CWE-444",
-              "path": "h11/_readers.py",
-              "line": 197
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "intoiter-drop-panic-double-free",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 1,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 96897,
-          "findings": [
-            {
-              "cwe": "CWE-415",
-              "path": "src/lib.rs",
-              "line": 2546
-            },
-            {
-              "cwe": "CWE-415",
-              "path": "src/lib.rs",
-              "line": 1084
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "iss-array-loose-match",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 61956,
-          "findings": [
-            {
-              "cwe": "CWE-290",
-              "path": "src/verifier.js",
-              "line": 159
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "lock-symlink-truncation",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 22597,
-          "findings": [
-            {
-              "cwe": "CWE-59",
-              "path": "filelock/_unix.py",
-              "line": 41
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "sha256-length-comparator-unconstrained",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 144395,
-          "findings": [
-            {
-              "cwe": "CWE-1284",
-              "path": "sha.circom",
-              "line": 126
-            }
-          ],
-          "error": null
-        },
-        {
-          "case_id": "unsettled-bad-debt-liquidation",
-          "trial": 3,
-          "outcome": "success",
-          "tp": 1,
-          "fp": 0,
-          "fn": 0,
-          "line_tp": 1,
-          "elapsed_ms": 623333,
-          "findings": [
-            {
-              "cwe": "CWE-841",
-              "path": "ajna-v2/src/libraries/external/TakerActions.sol",
-              "line": 168
-            }
-          ],
-          "error": null
-        }
-      ]
-    },
-    "result": "timeouts 2 -> 0; success 19/21 -> 21/21; exact F1 .950 -> .977 (one FP); distinct 7/7 both; total adapter wall-clock 5468s -> 2592s (-53%).",
-    "caveat": "Sequential runs, not a simultaneous A/B; provider variance cannot be fully excluded, but the mechanism directly targets wall-clock."
+    "hypothesis": "A soft in-band wall-clock budget removes adapter timeouts.",
+    "change": "--deadline-minutes adds a time-budget paragraph to the adapter brief (opt-in).",
+    "measurement": "On the (then-contaminated) Pi run, timeouts went 2 -> 0 and total wall-clock 5468s -> 2592s with 7/7 distinct; the mechanism is leak-independent.",
+    "status": "keep as a task-management lever; detection numbers from that run are superseded."
   }
 }

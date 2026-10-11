@@ -19,7 +19,7 @@ Start with the [README](../README.md) for installation and a first run.
 | [Validation](validation.md) | Recorded live rounds, checks, and per-round results |
 | [Experiment log](experiments.md) | Round ledger, accumulated experience, and future directions |
 | [Reports](reports/deepseek-evaluation.json) | Committed evaluation artifact |
-| [Harness baselines](reports/harness-baselines.json) | One-trial and three-trial blind baselines for Codex, Claude Code, DSH, and Pi |
+| [Harness baselines](reports/harness-baselines.json) | Leak-free three-trial blind baselines for Codex, Claude Code, DSH, and Pi (all `deepseek-flash`), with the label-leak correction |
 | [Tiny baseline round 1](reports/tiny-baseline-round1.json) | Blind live evaluation over the seven submodule fixtures |
 | [Tiny baseline round 2](reports/tiny-baseline-round2.json) | Same blind run after the JSON-mode and reasoning-effort fixes |
 | [Tiny baseline round 3](reports/tiny-baseline-round3.json) | Same blind run after the configurable stream cap |

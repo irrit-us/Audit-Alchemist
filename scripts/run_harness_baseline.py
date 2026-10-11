@@ -129,6 +129,7 @@ def run_case(args, root: Path, output: Path, manifest: Path, dataset_name: str, 
             command += ["--agent-arg", "--timeout-seconds", "--agent-arg", str(args.adapter_timeout)]
         if args.deadline_minutes:
             command += ["--agent-arg", "--deadline-minutes", "--agent-arg", str(args.deadline_minutes)]
+        command += ["--agent-arg", "--hide-labels"]
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         adapter_log = staged / ".audit-adapter.log"
         adapter_text = adapter_log.read_text(encoding="utf-8", errors="replace") if adapter_log.is_file() else ""

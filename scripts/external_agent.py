@@ -39,6 +39,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import signal
 import subprocess
 import sys
@@ -223,6 +224,30 @@ def read_side_file(root: Path, name: str):
         return None
 
 
+def hide_labels(root: Path, names=("dataset.json",)):
+    """Move label manifests out of the agent workspace for the duration of a run.
+
+    The harness needs the manifest on disk to load and score the case, but the
+    agent must not read it. The manifest is moved to a private temporary
+    directory (outside the workspace) and restored afterwards.
+    """
+    backup = Path(tempfile.mkdtemp(prefix="audit-labels-"))
+    hidden = []
+    for name in names:
+        source = root / name
+        if source.is_file():
+            destination = backup / name
+            shutil.move(str(source), str(destination))
+            hidden.append((source, destination))
+    return hidden
+
+
+def restore_labels(hidden) -> None:
+    for source, destination in hidden:
+        if destination.is_file() and not source.exists():
+            shutil.move(str(destination), str(source))
+
+
 def run_process(command: list[str], cwd: Path, prompt_text: str | None, timeout: int):
     """Run a child, bounding it and killing its process tree on timeout."""
     kwargs = {
@@ -349,6 +374,8 @@ def main() -> int:
     parser.add_argument("--profile", default=os.environ.get("AUDIT_HARNESS_DSH_PROFILE", "headless"))
     parser.add_argument("--deadline-minutes", type=int, default=0,
                         help="soft in-band time budget; 0 disables it")
+    parser.add_argument("--hide-labels", action="store_true",
+                        help="move dataset.json out of the workspace while the harness runs")
     parser.add_argument("--timeout-seconds", type=int, default=900)
     args = parser.parse_args()
 
@@ -377,24 +404,28 @@ def main() -> int:
             stale.unlink()
 
     started = time.monotonic()
-    with tempfile.TemporaryDirectory(prefix="audit-harness-") as temp:
-        work = Path(temp)
-        if args.harness == "codex":
-            code, stdout, stderr, extra = invoke_codex(
-                root, prompt_text, args.model or DEFAULT_CODEX_MODEL, args.timeout_seconds, work
-            )
-        elif args.harness == "claude":
-            code, stdout, stderr, extra = invoke_claude(
-                root, prompt_text, args.model, args.timeout_seconds, work
-            )
-        elif args.harness == "dsh":
-            code, stdout, stderr, extra = invoke_dsh(
-                root, prompt_text, args.profile, args.timeout_seconds, work
-            )
-        else:
-            code, stdout, stderr, extra = invoke_pi(
-                root, prompt_text, args.model, args.timeout_seconds, work
-            )
+    hidden = hide_labels(root) if args.hide_labels else []
+    try:
+        with tempfile.TemporaryDirectory(prefix="audit-harness-") as temp:
+            work = Path(temp)
+            if args.harness == "codex":
+                code, stdout, stderr, extra = invoke_codex(
+                    root, prompt_text, args.model or DEFAULT_CODEX_MODEL, args.timeout_seconds, work
+                )
+            elif args.harness == "claude":
+                code, stdout, stderr, extra = invoke_claude(
+                    root, prompt_text, args.model, args.timeout_seconds, work
+                )
+            elif args.harness == "dsh":
+                code, stdout, stderr, extra = invoke_dsh(
+                    root, prompt_text, args.profile, args.timeout_seconds, work
+                )
+            else:
+                code, stdout, stderr, extra = invoke_pi(
+                    root, prompt_text, args.model, args.timeout_seconds, work
+                )
+    finally:
+        restore_labels(hidden)
 
     elapsed = time.monotonic() - started
     if code is None:

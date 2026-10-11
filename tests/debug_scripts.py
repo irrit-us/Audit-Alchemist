@@ -206,6 +206,16 @@ class HarnessAdapterTests(unittest.TestCase):
         self.assertIn("15 minutes", text)
         self.assertIn("Time budget", text)
 
+    def test_hide_labels_moves_manifest_out_of_the_workspace_and_restores_it(self):
+        root = Path(tempfile.mkdtemp())
+        (root / "dataset.json").write_text('{"expected": ["secret-label"]}', encoding="utf-8")
+        (root / "a.py").write_text("pass\n", encoding="utf-8")
+        hidden = ADAPTER.hide_labels(root)
+        self.assertFalse((root / "dataset.json").exists())
+        self.assertTrue((root / "a.py").exists())
+        ADAPTER.restore_labels(hidden)
+        self.assertTrue((root / "dataset.json").exists())
+
 
 if __name__ == "__main__":
     if os.environ.get("AUDIT_REQUIRE_DEBUG_TOOLS") == "1":

@@ -83,6 +83,9 @@ pub struct McpServer {
     pub tools: Option<Vec<String>>,
     #[serde(default = "mcp_timeout")]
     pub timeout_ms: u64,
+    /// Separate bound for initialize and tools/list; defaults to `timeout_ms` so
+    /// existing configurations are unchanged.
+    pub startup_timeout_ms: Option<u64>,
     #[serde(default = "mcp_bytes")]
     pub max_message_bytes: usize,
 }
@@ -239,6 +242,12 @@ impl FileConfig {
                 (1..=3_600_000).contains(&server.timeout_ms),
                 "invalid MCP timeout_ms"
             );
+            if let Some(startup) = server.startup_timeout_ms {
+                ensure!(
+                    (1..=3_600_000).contains(&startup),
+                    "invalid MCP startup_timeout_ms"
+                );
+            }
             ensure!(
                 (1024..=2_097_152).contains(&server.max_message_bytes),
                 "invalid MCP max_message_bytes"

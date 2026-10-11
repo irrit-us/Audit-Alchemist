@@ -16,7 +16,7 @@ fn fixture(
     finish: &str,
 ) -> (
     String,
-    mpsc::Receiver<serde_json::Value>,
+    mpsc::Receiver<(String, serde_json::Value)>,
     thread::JoinHandle<()>,
 ) {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
@@ -56,7 +56,7 @@ fn fixture(
         support::configure_http_stream(&stream);
         let mut bytes = Vec::new();
         let mut buffer = [0; 8192];
-        let (header_end, length) = loop {
+        let (header_end, length, headers) = loop {
             let n = stream.read(&mut buffer).unwrap();
             assert!(n > 0);
             bytes.extend_from_slice(&buffer[..n]);
@@ -72,7 +72,7 @@ fn fixture(
                     .unwrap()
                     .parse::<usize>()
                     .unwrap();
-                break (position + 4, length);
+                break (position + 4, length, header);
             }
         };
         while bytes.len() < header_end + length {
@@ -81,7 +81,10 @@ fn fixture(
             bytes.extend_from_slice(&buffer[..n]);
         }
         sender
-            .send(serde_json::from_slice(&bytes[header_end..header_end + length]).unwrap())
+            .send((
+                headers,
+                serde_json::from_slice(&bytes[header_end..header_end + length]).unwrap(),
+            ))
             .unwrap();
         write!(stream, "HTTP/1.1 {status} Fixture\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()).unwrap();
     });
@@ -120,13 +123,14 @@ fn plain_api_audit_transmits_only_scoped_source_and_validates_findings() {
     let finding = serde_json::json!({"schema_version":1,"findings":[{"cwe":"CWE-78","path":"sources/command_unsafe.py","line":5,"severity":"high","title":"Command injection","evidence":"Attacker-controlled name reaches a shell command"}]});
     let (endpoint, receiver, handle) = fixture(200, finding, "stop");
     let output = audit(&endpoint);
-    let request = receiver.recv_timeout(Duration::from_secs(2)).unwrap();
+    let (headers, request) = receiver.recv_timeout(Duration::from_secs(2)).unwrap();
     handle.join().unwrap();
     assert!(
         output.status.success(),
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
+    assert!(headers.contains("authorization: bearer fixture-key"));
     let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(report["outcome"], "success");
     assert_eq!(report["findings"][0]["cwe"], "CWE-78");
@@ -177,7 +181,7 @@ fn evaluation_forwards_reasoning_effort_and_stream_limit_to_child() {
         .env("AUDIT_API_KEY", "fixture-key")
         .output()
         .unwrap();
-    let request = receiver.recv_timeout(Duration::from_secs(2)).unwrap();
+    let (_headers, request) = receiver.recv_timeout(Duration::from_secs(2)).unwrap();
     handle.join().unwrap();
     assert!(
         output.status.success(),
@@ -204,11 +208,91 @@ fn api_failures_truncation_and_out_of_scope_findings_fail_the_run() {
     ] {
         let (endpoint, receiver, handle) = fixture(status, content, finish);
         let output = audit(&endpoint);
-        receiver.recv_timeout(Duration::from_secs(2)).unwrap();
+        let _ = receiver.recv_timeout(Duration::from_secs(2)).unwrap();
         handle.join().unwrap();
         assert_eq!(output.status.code(), Some(2));
         let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
         assert_eq!(report["outcome"], "provider_error");
         assert_eq!(report["findings"].as_array().unwrap().len(), 0);
     }
+}
+
+#[test]
+fn custom_provider_headers_are_sent_to_the_endpoint() {
+    let (endpoint, receiver, handle) = fixture(
+        200,
+        serde_json::json!({"schema_version":1,"findings":[]}),
+        "stop",
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_alchemist"))
+        .args([
+            "audit",
+            "--root",
+            "datasets/smoke",
+            "--target",
+            "sources/command_unsafe.py",
+            "--instruction",
+            "Audit command execution.",
+            "--endpoint",
+            &endpoint,
+            "--model",
+            "fixture-model",
+            "--header",
+            "X-Tenant: acme",
+            "--header",
+            "X-Route: audit",
+            "--max-attempts",
+            "1",
+            "--max-output-repairs",
+            "0",
+            "--timeout-ms",
+            "5000",
+        ])
+        .env("AUDIT_API_KEY", "fixture-key")
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .unwrap();
+    let (headers, _request) = receiver.recv_timeout(Duration::from_secs(2)).unwrap();
+    handle.join().unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(headers.contains("x-tenant: acme"), "{headers}");
+    assert!(headers.contains("x-route: audit"), "{headers}");
+    assert!(
+        headers.contains("authorization: bearer fixture-key"),
+        "{headers}"
+    );
+}
+
+#[test]
+fn invalid_custom_header_is_rejected_before_any_request() {
+    let output = Command::new(env!("CARGO_BIN_EXE_alchemist"))
+        .args([
+            "audit",
+            "--root",
+            "datasets/smoke",
+            "--target",
+            "sources/command_unsafe.py",
+            "--instruction",
+            "Audit command execution.",
+            "--endpoint",
+            "https://example.invalid/v1/chat/completions",
+            "--model",
+            "fixture-model",
+            "--header",
+            "not-a-header",
+            "--max-attempts",
+            "1",
+            "--timeout-ms",
+            "5000",
+        ])
+        .env("AUDIT_API_KEY", "fixture-key")
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .unwrap();
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("NAME: VALUE"));
 }

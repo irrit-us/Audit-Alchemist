@@ -9,6 +9,7 @@ target = "sources/command_unsafe.py"
 instruction = "Audit attacker-controlled command input. Confirm findings with a small PoC."
 timeout_ms = 60000
 max_tool_calls = 32
+# header = ["X-Tenant: acme"]   # Extra provider request headers, repeatable.
 format = "quiet"
 
 # Omit these sections to use the concise built-in prompt, tools, and skill catalog.
@@ -37,6 +38,7 @@ enabled = false
 command = "YOUR-MCP-SERVER"
 args = []
 timeout_ms = 10000
+startup_timeout_ms = 10000
 max_message_bytes = 1048576
 # tools = ["exact_remote_tool_name"]
 # cwd = "../datasets/smoke"

@@ -24,6 +24,7 @@ struct Client {
     _job: crate::runner::ProcessJob,
     limit: usize,
     timeout: Duration,
+    startup_timeout: Duration,
     id: u64,
 }
 impl Drop for Client {
@@ -72,6 +73,9 @@ impl Client {
             _job: job,
             limit: config.max_message_bytes,
             timeout: Duration::from_millis(config.timeout_ms),
+            startup_timeout: Duration::from_millis(
+                config.startup_timeout_ms.unwrap_or(config.timeout_ms),
+            ),
             id: 0,
         })
     }
@@ -92,6 +96,12 @@ impl Client {
         tokio::time::timeout(timeout, self.exchange(method, params))
             .await
             .context("MCP request timed out")?
+    }
+    async fn startup_request(&mut self, method: &str, params: Value) -> Result<Value> {
+        let timeout = self.startup_timeout;
+        tokio::time::timeout(timeout, self.exchange(method, params))
+            .await
+            .context("MCP startup request timed out")?
     }
     async fn exchange(&mut self, method: &str, params: Value) -> Result<Value> {
         self.id += 1;
@@ -156,7 +166,7 @@ impl McpTools {
         for (name, config) in configs.iter().filter(|(_, c)| c.enabled) {
             let mut client =
                 Client::spawn(config, root).with_context(|| format!("MCP server {name}"))?;
-            let initialized = client.request("initialize", json!({"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"audit-harness","version":env!("CARGO_PKG_VERSION")}}), client.timeout).await?;
+            let initialized = client.startup_request("initialize", json!({"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"audit-harness","version":env!("CARGO_PKG_VERSION")}})).await?;
             ensure!(
                 ["2024-11-05", "2025-03-26", "2025-06-18", "2025-11-25"]
                     .contains(&initialized["protocolVersion"].as_str().unwrap_or("")),
@@ -167,7 +177,7 @@ impl McpTools {
                 "MCP server does not support tools"
             );
             tokio::time::timeout(
-                client.timeout,
+                client.startup_timeout,
                 client.send(json!({"jsonrpc":"2.0","method":"notifications/initialized"})),
             )
             .await
@@ -181,7 +191,7 @@ impl McpTools {
                     .as_ref()
                     .map(|c| json!({"cursor":c}))
                     .unwrap_or(json!({}));
-                let page = client.request("tools/list", params, client.timeout).await?;
+                let page = client.startup_request("tools/list", params).await?;
                 let tools = page["tools"]
                     .as_array()
                     .context("MCP tools/list missing tools")?;

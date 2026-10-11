@@ -153,6 +153,11 @@ pub struct LlmOptions {
     /// so a run can still verify a cited line before its final report.
     #[arg(long, default_value_t = 2, value_parser = clap::value_parser!(u32).range(0..=8))]
     pub max_settlement_calls: u32,
+    /// Extra provider request headers, `NAME: VALUE`; repeatable. Intended for
+    /// gateway routing, tenant, or tracing headers. The harness's own auth and
+    /// `Accept` headers are added after these, so they are not replaced here.
+    #[arg(long = "header", value_name = "NAME:VALUE", value_parser = header_arg)]
+    pub header: Vec<String>,
 }
 
 impl LlmOptions {
@@ -198,6 +203,7 @@ impl LlmOptions {
     /// agent process so a stale token does not block argument construction.
     pub fn validate(&self) -> Result<()> {
         ensure!(!self.model.trim().is_empty(), "model is empty");
+        let _ = provider_headers(&self.header)?;
         match self.auth {
             AuthKind::ApiKey => {
                 let endpoint = self
@@ -298,6 +304,9 @@ impl LlmOptions {
         }
         if self.monitoring.debug_trace {
             args.push("--debug-trace".into());
+        }
+        for header in &self.header {
+            args.extend(["--header".into(), header.clone()]);
         }
         Ok(args)
     }
@@ -953,6 +962,7 @@ async fn complete(
 ) -> Result<Turn> {
     let wire = options.effective_wire();
     let policy = retry_policy(options);
+    let headers = provider_headers(&options.header)?;
 
     let turn = match options.auth {
         AuthKind::ApiKey => {
@@ -962,7 +972,7 @@ async fn complete(
                 .context("--endpoint is required with --auth api-key")?;
             let key = std::env::var(&options.api_key_env)?;
             let response = send_retrying(policy, deadline, sink, || {
-                api_key_request(client, wire, url, &key, body, deadline)
+                api_key_request(client, wire, url, &key, body, deadline, &headers)
             })
             .await?;
             ensure!(
@@ -981,7 +991,7 @@ async fn complete(
             };
             let credentials = auth::resolve(&mode).await?;
             let response = send_retrying(policy, deadline, sink, || {
-                codex_request(client, &url, &credentials, body, deadline)
+                codex_request(client, &url, &credentials, body, deadline, &headers)
             })
             .await?;
             let response = if response.status().as_u16() == 401 {
@@ -990,7 +1000,7 @@ async fn complete(
                 // authentication recovery, not a retry of a failed model call.
                 let fresh = auth::resolve_fresh(&mode).await?;
                 send_retrying(policy, deadline, sink, || {
-                    codex_request(client, &url, &fresh, body, deadline)
+                    codex_request(client, &url, &fresh, body, deadline, &headers)
                 })
                 .await?
             } else {
@@ -1024,6 +1034,33 @@ async fn complete(
     Ok(turn)
 }
 
+/// Validate a `NAME: VALUE` header at CLI and configuration parse time.
+fn header_arg(raw: &str) -> std::result::Result<String, String> {
+    let (name, value) = raw
+        .split_once(':')
+        .ok_or_else(|| "header must be NAME: VALUE".to_string())?;
+    reqwest::header::HeaderName::from_bytes(name.trim().as_bytes())
+        .map_err(|error| format!("invalid header name: {error}"))?;
+    reqwest::header::HeaderValue::from_str(value.trim())
+        .map_err(|error| format!("invalid header value: {error}"))?;
+    Ok(raw.to_string())
+}
+
+fn provider_headers(raw: &[String]) -> Result<reqwest::header::HeaderMap> {
+    let mut headers = reqwest::header::HeaderMap::new();
+    for item in raw {
+        let (name, value) = item
+            .split_once(':')
+            .with_context(|| format!("header must be NAME: VALUE, got {item:?}"))?;
+        let name = reqwest::header::HeaderName::from_bytes(name.trim().as_bytes())
+            .with_context(|| format!("invalid header name {name:?}"))?;
+        let value = reqwest::header::HeaderValue::from_str(value.trim())
+            .with_context(|| format!("invalid header value for {name}"))?;
+        headers.append(name, value);
+    }
+    Ok(headers)
+}
+
 fn api_key_request(
     client: &reqwest::Client,
     wire: WireApi,
@@ -1031,10 +1068,12 @@ fn api_key_request(
     key: &str,
     body: &Value,
     deadline: Instant,
+    headers: &reqwest::header::HeaderMap,
 ) -> reqwest::RequestBuilder {
     let request = client
         .post(url)
         .timeout(remaining(deadline))
+        .headers(headers.clone())
         .header("Accept", "text/event-stream");
     let request = match wire {
         WireApi::Anthropic => request
@@ -1051,10 +1090,12 @@ fn codex_request(
     credentials: &auth::Credentials,
     body: &Value,
     deadline: Instant,
+    headers: &reqwest::header::HeaderMap,
 ) -> reqwest::RequestBuilder {
     let mut request = client
         .post(url)
         .timeout(remaining(deadline))
+        .headers(headers.clone())
         .header("Accept", "text/event-stream")
         .header("OpenAI-Beta", "responses=experimental")
         .header("originator", "codex_cli_rs")

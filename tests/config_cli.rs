@@ -133,12 +133,14 @@ fn invalid_configs_fail_before_execution_even_with_overrides() {
         "schema_version = 1\n[cli]\ncontext_keep_turns = 0",
         "schema_version = 1\n[cli]\nmax_tool_output_bytes = 1023",
         "schema_version = 1\n[cli]\nmodel_typo = 'x'",
+        "schema_version = 1\n[cli]\nheader = ['broken']",
         "schema_version = 1\n[tools]\nenabled = ['unknown']",
         "schema_version = 1\n[tools]\nenabled = ['bash', 'bash']",
         "schema_version = 1\n[prompts]\nsystem = 'x'\nsystem_file = 'missing'",
         "schema_version = 1\n[skills]\nenabled = ['missing']",
         "schema_version = 1\n[mcp.x]\ncommand = 'x'\ntransport = 'http'",
         "schema_version = 1\n[mcp.x]\ncommand = 'x'\ntimeout_ms = 0",
+        "schema_version = 1\n[mcp.x]\ncommand = 'x'\nstartup_timeout_ms = 0",
     ] {
         std::fs::write(dir.path().join("node.toml"), body).unwrap();
         let output = cli(dir.path(), "check-config").output().unwrap();

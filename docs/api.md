@@ -382,7 +382,7 @@ schema_version = 1          # required; other versions are rejected
 [tools]                     # enabled names, bash_program, bash_timeout_ms
 [skills]                    # enabled names
 [[skills.custom]]           # name, description, content|file, [skills.custom.resources]
-[mcp.NAME]                  # enabled, command, args, cwd, tools, timeout_ms, max_message_bytes, env_from
+[mcp.NAME]                  # enabled, command, args, cwd, tools, timeout_ms, startup_timeout_ms, max_message_bytes, env_from
 ```
 
 Bounds: the config file and its resolved representation are each limited to
@@ -403,6 +403,39 @@ startup on.
 
 The provider API key variable is also the redaction source for `--debug-trace`
 payloads. Credentials are never placed in command arguments, stdout, or reports.
+
+## Workflow capability boundaries
+
+A workflow manager may expect capabilities this node does not expose. The table
+separates the ones implemented here from deliberate omissions and open gaps, so
+an adapter can gate or translate them explicitly. **By design** means the
+feature is excluded by an invariant in [Constraints](constraints.md) or an
+explicit scope decision, not a missing implementation.
+
+| Area | Capability | Status | Detail |
+| --- | --- | --- | --- |
+| Provider | Custom request headers | Implemented | `--header NAME:VALUE` (repeatable) and `[cli].header`; sent on every provider request. Harness auth/`Accept` headers are added after them. |
+| Provider | Cloud/SDK auth (Bedrock SigV4, Vertex ADC, Azure AD), OAuth device flow | By design | Only `api-key` env-var auth and `codex` `auth.json` reuse exist; IAM providers need a compatibility gateway. |
+| Provider | Base-URL resolution / ambient config | By design | `--auth api-key` requires a full endpoint; no implicit discovery ([Configuration](configuration.md#standalone-toml)). |
+| Provider | `google-generative-ai` / alias wires | By design | Wires are `chat-completions`, `responses`, `anthropic`. |
+| Model | `temperature` | Open | Hardcoded to 0 in `provider::wire` for reproducible requests; no flag. |
+| Model | Token `context_window` / `max_turns` | By design | Byte bound is `--max-context-bytes`; `--max-source-tokens` caps the initial estimate; `--max-tool-calls` bounds turns. No tokenizer-exact window. |
+| Model | Web search | By design | No provider tool is exposed; `web_search` cannot be enabled. |
+| Model | Arbitrary output schema | By design | The response is the fixed versioned findings JSON; there is no caller-supplied schema. |
+| MCP | Remote HTTP/SSE transport | By design | Stdio only; `transport = 'http'` is rejected as an unknown field. |
+| MCP | Sampling, elicitation, roots, resources, prompts, interactive auth | By design | Server requests for unsupported client methods receive `-32601`; server instructions are not injected. |
+| MCP | Separate startup vs call timeout | Implemented | `startup_timeout_ms` (defaults to `timeout_ms`) bounds `initialize`/`tools/list`; `timeout_ms` bounds each `tools/call`. |
+| MCP | Literal env values in TOML | By design | Only `env_from` maps a child name to a parent variable; secret values stay out of the file. |
+| MCP | Long/dotted tool names | By design | Server names are 1–48 `[A-Za-z0-9_-]`; exposed tools are `mcp_NAME__REMOTE_NAME`, 1–64 chars. |
+| Tools | Extension / custom-tool mechanism | By design | Fixed seven-tool catalog; `[tools].enabled` selects within it and cannot add tools. |
+| Tools | True read-only mode | Partial | Disabling `bash`, `write_file`, and `edit_file` approximates it but also removes shell exploration; Bash is not sandboxed. |
+| Tools | Parallel tool batches | By design | Calls execute in model order so mutations remain ordered. |
+| Skills | Pass-through of external skill resources | Partial | `[[skills.custom]]` embeds guidance via `content`/`file` and bounded `resources`; only metadata enters the initial context. |
+| State | Session resume, compaction, checkpoints | By design | The process is stateless; context pruning is bounded and journals are diagnostics, not resumable checkpoints. |
+| State | Cross-node state | By design | Each node is one bounded process; the caller owns the DAG. |
+| Isolation | Repo-instruction handling (`AGENTS.md`) | By design | Repository files and tool output are evidence, not instruction; no repo file is auto-loaded. |
+| Isolation | Full secret redaction in debug traces | Open | `--debug-trace` redacts the configured API key only; avoid payload capture when other secrets are in scope. |
+| Release | Pinned container image | Open | No image is published here; a docker target needs a caller-provided image with `alchemist` on `PATH`. |
 
 ## Operational semantics
 

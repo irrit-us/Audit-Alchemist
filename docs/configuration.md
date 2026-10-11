@@ -65,6 +65,7 @@ command = "/opt/analysis/bin/server"
 args = ["--stdio"]
 tools = ["lookup_symbol", "trace_callers"]
 timeout_ms = 10000
+startup_timeout_ms = 10000
 max_message_bytes = 1048576
 
 [mcp.analysis.env_from]
@@ -72,7 +73,10 @@ SERVER_TOKEN = "ANALYSIS_TOKEN"
 ```
 
 `command` is required; `args` defaults to `[]`, `cwd` to the audit root, and
-`tools` to all discovered tools (`[]` advertises none). `env_from` maps a child
+`tools` to all discovered tools (`[]` advertises none). `startup_timeout_ms`
+(defaults to `timeout_ms`) bounds `initialize` and `tools/list`; `timeout_ms`
+(default
+10000) bounds each `tools/call`. `env_from` maps a child
 environment name to an existing parent environment variable; a missing value
 fails startup. The child also inherits the host environment and permissions.
 Keep credential values out of the file and command arguments. Tool selection
@@ -90,7 +94,10 @@ Tools appear as `mcp_NAME__REMOTE_NAME`, limited to 64 ASCII letters, digits,
 underscores, and hyphens. Unrepresentable names, collisions, missing selected
 tools, or non-object input schemas fail discovery. Limits are 16 servers,
 128 discovered tools and 16 pages per server, 256 KiB of selected tool schemas
-per server, and a 1–3600000 ms request timeout (default 10000). Message limits
+per server, and 1–3600000 ms timeouts (`startup_timeout_ms` defaulting to
+`timeout_ms` for `initialize`/`tools/list`, `timeout_ms` default 10000 per
+`tools/call`). Message
+limits
 are 1024–2097152 bytes (default 1048576). The complete model request still obeys
 `max_context_bytes`; model-visible tool results obey `max_tool_output_bytes`.
 
@@ -136,11 +143,15 @@ and [tool discovery/calls](https://modelcontextprotocol.io/specification/2025-11
 | `--codex-auth-file <PATH>` | `$CODEX_HOME/auth.json` | Absolute path to a Codex credential file. |
 | `--codex-base-url <URL>` | `https://chatgpt.com/backend-api/codex` | Codex Responses base URL. |
 | `--reasoning-effort <LEVEL>` | — | `minimal`, `low`, `medium`, or `high`; sent with chat-completions requests to bound reasoning-model output. |
+| `--header <NAME:VALUE>` | — | Extra provider request header; repeatable. Added before the harness's `Accept` and authentication headers, for gateway routing, tenant, or tracing headers. |
 
 Chat-completions requests set `response_format = {"type":"json_object"}` so the
 model returns one JSON object instead of prose followed by JSON. Providers that
 reject JSON mode need the Responses or Anthropic wire, or an endpoint that
 accepts the field. `--reasoning-effort` is ignored on those wires.
+`--header` values are added to every provider request but are not covered by the
+`--debug-trace` API-key redactor, so prefer `--api-key-env` for long-lived
+secrets.
 
 See [Authentication](authentication.md) for the credential details.
 

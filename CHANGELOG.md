@@ -7,6 +7,18 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- Custom provider request headers through repeatable `--header NAME:VALUE` and
+  `[cli].header`, forwarded by `evaluate` to child agents and applied to api-key
+  and Codex requests (gateway routing, tenant, or tracing headers). Malformed
+  headers fail at CLI/config parse time, before any request. Covered by
+  `custom_provider_headers_are_sent_to_the_endpoint` and
+  `invalid_custom_header_is_rejected_before_any_request`.
+- `[mcp.NAME].startup_timeout_ms` (range 1–3600000) bounds MCP
+  `initialize`/`tools/list` separately from the per-call `timeout_ms` and
+  defaults to it, so existing configurations are unchanged.
+- A workflow capability-boundary matrix in `docs/api.md` classifying expected
+  AgentFlow capabilities as implemented, by-design omissions, or open gaps.
+
 - Five-round tuning campaign (rounds 18-22) scored against the **seven primary
 dataset labels** rather than the mixed 18-case set: reasoning effort, stream
 cap, systematic-enumeration prompt, tool budget, and self-consistency sampling.

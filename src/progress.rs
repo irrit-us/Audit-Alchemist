@@ -23,7 +23,7 @@ pub struct ProgressCounts {
 }
 
 impl ProgressCounts {
-    /// Cases that have finished but whose run failed.
+    /// Cases that have not finished yet.
     pub fn remaining(&self) -> usize {
         self.total.saturating_sub(self.completed)
     }

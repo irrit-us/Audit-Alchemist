@@ -5,7 +5,8 @@
 //!
 //! - `quiet`: nothing.
 //! - `text` / `markdown`: the findings, rendered after the run.
-//! - `cot`: a readable chain of thought (dim reasoning) followed by the answer.
+//! - `cot`: provider-exposed reasoning or summaries (dimmed) and answer text.
+//!   Providers may expose no reasoning, and OpenAI summaries are not raw CoT.
 //! - `body`: only the answer body, one timed line at a time with terminal
 //!   control to rewrite the in-progress line.
 //! - `json`: nothing on stderr (the JSON report already goes to stdout).

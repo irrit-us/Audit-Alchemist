@@ -9,6 +9,16 @@ The primary deployment is a CLI node inside a caller-owned workflow. An explicit
 TOML file configures the node; the caller owns scheduling and cross-node state.
 The optional TUI consumes the same events and does not own execution policy.
 
+The trajectory keeps provider-exposed reasoning separate from visible text,
+replays provider-native reasoning state, and validates only the final answer.
+Responses commentary may appear in the live text stream when the provider
+streams it, while `phase: final_answer` selects the report for validation.
+The `cot` renderer shows whatever reasoning text or summary a provider exposes;
+it is not a complete record of hidden reasoning. Run journals count model
+requests as turns and record tool and usage events, but omit content unless
+debug capture is enabled. Per-case task progress is observational; this node
+has no persistent goal manager or resumable task state.
+
 ## Layers
 
 The library separates provider protocols, tool execution, and evidence validation.

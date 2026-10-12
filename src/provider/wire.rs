@@ -316,8 +316,14 @@ fn completed_text(event: &Value) -> String {
     let Some(output) = event.pointer("/response/output").and_then(Value::as_array) else {
         return String::new();
     };
+    let has_final_answer = output
+        .iter()
+        .any(|item| item["type"] == "message" && item["phase"] == "final_answer");
     let mut text = String::new();
     for item in output {
+        if has_final_answer && (item["type"] != "message" || item["phase"] != "final_answer") {
+            continue;
+        }
         if let Some(content) = item.get("content").and_then(Value::as_array) {
             for part in content {
                 if let Some(chunk) = part.get("text").and_then(Value::as_str) {
@@ -411,6 +417,28 @@ mod tests {
         assert_eq!(text, "answer");
         assert_eq!(usage.prompt_tokens, 3);
         assert_eq!(usage.completion_tokens, 5);
+    }
+
+    #[test]
+    fn responses_completed_fallback_emits_only_final_answer() {
+        let mut stream = WireStream::new(WireApi::Responses);
+        let mut sink = Capture::default();
+        stream
+            .handle_data(
+                &serde_json::json!({"type":"response.completed","response":{"output":[
+                    {"type":"message","phase":"commentary","content":[{"type":"output_text","text":"Checking the source."}]},
+                    {"type":"message","phase":"final_answer","content":[{"type":"output_text","text":"{\"findings\":[]}"}]}
+                ]}}).to_string(),
+                &mut sink,
+            )
+            .unwrap();
+        assert_eq!(stream.finish().unwrap().0, "{\"findings\":[]}");
+        assert_eq!(
+            sink.0,
+            vec![StreamEvent::Text {
+                text: "{\"findings\":[]}".into()
+            }]
+        );
     }
 
     #[test]

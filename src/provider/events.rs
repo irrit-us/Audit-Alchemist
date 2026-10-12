@@ -43,7 +43,7 @@ impl Usage {
 pub enum StreamEvent {
     /// A reasoning/thinking delta, when the model exposes one.
     Reasoning { text: String },
-    /// An assistant answer delta.
+    /// An assistant visible-text delta; Responses may include commentary.
     Text { text: String },
     /// Updated token accounting.
     Usage(Usage),

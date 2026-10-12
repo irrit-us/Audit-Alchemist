@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-12",
+  "source_state": {
+    "parent_commit": "7d052133e9615a59aa8f158d639ab1422bd7f17d",
+    "harbor_suite_commit": "fc141b5de89be75b1c85c3636fada0bf02cd1b29"
+  },
+  "round30_near_miss_inventory": {
+    "source": "docs/reports/harbor-round30.json",
+    "adjacent_line_instances": 6,
+    "adjacent_cases": {
+      "filelock": {"instances": 3, "reported_line": 44, "label_line": 41, "cwe": "CWE-59"},
+      "thin_vec": {"instances": 3, "reported_line": 2547, "label_line": 2546, "cwe": "CWE-415"}
+    },
+    "same_line_alternate_cwe_instances": 3,
+    "alternate_cwe_cases": {
+      "fast_jwt": {"reported": "CWE-863", "label": "CWE-290", "line": 159},
+      "pymonocypher": {"reported": "CWE-787", "label": "CWE-122", "line": 345},
+      "zk_email": {"reported": "CWE-129", "label": "CWE-1284", "line": 126}
+    },
+    "scoring_note": "None of these nine nonmatching instances is credited by Harbor's exact key"
+  },
+  "thin_vec_panic_probe": {
+    "environment": "pinned Linux Rust Docker image, audit fixture mounted read-only, temporary probe and temporary patched crate outside repository",
+    "method": "Three ThinVec elements increment per-element atomic Drop counters; element zero panics once; catch_unwind surrounds drop(v.into_iter())",
+    "vulnerable_drop_counts": [2, 2, 2],
+    "temporary_reference_guard_drop_counts": [1, 1, 1],
+    "interpretation": "The line 2547 drop call and line 2546 ownership move participate in the same panic cleanup defect; this is a destructor-count reproduction, not a standalone exploit or full upstream patch test"
+  },
+  "fast_jwt_claim_probe": {
+    "method": "Execute the source validateClaimValues function in an isolated Node VM with a valid-only issuer matcher; change only source some to reference-fix every for the control",
+    "mixed_issuer_accepted_by_vulnerable_function": true,
+    "mixed_issuer_accepted_by_guarded_function": false,
+    "valid_issuer_accepted_by_vulnerable_function": true,
+    "interpretation": "Confirms the same source sink at line 159; does not independently reproduce the advisory's dynamic JWKS key-fetch exploit or adjudicate CWE taxonomy"
+  },
+  "pymonocypher_block_probe": {
+    "environment": "python:3.12-bookworm Docker, fixture copied outside the repository, Cython 3.3.0 with isolated local build",
+    "method": "Build vulnerable extension and a temporary copy with only the reference minimum-block guard; invoke argon2i_32 in separate subprocesses for 8, 1, and 0 blocks",
+    "vulnerable": {
+      "8_blocks": "exit 0, returned 32-byte hash",
+      "1_block": "exit -6 after free(): invalid size",
+      "0_blocks": "exit -11 (segmentation fault)"
+    },
+    "guarded": {
+      "8_blocks": "exit 0, returned 32-byte hash",
+      "1_block": "ValueError",
+      "0_blocks": "ValueError"
+    },
+    "interpretation": "Confirms missing block-count guard at the same allocation sink; does not settle whether CWE-787 or CWE-122 is the best taxonomy"
+  },
+  "zk_email_circuit_probe": {
+    "status": "not_executed",
+    "reason": "The fixture includes partial Circom sources and no local compiler; the alternate CWE remains unadjudicated"
+  },
+  "ajna_round31_trace": {
+    "jobs": ["round31-primary-high32-one", "round31-primary-high32-two"],
+    "model": "deepseek-flash, provider-default high thinking",
+    "successful_trial": {"turns": 29, "output_repairs": 1, "settlement_read_file_calls": 2, "outcome": "success"},
+    "failed_trial": {
+      "turns": 28,
+      "main_tool_calls": 32,
+      "settlement_read_file_calls": 2,
+      "empty_completion_retries": 3,
+      "unsupported_citation_repairs": 2,
+      "rejected_citation": "SettlerActions.sol line 113",
+      "final_completion_token_delta": 32768,
+      "final_stream_bytes": 10284587,
+      "final_error": "model stopped with finish_reason length",
+      "max_request_bytes": 466748,
+      "context_limit_bytes": 2097152,
+      "outcome": "provider_error"
+    },
+    "interpretation": "The final failure was at the output token cap after unsupported-citation repair attempts, not at the request context cap; ordinary traces cannot show whether the rejected line had been seen through Bash"
+  }
+}

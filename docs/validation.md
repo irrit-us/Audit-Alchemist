@@ -1,5 +1,56 @@
 # Validation
 
+## Practical checks of earlier ambiguities: 2026-10-12
+
+The [round-30 trial records](reports/harbor-round30.json) contain six
+adjacent-line near misses: filelock line 44 versus label 41 in all three jobs,
+and thin-vec line 2547 versus label 2546 in all three. Three further reports
+used the labeled line with a different CWE: fast-jwt, pymonocypher, and
+zk-email, once each. These nine instances remain nonmatches in Harbor's exact
+score. They are diagnostic cases, not nine additional credited findings.
+
+The earlier filelock symlink probe is recorded below. For thin-vec, a Linux
+probe used three elements whose destructors increment separate counters; the
+first destructor panicked once while dropping `ThinVec::into_iter()`. The audit
+fixture produced drop counts `[2, 2, 2]`. A temporary copy with only the
+reference `DropGuard` change to `IntoIter::drop` produced `[1, 1, 1]`. This
+reproduces the panic cleanup defect connecting the reported drop call and the
+adjacent labeled ownership move. It does not claim a completed exploit or
+validate every change in the upstream patch.
+
+An isolated Node probe executed fast-jwt's `validateClaimValues` source
+function. A mixed attacker/allowed issuer array was accepted by the vulnerable
+`some` check and rejected when that condition was changed to the reference
+fix's `every` check; a single allowed issuer remained accepted. This confirms
+the source sink shared by the reported and labeled CWEs. It does not reproduce
+the dynamic key-fetch exploit or settle the taxonomy choice.
+
+The pymonocypher extension was built from the audit fixture in an isolated
+Linux container; its temporary packaging copy supplied the missing README and
+build dependencies without changing the audited function. With eight Argon2
+blocks it returned a 32-byte hash; with one
+block the subprocess aborted at `free(): invalid size`, and with zero blocks it
+segfaulted. A temporary copy adding only the reference minimum-block guard
+raised `ValueError` for zero and one while eight still worked. This confirms
+the missing input bound at the reported and labeled allocation line, not which
+of their two CWE names is preferable. The zk-email circuit was not executed in
+this pass, so its alternate CWE remains a source-level observation.
+
+Two existing Ajna Harbor traces clarify the completion ambiguity. In the
+failed trial, the model used all 32 ordinary calls and two `read_file`
+settlement calls, retried three empty completions, then made two final-output
+repairs for unobserved citations to `SettlerActions.sol:113`. The last response
+consumed exactly 32,768 completion tokens and ended with `finish_reason length`;
+its stream contained 10,284,587 bytes. The largest request was 466,748 bytes
+against a 2 MiB context cap. Thus the final failure was output exhaustion after
+citation repairs, not history pressure. The successful Ajna trial had one
+citation repair, then two settlement reads and a valid report. Ordinary traces
+do not reveal whether the failed trial saw line 113 through Bash, so the
+observation does not establish why the model cited an unregistered line. The
+two round-30 Ajna failures lack comparable traces and remain unclassified
+beyond their recorded empty-completion errors. Exact observations and limits
+are in the [machine-readable review](reports/round31-ambiguity-validation.json).
+
 ## Context component evaluation and trace review: 2026-10-12
 
 A provider-free [component evaluation](../examples/context_eval.rs) fixes
@@ -37,9 +88,8 @@ container with temporary files. `UnixFileLock` on a symlink reduced its target
 to zero bytes; adding the reference fix's `O_NOFOLLOW` flag caused `ELOOP` and
 left the target intact. The reported `os.open` sink at line 44 and the labeled
 flag assignment at line 41 describe the same defect. This practical check does
-not alter Harbor's exact `(CWE, path, line)` reward. Thin-vec's neighboring
-lines were reviewed against the upstream fix, but no new runtime reproduction
-was performed for that case.
+not alter Harbor's exact `(CWE, path, line)` reward. The later thin-vec runtime
+reproduction is described in the practical checks above.
 
 Formatting, strict Clippy, and all Rust targets passed in the pinned Linux
 container. The debug-script suite ran 16 tests with four skips;
@@ -103,6 +153,8 @@ completions in two of three trials despite the larger output cap. A separate
 same-budget run with operational traces should isolate that provider behavior
 before any retry or prompt change. The line/CWE near misses warrant a reviewed
 rubric alongside, never in place of, the exact Harbor reward.
+The later [practical checks](#practical-checks-of-earlier-ambiguities-2026-10-12)
+and trace review narrow those questions without changing this round's score.
 
 ## Exact archive reuse: 2026-10-12
 

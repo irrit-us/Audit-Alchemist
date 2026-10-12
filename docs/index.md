@@ -12,6 +12,7 @@ Start with the [README](../README.md) for installation and a first run.
 | [Authentication](authentication.md) | API-key and Sign In With ChatGPT (Codex) credentials |
 | [Workflow integration API](api.md) | Process contract, command endpoints, JSON payloads, exit codes, and versioning for the calling workflow manager |
 | [Protocol](protocol.md) | Version 1 agent request/response and dataset contract |
+| [Harbor audit suite](../datasets/tiny/README.md#run-with-harbor) | Standard Harbor tasks exported from the real-world audit submodule |
 | [Evaluation](evaluation.md) | Matching, scoring, metrics, and reproducibility |
 | [Cross-harness baselines](baselines.md) | Codex, Claude Code, DSH, and Pi on the seven primary labels: method, results, context/task comparison, and constraints |
 | [Constraints](constraints.md) | Required harness invariants, existing checks, and enforcement gaps |

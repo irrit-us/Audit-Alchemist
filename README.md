@@ -1,7 +1,8 @@
 # Audit Alchemist
 
 A lightweight, task-specific vulnerability discovery agent built on a plain LLM
-API, with a Rust CLI harness for bounded execution and small-dataset evaluation.
+API, with a Rust CLI harness for bounded execution and Harbor-based audit
+evaluation.
 It explores code through native tools, writes and runs local PoCs with Bash,
 and emits evidence-backed JSON findings. Its agent loop has explicit tool-call,
 context, output, and runtime limits, with streaming console output and an optional TUI.
@@ -134,6 +135,10 @@ exact scoring, subprocess failures/timeouts/output limits, context and token
 budgets, credential parsing, retry policy, wire decoders for all three formats,
 console renderers, TUI frames, concurrent progress, the deterministic demo, and
 a local HTTP fixture. No real network API calls are needed.
+
+For the real-world audit suite, export and run the
+[Harbor tasks](datasets/tiny/README.md#run-with-harbor). The `datasets/smoke`
+dataset remains a deterministic CLI plumbing fixture.
 
 ## License
 

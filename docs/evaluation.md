@@ -4,6 +4,13 @@ Evaluation runs the built-in agent (or an external benchmark agent) over a
 labeled dataset and scores the reported findings. The request, response, and
 dataset contracts are in [Protocol](protocol.md).
 
+For current real-world fixture runs, use the [Harbor suite](../datasets/tiny/README.md#run-with-harbor).
+The submodule exports its 18 cases to standard Harbor tasks with Docker
+environments, delayed verifier labels, per-trial logs, and exact binary rewards.
+The built-in `evaluate`/`benchmark` commands and `datasets/smoke` remain for
+CLI contract checks and historical report reproduction. Harbor reward is a
+task pass rate; do not compare it numerically with the built-in micro F1.
+
 ## What the model sees
 
 Ground-truth labels and case IDs are excluded from the LLM prompt. Small target

@@ -212,6 +212,51 @@ distinct metrics are reported alongside it and never folded into exact F1:
 
 ## Recommended next directions
 
+### Proposed round 32: reserve one citation-verification read
+
+**Observed failure.** The [Ajna trace review](validation.md#practical-checks-of-earlier-ambiguities-2026-10-12)
+shows a failed high-thinking run that spent both settlement reads before two
+unsupported-citation repairs. Three empty completions preceded those repairs;
+the last response then consumed the full 32,768-token output allowance. The
+request context remained far below its cap. This supports a targeted recovery
+policy experiment, not a context or model-setting change.
+
+**Single change.** Keep the same maximum of two read-only settlement calls, but
+reserve the second until final validation rejects an unobserved source-line
+citation. At that point, expose only `read_file` for one call, require the model
+to inspect the line, and validate the final finding against the usual source
+fingerprint. Never execute a read automatically, accept a citation merely
+because it was requested, replay a mutation, or alter JSON stdout. A typed
+validation reason should select this path rather than matching error text.
+If no citation error occurs, the reserved call is unused.
+
+**Pre-run gate.** CLI mock-provider fixtures must show that the baseline can
+spend two settlement reads, the candidate can spend one before and one after a
+citation failure, the total never exceeds two, other repair errors do not unlock
+the reserve, and expired deadlines or repeated invalid citations still fail.
+All three provider wires must preserve call/result IDs and continuation; source
+fingerprints and mutation order must remain intact. Run formatting, strict
+Clippy, all-target tests, and the Harbor export/agent/verifier smoke path.
+
+**Live comparison.** Run baseline and candidate on the same pinned Harbor
+submodule revision with explicit `reasoning_effort = "high"`, the same model,
+prompt, 32 ordinary calls, two settlement calls, 32,768 output tokens, 2 MiB
+request cap, and 900-second deadline. Start with eight independent Ajna trials
+per arm, alternating arm order. If the candidate reduces citation-related
+failures without introducing a new failure class, run three named jobs per arm
+over the seven primary tasks plus the suite's safe controls. Keep all failed
+trials, task checksums, binary/config fingerprints, and trace counters.
+
+**Decision.** Adopt only if the targeted trials show fewer unsupported-citation
+failures, the full-suite candidate does not lose completion, exact reward,
+line recall, or safe-control precision, and median completed-run latency and
+provider-reported tokens stay within 10% of baseline. Report exact and line
+metrics, distinct cases, output repairs, empty retries, `finish_reason length`,
+settlement reads, and unobserved-citation failures separately. If the targeted
+signal is absent or the full-suite tradeoff is unclear, keep the baseline and
+repeat before claiming a quality gain. The public Harbor cases are tuning and
+regression material; a held-out suite remains necessary for general claims.
+
 1. **Investigate the remaining execution failures.** Completion is 36/36 on the
    promoted set but lower on the blind budget rounds; the observed classes are
    stream-cap (`reasoning` SSE over 8 MiB), `finish_reason length`, and repeated

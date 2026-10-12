@@ -83,11 +83,14 @@ supports `[limits_by_variant.<name>]` overrides for harness A/B runs. A targeted
 strategy round that does not review its non-matching findings records them as
 `unreviewed`, not as false positives.
 
-The default system prompt asks for reachable root causes that break a security
-property and, by default, only medium-or-higher impact. It omits intended
-opt-in behavior and low-impact hardening. This is a default-configuration
-filter, not a scoring change; review verdicts still record below-threshold
-findings separately.
+The default system prompt (`prompts/audit.txt`) asks for concrete, reachable
+root causes and every confident finding, and omits intended opt-in behavior,
+hardening advice, and speculative observations. It does not impose a
+medium-or-higher impact filter. Rounds 25-26 promoted a concise version over
+the former verbose prompt (`prompts/audit-verbose.txt`, kept for historical
+plans); the minimal prompt raised line F1 at a fixed budget and is the source
+of the recommended Pi-level configuration. Neither prompt changes scoring;
+review verdicts still record below-threshold findings separately.
 
 ## Real-world fixtures
 

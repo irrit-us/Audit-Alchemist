@@ -4,7 +4,7 @@ instruction = "Audit the target for exploitable security vulnerabilities. Report
 
 [prompts]
 baseline = "docs/reports/round4-baseline-prompt.txt"
-candidate = "prompts/audit.txt"
+candidate = "prompts/audit-verbose.txt"
 
 [limits]
 model = "deepseek-flash"

@@ -6,9 +6,9 @@ workers = 4
 instruction = "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation. Your final message must be exactly the JSON object, beginning with '{' and ending with '}', with no text before or after it."
 
 [prompts]
-default = "prompts/audit.txt"
-minimal = "prompts/audit-minimal.txt"
-pi_like = "prompts/audit-minimal.txt"
+default = "prompts/audit-verbose.txt"
+minimal = "prompts/audit.txt"
+pi_like = "prompts/audit.txt"
 
 [limits]
 model = "deepseek-flash"

@@ -58,6 +58,13 @@ candidate prompt `prompts/audit-systematic.txt`. [Evaluation](docs/evaluation.md
 now states that the seven primary labels are the headline capability metric and
 that reviewed `unexpected_valid` / mixed-set exact F1 must not replace them.
 
+### Changed
+
+- The default system prompt is now the concise `prompts/audit.txt` tested in
+  rounds 25-26 (formerly `prompts/audit-minimal.txt`); the previous verbose
+  prompt is preserved as `prompts/audit-verbose.txt`, and historical
+  `examples/*.toml` plans point at it so their comparisons stay reproducible.
+
 ### Fixed
 
 - The external-harness runner wrote the per-case dataset manifest, including

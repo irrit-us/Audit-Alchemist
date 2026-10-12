@@ -5,7 +5,7 @@ workers = 4
 use_plan_instruction = false
 
 [prompts]
-default = "prompts/audit.txt"
+default = "prompts/audit-verbose.txt"
 
 [limits]
 model = "deepseek-flash"

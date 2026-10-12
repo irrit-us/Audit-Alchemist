@@ -10,10 +10,10 @@ three trials.
 
 | Round | Variant | Config | Trials | Success | Exact TP/FP/FN | Exact F1 | Line F1 | Distinct |
 | --- | --- | --- | ---: | ---: | --- | ---: | ---: | ---: |
-| 25 | default | `audit.txt`, 16 calls, low | 14 | 14 | 3/19/11 | .167 | .278 | 2/7 |
-| 25 | minimal | `audit-minimal.txt`, 16 calls, low | 14 | 13 | 3/17/11 | .176 | .364 | 2/7 |
-| 25 | pi_like | `audit-minimal.txt`, 48 calls, high | 14 | 13 | 6/16/8 | .333 | .389 | 4/7 |
-| 26 | pi_like | `audit-minimal.txt`, 48 calls, high | 21 | 19 | 10/18/11 | **.408** | **.449** | **5/7** |
+| 25 | default | `audit-verbose.txt`, 16 calls, low | 14 | 14 | 3/19/11 | .167 | .278 | 2/7 |
+| 25 | minimal | `audit.txt` (then `audit-minimal.txt`), 16 calls, low | 14 | 13 | 3/17/11 | .176 | .364 | 2/7 |
+| 25 | pi_like | `audit.txt` (then `audit-minimal.txt`), 48 calls, high | 14 | 13 | 6/16/8 | .333 | .389 | 4/7 |
+| 26 | pi_like | `audit.txt` (then `audit-minimal.txt`), 48 calls, high | 21 | 19 | 10/18/11 | **.408** | **.449** | **5/7** |
 
 Round 26 exceeds the clean Pi baseline (exact F1 .333, line F1 .417, 4/7
 distinct) with the same model. Per-case exact hits (of 3): filelock 2, fast-jwt
@@ -23,7 +23,9 @@ it is recorded as the recommended evaluation configuration rather than a new
 global default. The three-variable change (prompt, budget, effort) is not yet
 isolated. Reports: [round 25](reports/tiny-round25.json),
 [round 26](reports/tiny-round26.json); plans `examples/target-pi-r25.toml` and
-`examples/target-pi-r26.toml`; prompt `prompts/audit-minimal.txt`.
+`examples/target-pi-r26.toml`; prompt `prompts/audit.txt` (the concise default,
+introduced as `audit-minimal.txt` and promoted in this round; the former verbose
+prompt is `prompts/audit-verbose.txt`).
 
 ## Cross-harness baselines: 2026-10-11
 

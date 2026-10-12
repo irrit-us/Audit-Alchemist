@@ -21,11 +21,11 @@ All notable changes to this project are documented here. The format follows
   adapter timeouts and halved total wall-clock (91 to 43 minutes); recorded as
   optimization round 24 in [Validation](docs/validation.md).
 - Target-Pi optimization rounds 25-26: a minimal Pi-aligned prompt
-  (`prompts/audit-minimal.txt`) with 48 tool calls and high reasoning raised the
-  built-in `deepseek-flash` agent to exact F1 .408 and 5/7 distinct on the seven
-  primary labels, exceeding the leak-free Pi baseline (.333, 4/7) at ~4.6x
-  tokens. Recorded as the recommended evaluation configuration, not a new global
-  default. See [Validation](docs/validation.md).
+  (`prompts/audit-minimal.txt`, now `prompts/audit.txt`) with 48 tool calls and
+  high reasoning raised the built-in `deepseek-flash` agent to exact F1 .408 and
+  5/7 distinct on the seven primary labels, exceeding the leak-free Pi baseline
+  (.333, 4/7) at ~4.6x tokens. Recorded as the recommended evaluation
+  configuration, not a new global default. See [Validation](docs/validation.md).
 - `benchmark --isolate`, exposing the per-case staging path already used by
   `evaluate` so an external agent cannot read the label manifest or mutate the
   source tree. Covered by
@@ -64,6 +64,9 @@ that reviewed `unexpected_valid` / mixed-set exact F1 must not replace them.
   rounds 25-26 (formerly `prompts/audit-minimal.txt`); the previous verbose
   prompt is preserved as `prompts/audit-verbose.txt`, and historical
   `examples/*.toml` plans point at it so their comparisons stay reproducible.
+- Tool descriptions were tightened (serialized definitions 3332 -> 3164 bytes)
+  to keep the per-turn tool surface concise without changing execution
+  semantics; `tool_definitions_stay_concise` caps growth at 3200 bytes.
 
 ### Fixed
 

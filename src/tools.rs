@@ -42,11 +42,11 @@ pub fn definitions() -> Vec<Value> {
         })
     };
     vec![
-        tool("load_skill", "Load built-in guidance by exact catalog name. Omit resource for SKILL.md, then request an exact available_resources path if needed. Use save_to with an explicit resource to write the bundled script/reference to a new root-relative file without returning its content. Parent directories must exist; existing files are never overwritten. Run saved scripts through Bash. Content is compiled into the binary.", json!({"name":string(),"resource":string(),"save_to":string()}), json!(["name"])),
+        tool("load_skill", "Load built-in guidance by exact catalog name. Omit resource for SKILL.md; request an exact available_resources path if needed. save_to writes a bundled resource to a new root-relative file without returning its content; parent directories must exist and existing files are never overwritten. Run saved scripts through Bash.", json!({"name":string(),"resource":string(),"save_to":string()}), json!(["name"])),
         tool("bash", "Execute command as Bash in the audit root with host permissions. Shell state resets each call; files persist. No interactive stdin. Output is bounded and truncation marked. timeout_ms defaults to 30000, capped by the run deadline.", json!({"command":string(),"timeout_ms":integer()}), json!(["command"])),
-        tool("read_file", "Read UTF-8 text with 1-based line labels. Use offset and limit to page through files. Read the finding's source line with this tool before citing it. Streams the requested page without loading the whole file. Scan cap 64 MiB per call; output cap 32 KiB. total_lines is null until EOF. Paths are relative to the audit root.", json!({"path":string(),"offset":integer(),"limit":integer()}), json!(["path"])),
+        tool("read_file", "Read UTF-8 text with 1-based line labels. Use offset and limit to page; read the finding's source line here before citing it. Scan cap 64 MiB per call; output cap 32 KiB. total_lines is null until EOF. Paths are relative to the audit root.", json!({"path":string(),"offset":integer(),"limit":integer()}), json!(["path"])),
         tool("write_file", "Create or overwrite a UTF-8 file relative to the audit root, including PoCs and test fixtures. Parent directories must exist (use Bash mkdir -p). Read existing files before overwriting. Maximum content 1 MiB.", json!({"path":string(),"content":string()}), json!(["path","content"])),
-        tool("edit_file", "Replace exactly one occurrence of old_text with new_text in a UTF-8 file. Read first; on missing or ambiguous matches, re-read and provide a unique exact match. Paths are root-relative.", json!({"path":string(),"old_text":string(),"new_text":string()}), json!(["path","old_text","new_text"])),
+        tool("edit_file", "Replace exactly one occurrence of old_text with new_text in a UTF-8 file. Read first; on a missing or ambiguous match, re-read and supply a unique old_text. Paths are root-relative.", json!({"path":string(),"old_text":string(),"new_text":string()}), json!(["path","old_text","new_text"])),
         tool("list_files", "List supported source paths under a root-relative directory or file (use . for root). Prunes dependency/build directories. At most 128 files; narrow the target on overflow, or use Bash rg --files for broader exploration.", json!({"target":string()}), json!(["target"])),
         tool("search", "Search source lines for any of 1..64 case-sensitive literal needles in one scan. Returns each line once with path and line. Use . for root. Caps: 128 files, 1 MiB scanned, 200 matches; narrow target on overflow. For regex or other file types use Bash rg/grep.", json!({"target":string(),"needles":{"type":"array","items":string(),"minItems":1,"maxItems":64}}), json!(["target","needles"])),
     ]
@@ -500,6 +500,15 @@ pub async fn doctor_with(root: &Path, program: Option<&Path>) -> Result<Value> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn tool_definitions_stay_concise() {
+        let bytes = serde_json::to_vec(&definitions()).expect("serialize").len();
+        assert!(
+            bytes <= 3200,
+            "tool definitions grew to {bytes} bytes; keep descriptions concise"
+        );
+    }
 
     #[test]
     fn capture_preserves_unicode_across_chunks_and_retention_boundary() {

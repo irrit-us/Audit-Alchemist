@@ -43,6 +43,19 @@ cases retain expected findings as misses and therefore can lower recall;
 precision still depends on reported predictions. Failures do not change a
 completed evaluation's exit status.
 
+### PoC verification
+
+Exact/line scoring measures root-cause identification, not demonstrated
+exploitation. A separate fixture-level oracle pass (`scripts/verify_pocs.py`
+with `scripts/poc_oracles.json`) stages a fresh copy of a fixture's `audit/`
+tree (excluding the manifest and `reference/`), runs a fixed bounded
+reproduction, and records `defined`/`verified` per case. It is independent of
+the agent and never folded into exact/line metrics. A fixture without a
+deterministic oracle is recorded as `defined: false`, not as a pass; six of the
+seven primary fixtures are currently in that state. The h11 oracle
+(`scripts/pocs/h11_disagreement.py`) verifies the two-parser chunked-framing
+disagreement.
+
 ## Smoke set
 
 The six handcrafted samples cover CWE-78, CWE-89, and CWE-95 with paired

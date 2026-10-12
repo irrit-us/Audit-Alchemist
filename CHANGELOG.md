@@ -33,6 +33,15 @@ All notable changes to this project are documented here. The format follows
   exact distinct 5/7, line distinct 6/7, with exact F1 .205 because genuine but
   unlabeled wrapper findings count as false positives under single-label
   scoring. Recorded in [Validation](docs/validation.md).
+- Fixture-level PoC verification (`scripts/verify_pocs.py`,
+  `scripts/poc_oracles.json`): runs a bounded fixed reproduction in a fresh
+  staged fixture (manifest and `reference/` excluded) and records
+  `defined`/`verified` as a metric separate from exact/line. The h11 oracle
+  (`scripts/pocs/h11_disagreement.py`) verifies; six fixtures have no
+  deterministic oracle yet and are recorded as `defined: false`. Round 28
+  reached exact and line distinct 6/7, with only `thin-vec` unfound, and round
+  29 on the concurrent provider/reasoning working tree kept 6/7 distinct (exact
+  F1 .361, line F1 .426). See [Validation](docs/validation.md).
 - `benchmark --isolate`, exposing the per-case staging path already used by
   `evaluate` so an external agent cannot read the label manifest or mutate the
   source tree. Covered by

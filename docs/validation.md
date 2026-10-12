@@ -1,6 +1,22 @@
 # Validation
 
-## Target-Pi optimization rounds 25-27: 2026-10-11
+## Exact archive reuse: 2026-10-12
+
+The non-summarizing context path now reuses a saved file for byte-identical
+tool results within a run. A deterministic pressure fixture supplies 160
+repeated 70,000-byte results. Pruning more than 120 results represents over
+8 MiB of logical output, beyond the old archive quota; the new path keeps one
+exact archive file and a request below the 2 MiB hard cap. Separate checks verify
+that hash matches compare real bytes and that an externally modified file is
+not reused. This establishes archive efficiency and exact recovery, not a
+vulnerability-discovery improvement. The prior live context-cap comparison is
+recorded under round 15 below.
+
+Verified on Windows/MSVC: formatting, strict Clippy, and all 120 Rust tests
+passed. The Linux container test suite also passed. No live provider A/B was
+run for this archive-only change.
+
+## Target-Pi optimization rounds 25-28: 2026-10-11
 
 Goal: raise the built-in `deepseek-flash` agent to the leak-free Pi baseline on
 the seven primary labels. Model, blind instruction, dataset revision, and
@@ -15,6 +31,8 @@ three trials.
 | 25 | pi_like | `audit.txt` (then `audit-minimal.txt`), 48 calls, high | 14 | 13 | 6/16/8 | .333 | .389 | 4/7 |
 | 26 | pi_like | `audit.txt` (then `audit-minimal.txt`), 48 calls, high | 21 | 19 | 10/18/11 | **.408** | **.449** | **5/7** |
 | 27 | pi_like | `audit.txt`, 48 calls, high | 21 | 17 | 9/58/12 | .205 | .295 | 5/7 (line 6/7) |
+| 28 | pi_like | `audit.txt`, 48 calls, high | 21 | 20 | 14/33/7 | .412 | .412 | **6/7 (line 6/7)** |
+| 29 | pi_like | current state (provider refactor) | 21 | 19 | 11/29/10 | .361 | .426 | 6/7 (line 6/7) |
 
 Round 26 exceeds the clean Pi baseline (exact F1 .333, line F1 .417, 4/7
 distinct) with the same model. Per-case exact hits (of 3): filelock 2, fast-jwt
@@ -35,7 +53,38 @@ distinct coverage against the leak-free Pi baseline (.333 / .417 / 4-of-7):
 `python -B scripts/evaluate_round.py --plan examples/target-pi-r27.toml
 --binary target/debug/alchemist.exe --output reports/rNN`, then summarize with
 `--output reports/rNN --summarize docs/reports/tiny-roundNN.json --log
-docs/reports/tiny-metrics-log.jsonl --round NN`.
+docs/reports/tiny-metrics-log.jsonl --round NN`. Round 28 (current state)
+reached the best coverage so far, exact and line distinct 6/7, with only
+`thin-vec` still unfound. Round 29 re-ran on the current working tree (which
+includes a concurrent provider refactor and reasoning/archive work): exact F1
+.361, line F1 .426, exact and line distinct 6/7. Both rounds keep the same
+distinct coverage; exact F1 remains the noisier, label-bound metric.
+
+### PoC verification (round 28)
+
+Detection scoring is exact/line keys only. A separate, fixture-level oracle
+pass now verifies that a labeled root cause is *demonstrable*, independent of
+the agent: `scripts/verify_pocs.py` stages a fresh copy of a fixture's `audit/`
+tree (excluding the manifest and `reference/`), runs a fixed bounded
+reproduction, and records `defined`/`verified`. The oracle lives in
+`scripts/poc_oracles.json`; the h11 oracle (`scripts/pocs/h11_disagreement.py`)
+shows the two-parser disagreement and verifies. The other six fixtures have no
+deterministic oracle yet (Foundry, Unix-only `fcntl`, Node install, Cython +
+sanitizer, Rust double-free detector, circom witness) and are `defined: false`,
+which is recorded as a gap rather than a pass.
+
+| Case | Agent exact (of 3, round 29) | PoC defined | PoC verified |
+| --- | ---: | :---: | :---: |
+| ajna | 1 | no | - |
+| filelock | 1 | no | - |
+| fast-jwt | 3 | no | - |
+| thin-vec | 0 | no | - |
+| pymonocypher | 1 | no | - |
+| h11 | 2 | yes | yes |
+| zk-email | 3 | no | - |
+
+The pass is small but real: it is the first end-to-end reproduction check and
+is never folded into exact/line. Report: `docs/reports/poc-verification.json`.
 
 Reports: [round 25](reports/tiny-round25.json),
 [round 26](reports/tiny-round26.json), [round 27](reports/tiny-round27.json);

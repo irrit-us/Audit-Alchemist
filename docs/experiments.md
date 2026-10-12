@@ -52,6 +52,8 @@ distinct metrics are reported alongside it and never folded into exact F1:
 | 25 | Target Pi: default vs minimal prompt vs 48-call/high (7 primary, 2 trials) | 14/14, 13/14, 13/14 | .167 / .176 / .333 | unreviewed | Minimal prompt alone raised line F1 .278 -> .364; adding 48 calls and high effort reached Pi's clean exact F1 .333. |
 | 26 | Confirm the Pi-level configuration (7 primary, 3 trials) | 19/21 | .408 | unreviewed | Exceeds clean Pi (.333 exact, 4/7 distinct) with 5/7 distinct; costs ~4.6x tokens. |
 | 27 | Per-round revalidation after the prompt/tool changes | 17/21 | .205 | unreviewed | Exact F1 fell on genuine but unlabeled wrapper findings (mostly pymonocypher); distinct 5/7, line distinct 6/7. Exact is label-bound and noisy. |
+| 28 | Current-state revalidation + PoC oracle pass | 20/21 | .412 | unreviewed | Best coverage: exact and line distinct 6/7, only thin-vec unfound. PoC oracle verifies h11; six fixtures lack a deterministic oracle. |
+| 29 | Round on the concurrent provider/reasoning working tree | 19/21 | .361 | unreviewed | Exact/line distinct still 6/7 (F1 .426); the provider refactor did not regress coverage. Exact F1 remains noisy. |
 
 ## Accumulated experience
 
@@ -163,6 +165,16 @@ distinct metrics are reported alongside it and never folded into exact F1:
     run is, so the round procedure runs `cargo test --all-targets` plus the
     seven-label blind plan and compares line F1 and distinct coverage to the
     leak-free Pi baseline (.417 / 4-of-7). See [Validation](validation.md).
+18. **PoC verification is a separate metric, and oracle coverage is the
+    blocker (round 28).** `scripts/verify_pocs.py` runs a fixed, bounded
+    reproduction in a fresh staged fixture and records `defined`/`verified`; it
+    never feeds exact/line scoring. Only h11 has a deterministic reproduction
+    (two-parser chunked disagreement) and it verifies. The other six need
+    Foundry, a Unix host, a Node install, a built Cython extension plus
+    sanitizer, a Rust double-free detector, or a circom witness, so they are
+    recorded as `defined: false` rather than silently passed. Growing oracle
+    coverage is the next step before PoC verification can be a capability
+    metric.
 
 ## Decision policy for future rounds
 

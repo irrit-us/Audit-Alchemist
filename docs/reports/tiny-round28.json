@@ -1,0 +1,911 @@
+{
+  "schema_version": 1,
+  "groups": {
+    "pi_like": {
+      "trials": 21,
+      "success": 20,
+      "failed": 1,
+      "tp": 14,
+      "fp": 33,
+      "fn": 7,
+      "line_tp": 14,
+      "line_fp": 33,
+      "line_fn": 7,
+      "latencies_ms": [
+        114478,
+        152915,
+        83318,
+        316327,
+        255553,
+        375853,
+        154683,
+        252019,
+        151586,
+        60197,
+        212793,
+        213326,
+        58189,
+        171353,
+        325200,
+        256259,
+        164807,
+        94744,
+        244511,
+        184401,
+        186313
+      ],
+      "completed_latencies_ms": [
+        114478,
+        152915,
+        83318,
+        255553,
+        375853,
+        154683,
+        252019,
+        151586,
+        60197,
+        212793,
+        213326,
+        58189,
+        171353,
+        325200,
+        256259,
+        164807,
+        94744,
+        244511,
+        184401,
+        186313
+      ],
+      "timeouts": 0,
+      "operational_totals": {
+        "turns": 543,
+        "tools": 717,
+        "tool_errors": 78,
+        "retries": 0,
+        "output_repairs": 3,
+        "empty_completions": 0,
+        "tool_budget_rejections": 0,
+        "settlements": 4,
+        "settlement_calls": 2,
+        "completion_tokens": 514197,
+        "prompt_tokens": 29029284,
+        "reasoning_tokens": 423661,
+        "total_tokens": 29543481
+      },
+      "runs_with_usage": 21,
+      "unexpected_total": 33,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 33,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0,
+      "precision": 0.2978723404255319,
+      "recall": 0.6666666666666666,
+      "f1": 0.4117647058823529,
+      "line_precision": 0.2978723404255319,
+      "line_recall": 0.6666666666666666,
+      "line_f1": 0.4117647058823529,
+      "latencies_ms_mean": 191848.80952380953,
+      "latencies_ms_stdev": 86828.2319920307,
+      "completed_latencies_ms_mean": 185624.9,
+      "completed_latencies_ms_stdev": 84140.63306462455
+    }
+  },
+  "case_metrics": [
+    {
+      "run": "lock-symlink-truncation-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 3,
+      "line_fn": 1,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 2,
+      "line_fn": 0,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 6,
+      "line_fn": 1,
+      "unexpected_total": 6,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 6,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 15,
+      "line_fn": 0,
+      "unexpected_total": 15,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 15,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    }
+  ],
+  "review_queue": [
+    {
+      "run": "intoiter-drop-panic-double-free-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "8110ab2add363e7f837d480629bf88303b4515589af4535978f54001fdfe0ed7:intoiter-drop-panic-double-free:736021fb398e52b396cc536dcc12df51cc184bd5e4f24f3cff8fa48a8c937934",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "ThinVec::clear drops all elements before resetting len, so a panicking element Drop re-drops freed memory (double free/UAF)",
+        "evidence": "`clear()` (src/lib.rs:1082-1087) frees every element with `ptr::drop_in_place(&mut self[..])` on line 1084 and only zeroes the length afterwards on line 1085 (`self.set_len(0)`). The ordering is the flaw: `self.len()` still reports the original element count while elements are being dropped, so it is not preserved when a panic unwinds. If any element's `Drop::drop` panics - ordinary safe code, e.g. an element wrapping a `Box`/`String` whose destructor panics - unwinding leaves `clear()` before line 1085 executes, so the length is unchanged and the already-freed elements are still treated as initialized. `Drop for ThinVec` (src/lib.rs:1927) then calls `drop_non_singleton`, whose `ptr::drop_in_place(&mut this[..])` at src/lib.rs:1917 drops the same elements a second time: each heap-owning field is freed again (CWE-415 double free) and the freed `Box`/`String`/`dyn Trait` fat-pointer slots are read again when their vtable `drop_in_place` is invoked (CWE-416 use-after-free, which the crate's upstream advisory confirms is an ACE primitive via vtable hijacking). The stale length also keeps the freed elements readable through safe indexing after the panic is caught, so only safe code is needed: create a `ThinVec` of heap-owning types whose `Drop` can panic, call `v.clear()` inside `catch_unwind`, then drop or read `v`. Upstream fixed exactly this site in 0.2.16 by wrapping the vector in a `DropGuard` that calls `set_len(0)` even when `drop_in_place` unwinds."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "8110ab2add363e7f837d480629bf88303b4515589af4535978f54001fdfe0ed7:intoiter-drop-panic-double-free:58fc0b86362c5da4e707282626805cd84c33a898223fb13562f840fbeda83ab7",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "IntoIter::drop drops elements before resetting len, so a panicking element Drop re-drops freed memory (double free/UAF)",
+        "evidence": "`drop_non_singleton` in `impl Drop for IntoIter` (src/lib.rs:2544-2549) moves the buffer out of the iterator with `mem::replace(&mut this.vec, ThinVec::new())` on line 2546 and then frees the remaining elements with `ptr::drop_in_place(&mut vec[this.start..])` on line 2547, resetting the length only afterwards on line 2548 (`vec.set_len_non_singleton(0)`). Because the length of the extracted `vec` is not cleared before the elements are dropped, a panic thrown by any element's `Drop::drop` (safe code, e.g. a `Box`- or `String`-owning element whose destructor panics) unwinds out of line 2547 and skips line 2548; the local `vec` still holds the original, non-zero length and is itself dropped during unwinding, running `ptr::drop_in_place(&mut this[..])` (src/lib.rs:1917) over the same slice. Every element that was already dropped is therefore dropped and freed a second time (CWE-415 double free), and the already-freed fat pointers are dereferenced again when their vtables are used, giving a use-after-free read/write primitive (CWE-416). It is reachable from safe code exactly as in the upstream advisory: build a `ThinVec` whose elements own heap memory and whose `Drop` panics, call `into_iter()`, then consume part of the iterator and drop it (`let mut it = v.into_iter(); it.next(); drop(it);`). Upstream fixed this site in 0.2.16 with a `DropGuard` that sets the vector's length to 0 before `drop_in_place` can unwind."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "chunked-trailer-not-validated-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "e0081004a2a1413d816b07eb9ed0b07efd3f75a1633b3d8f9b46c4f08eb9feaf:chunked-trailer-not-validated:6af192351cd54453b294c8b47ffeaf36acc4df112a3ff718457332a7ae10edcc",
+      "finding": {
+        "cwe": "CWE-444",
+        "path": "h11/_readers.py",
+        "line": 164,
+        "severity": "high",
+        "title": "Chunked-encoding chunk terminator (footer) is discarded without validating it is CRLF, enabling HTTP request smuggling",
+        "evidence": "In ChunkedReader.__call__, when a chunk's data is fully consumed the reader sets only a byte count for the terminator, self._bytes_to_discard = 2 (line 197), instead of binding it to the required literal CRLF. On the next invocation the reader pulls that many bytes with buf.maybe_extract_at_most(self._bytes_to_discard) (line 164) and merely decrements the counter (lines 167-169) without ever comparing the extracted bytes to b'\\r\\n'; only the length is enforced, never the content. Attacker-controlled bytes that sit where the chunk terminator must be are therefore silently swallowed and de-chunkification resumes at the next chunk-size line. Reachability confirmed against the audited tree (h11 0.14.0, /tmp/.tmpikn4XQ/h11/_readers.py): feeding h11.Connection(h11.SERVER) the request 'POST / HTTP/1.1\\r\\nHost: x\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n5\\r\\nhelloXX0\\r\\n\\r\\n' yields Request, Data(b'hello'), EndOfMessage with no RemoteProtocolError, i.e. the invalid footer 'XX' is accepted; upstream h11 0.16.0 stores b'\\r\\n' and raises LocalProtocolError('malformed chunk footer: ...') for exactly this input, and this file is the unpatched 0.14.0 code. Security impact: the reader accepts a chunk framing that RFC 7230 forbids and that a stricter front-end proxy/parser rejects or frames differently, so the two parsers desynchronize over the same byte stream and an attacker can smuggle a second request past the intermediary (CWE-444). Precondition: the peer can send a malformed chunked body and h11 is used behind a component with stricter chunk-terminator parsing."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9ea423970f47dea2d488e639bd8f704e1a7820bfd4e9c7b507dd8e105000930c:argon2i32-small-block-count:2d144e73049a909d6405687967939d33a930deb760e5bd5a673dd7f445f9232d",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 328,
+        "severity": "high",
+        "title": "Unvalidated nb_blocks in argon2i_32 leads to heap buffer overflow inside crypto_argon2",
+        "evidence": "argon2i_32() copies the caller-supplied nb_blocks straight into config.nb_blocks (line 328: `config.nb_blocks = nb_blocks`) with no lower-bound check, sizes the work area from it (line 345: `work_area = malloc((<size_t> nb_blocks) * (<size_t> 1024))`) and passes it to crypto_argon2 (line 347). Monocypher derives segment_size = config.nb_blocks / config.nb_lanes / 4 and lane_size = segment_size * 4 (monocypher.c crypto_argon2); with nb_lanes fixed to 1 (line 330) any nb_blocks < 8 makes segment_size/lane_size collapse (nb_blocks=1 -> both 0) while the 'fill first 2 blocks of each lane' loop still writes blocks[0] and blocks[1], i.e. 2048 bytes into a 1024-byte allocation -> heap out-of-bounds write; last_block = blocks + lane_size - 1 = blocks - 1 then reads 1024 bytes before the allocation (out-of-bounds read / heap disclosure into the returned hash). Reachability verified at runtime with the shipped 4.0.2.6 build: monocypher.argon2i_32(1,3,b'12345',b'salt') returns a hash instead of raising. Upstream 4.0.2.7 added exactly the missing guard `if config.nb_blocks < (config.nb_lanes * 8): raise ValueError` to fix this."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9ea423970f47dea2d488e639bd8f704e1a7820bfd4e9c7b507dd8e105000930c:argon2i32-small-block-count:8173f2d8d0fee0383015022dffa9661df716fe0887a81bfeebed47794831b02b",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "Unbounded BLAKE2b key length overflows the 128-byte stack key block in crypto_blake2b_keyed_init",
+        "evidence": "blake2b() passes the caller key and its length straight through (line 281: `crypto_blake2b_keyed(hash, len(hash), key, len(key), msg, len(msg))`), and Blake2b.__init__ does the same (line 297). Monocypher's crypto_blake2b_keyed_init executes `u8 key_block[128] = {0}; COPY(key_block, key, key_size);` (monocypher.c:542), i.e. a memcpy of an unvalidated length into a 128-byte stack buffer, so any key longer than 128 bytes smashes the stack (keys of 65-128 bytes silently produce a non-BLAKE2-compliant hash). The Python layer never validates the key, so blake2b(b'msg', key=b'A'*1024) reaches the overflowing memcpy; upstream later added `_check_blake2b_key` rejecting keys > 64 bytes."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9ea423970f47dea2d488e639bd8f704e1a7820bfd4e9c7b507dd8e105000930c:argon2i32-small-block-count:9afde13caafe2fe80daa1226290c4ed9a5f2f8a7ff2639b8645140bb05b7fb8b",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 181,
+        "severity": "medium",
+        "title": "AEAD wrappers pass fixed-size key/nonce/mac without length validation to bare-pointer C functions",
+        "evidence": "lock() forwards key and nonce directly (line 181: `crypto_aead_lock(crypto_text, mac, key, nonce, ...)`) and unlock() does the same for key, nonce and mac (line 199: `crypto_aead_unlock(plain_text, mac, key, nonce, ...)`), while the C prototypes declare fixed-size buffers (const uint8_t key[32], const uint8_t nonce[24], uint8_t mac[16]) that Cython lowers to bare pointers, so crypto_aead_lock/unlock unconditionally read 32+24 bytes and touch a 16-byte mac. Nothing in these functions checks the object sizes - contrast IncrementalAuthenticatedEncryption.unlock (line 246) and elligator_map (line 501), which do check - so lock(b'k', b'n', b'msg') or unlock(b'k', b'n', b'm', b'ct') makes C read past the short key/nonce/mac objects (out-of-bounds read; attacker-chosen peers/session data can supply those values). The same unvalidated pattern exists for raw key material in chacha20 (line 267, 32-byte key), key_exchange/compute_key_exchange_public_key (lines 375, 362, 32-byte keys) and signature_check (line 429, 64-byte signature + 32-byte public key). Upstream later introduced a shared length checker (`_check_len`) and applied it to all of these entry points."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "lock-symlink-truncation-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "b2ada547c7358609403ea119c38ea66940b65f83514afb0fd461d9adf8fa2563:lock-symlink-truncation:66f1ee80c6f8f83a28b2d6d4388895f9594f340a65175c5791e09e3741642ba4",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_windows.py",
+        "line": 28,
+        "severity": "high",
+        "title": "WindowsFileLock opens the lock path without a reparse-point check, following an attacker-planted symlink/junction and truncating the target",
+        "evidence": "WindowsFileLock._acquire (line 19) calls raise_on_not_writable_file(self.lock_file) and ensure_directory_exists(self.lock_file), then opens the lock path with flags os.O_RDWR | os.O_CREAT | os.O_TRUNC (lines 22-26) via os.open(self.lock_file, flags, self._context.mode) at line 28. On Windows os.open/CreateFileW transparently follows a reparse point, so if an attacker who can create names in the lock's directory plants a symlink or junction at the lock path, the open resolves to the linked file, O_TRUNC empties it, and msvcrt.locking(fd, ...) at line 34 byte-range-locks that file; release then unlinks through the same path (line 49). Nothing checks FILE_ATTRIBUTE_REPARSE_POINT (GetFileAttributesW) and nothing binds the check to the opened handle, and raise_on_not_writable_file only os.stat()s the resolved target. Reproduced locally on Windows: a link planted at the lock path (hard link, since SeCreateSymbolicLinkPrivilege is unavailable here, and the kernel resolves it identically to a symlink for os.open) caused WindowsFileLock.acquire() to truncate the 60-byte victim file behind the link to 0 bytes. Upstream 3.20.1 added an explicit _is_reparse_point() rejection immediately before this open ('Fix TOCTOU symlink vulnerability in lock file creation'); the audited copy has no such guard."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "lock-symlink-truncation-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "b2ada547c7358609403ea119c38ea66940b65f83514afb0fd461d9adf8fa2563:lock-symlink-truncation:041a70ccd961912059e776175a3e3626f769ca4b941a7a66905b637f6be5a3ed",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_soft.py",
+        "line": 27,
+        "severity": "medium",
+        "title": "SoftFileLock opens the lock path without O_NOFOLLOW, dereferencing a symlink planted there",
+        "evidence": "SoftFileLock._acquire (line 16) first stats/validates the path through resolve-on-link helpers (raise_on_not_writable_file at line 17 uses os.stat, which follows the final component, and ensure_directory_exists at line 18), then builds flags os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_TRUNC (lines 20-25) without os.O_NOFOLLOW and calls os.open(self.lock_file, flags, self._context.mode) at line 27. Any name an attacker with write access to the lock directory can occupy with a symlink/reparse point therefore decides which file the open resolves to; where the platform or filesystem does not make O_CREAT|O_EXCL refuse a name that is a link (Windows reparse points, dangling links, several remote filesystems), the open follows the link and the O_TRUNC in that flag set empties the linked target, while on platforms that do return EEXIST the same attacker can still suppress the lock indefinitely (the error is swallowed at lines 28-33) and the release path later unlinks the link name (line 42). Upstream 3.20.3 added O_NOFOLLOW to these flags ('Fix TOCTOU symlink vulnerability in SoftFileLock'); the audited copy lacks it, so the lock file is opened by path with link following and no post-open inode validation."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "a19fbc8b7703d9071860e0deab88217a85d3e8a0070264c0042f959f3128c88e:intoiter-drop-panic-double-free:d73ed79684a32393aa4aa6bfacba7d01572b4207d75d3f771b3b7263f70c7155",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "Double free / use-after-free in ThinVec::clear when an element's Drop panics",
+        "evidence": "clear() (line 1082-1087) performs `ptr::drop_in_place(&mut self[..])` at line 1084 and only afterwards resets the length with `self.set_len(0)` at line 1085. The length reset is not panic-guarded: if the Drop impl of any element panics while the slice is being dropped (pure safe Rust; T only needs to be a heap-owning type such as Box/String/Vec with a panicking destructor - see the PoC in RUSTSEC-2026-0103), unwinding skips line 1085, leaving the ThinVec reporting its old, non-zero length even though the elements were already destroyed. The vector is then dropped during unwinding and ThinVec::drop (line 1917, `ptr::drop_in_place(&mut this[..])`) drops the very same already-freed elements a second time, i.e. a double free / use-after-free triggered from safe code (`v.clear()` while an element's Drop can panic; `catch_unwind` keeps the corrupted vector alive for a later drop). Upstream fixed this in 0.2.16 with a DropGuard that resets the length even on panic (CVE-2026-6654 / GHSA-xphw-cqx3-667j), confirming the missing panic guard is the root cause."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "a19fbc8b7703d9071860e0deab88217a85d3e8a0070264c0042f959f3128c88e:intoiter-drop-panic-double-free:a6262582d4ac655e5ea1ab087a77230aafc6e12d6e3a8eb78f1e0314a50c4937",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "Double free / use-after-free in IntoIter::drop when an element's Drop panics",
+        "evidence": "IntoIter's destructor helper `drop_non_singleton` (line 2544-2550) takes ownership of the buffer with `let mut vec = mem::replace(&mut this.vec, ThinVec::new());` (line 2546), drops the remaining elements via `ptr::drop_in_place(&mut vec[this.start..])` (line 2547) and only then resets the length with `vec.set_len_non_singleton(0)` (line 2548). If an element's Drop panics, line 2548 is never reached, so the local `vec` is still considered to hold `len()` live elements (including elements `[0..start]` already moved out by `IntoIter::next` at line 2510) and is dropped while unwinding; ThinVec::drop (line 1917) then runs `drop_in_place` over that stale range, re-freeing already-freed elements -> double free / use-after-free. Reachable from safe code, e.g. `let mut it = v.into_iter(); it.next(); drop(it);` where a later element's Drop panics; upstream added a DropGuard and the `test_panic_into_iter` regression test in 0.2.16 (CVE-2026-6654 / GHSA-xphw-cqx3-667j)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "c8fd4569eae0b9482227244eb426a2613d1377d43f935658a4f8d814bec86ec9:unsettled-bad-debt-liquidation:25fab14da8945cf76a8b580453d2d307a1084303696af16b5dca8031d9b2fc45",
+      "finding": {
+        "cwe": "CWE-682",
+        "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+        "line": 145,
+        "severity": "high",
+        "title": "Manufactured bad debt is repaid from pool reserves, draining reserves",
+        "evidence": "SettlerActions.settlePoolDebt: once the HPB-deposit phase leaves the borrower with debt and zero collateral (guard at line 133), the remaining debt is silently written off against pool reserves: assets = pool quote balance + freed debt, liabilities = DEPOSIT_BUFFER*pool deposits + escrowed bonds + unclaimed reserves, and line 145 does `borrower.t0Debt -= Maths.min(borrower.t0Debt, Maths.floorWdiv(assets - liabilities, poolState_.inflator))` with no cap on the amount taken from reserves and no requirement that the auction is genuinely insolvent (this pre-fix code has no `t0ReserveSettleAmount`/144h reserve-settle limit). An attacker can manufacture the bad debt: BorrowerActions.repayDebt (lines 378-383) allows pulling collateral as long as collateral >= encumberedCollateral computed from the LUP, so borrow at a TP just below LUP (BorrowerActions.drawDebt), add a large quote deposit in a very high bucket to raise the LUP (LenderActions.addQuoteToken), pull nearly all collateral, then lender-kick the loan (KickerActions.lenderKick) and settle it; the collateral-free debt is paid out of reserves, and the attacker withdraws the inflated-bucket LP, repeating the cycle to steal all claimable reserves."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "c8fd4569eae0b9482227244eb426a2613d1377d43f935658a4f8d814bec86ec9:unsettled-bad-debt-liquidation:9d65f80a0d57a6767dfb84d3f54ab0ec4d615fdb0738d339f3a19d8e89d7364d",
+      "finding": {
+        "cwe": "CWE-682",
+        "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+        "line": 442,
+        "severity": "medium",
+        "title": "Deposit take computes bond penalty factor from the wrong price",
+        "evidence": "In _takeBucket the bond penalty factor / isRewarded flag is already fixed by _prepareTake (TakerActions.sol:715-725) using the real auction price `vars.auctionPrice = _auctionPrice(kickMomp, neutralPrice, kickTime)` and `_bpf(..., vars.auctionPrice)`. Only afterwards, at line 442, `if (params_.depositTake) vars_.auctionPrice = vars_.bucketPrice;` swaps in the bucket price, and that new price is what _calculateTakeFlowsAndBondChange (line 746) uses to size the take and the bondChange, while vars.bpf still reflects the old auction price. For a deposit take the kicker's reward/penalty is therefore computed from a price the taker never pays; when the true auction price is below/above NP differently from the bucket price the kicker is systematically over/under-rewarded (and the taker's LP reward line 625-635 is mis-sized), so bond escrow accounting is wrong. BPF must be recomputed with bucketPrice for deposit takes."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "c8fd4569eae0b9482227244eb426a2613d1377d43f935658a4f8d814bec86ec9:unsettled-bad-debt-liquidation:d2e437a872d4e58ff1b604eff1f82868608e666bc6e4edc6e6bdfadc1b66c601",
+      "finding": {
+        "cwe": "CWE-682",
+        "path": "ajna-v2/src/libraries/helpers/PoolHelper.sol",
+        "line": 403,
+        "severity": "medium",
+        "title": "_bpf collapses the bounded ratio to a full-sign factor",
+        "evidence": "Specification: BPF = bondFactor * min(1, max(-1, (neutralPrice - auctionPrice) / (neutralPrice - thresholdPrice))). The first branch (lines 389-400) implements it, but the else branch (lines 401-405) abandons the ratio: it computes only `int256 val = int256(neutralPrice_) - int256(auctionPrice_);` and then sets `sign = -1e18` when val<0 or `sign = 1e18` when val!=0 (lines 403-404), i.e. the bond factor is applied at 100% magnitude whenever TP >= NP, regardless of how far the auction price is from the neutral price. _bpf is consumed by both kick (KickerActions._kick line 316-338 via _bondParams/bpf) and take (TakerActions._prepareTake line 716-725, bondChange line 780-786), so kicker bond sizes and take rewards/penalties are systematically mis-computed, transferring value between kickers, takers and borrowers."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "c8fd4569eae0b9482227244eb426a2613d1377d43f935658a4f8d814bec86ec9:unsettled-bad-debt-liquidation:2091e5e7570b5f4f94ad97e2faaa2d7eb85afdd31495788b9e1afb003470fe3a",
+      "finding": {
+        "cwe": "CWE-682",
+        "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+        "line": 486,
+        "severity": "medium",
+        "title": "Bankruptcy test in _forgiveBadDebt uses an unscaled deposit value",
+        "evidence": "In _forgiveBadDebt, `uint256 depositToRemove = Maths.wmul(scale, unscaledDeposit);` (line 457) is the scaled deposit, but `depositRemaining` set at line 467 is `unscaledDeposit - depositUsed`, which is in unscaled units. Line 486 then tests `depositRemaining * Maths.WAD + hpbBucket.collateral * _priceAt(index) <= bucketLP` without re-applying the bucket scale, so the deposit side of the comparison can be understated by the accumulated interest factor (scale >> 1e18). For a bucket that still has meaningful quote deposit the expression can fall below bucketLP, and the bucket is wrongly marked bankrupt at lines 487-489 (lps zeroed, bankruptcyTime set, BucketBankruptcy emitted), permanently confiscating the claimable collateral/deposit entitlement of all LPs holding that bucket's LP. depositRemaining must be scaled before the check."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "c8fd4569eae0b9482227244eb426a2613d1377d43f935658a4f8d814bec86ec9:unsettled-bad-debt-liquidation:c6f60f6d8665721c4ad651372eb39e982e9b36eefea0e0b72c6ac298d64cf691",
+      "finding": {
+        "cwe": "CWE-682",
+        "path": "ajna-v2/src/base/Pool.sol",
+        "line": 703,
+        "severity": "medium",
+        "title": "Inflator/interest state reset based only on post-action debt",
+        "evidence": "_updateInterestState resets the inflator to WAD whenever the debt observed after the action is zero: `} else if (poolState_.debt == 0) { inflatorState.inflator = uint208(Maths.WAD); inflatorState.inflatorUpdate = uint48(block.timestamp); }` (lines 703-705), and it is reached on every pool entrypoint through _accruePoolInterest/_updateInterestState. Only the post-execution debt is inspected; when a pool that already had accrued debt/interest is driven to zero debt inside the transaction (e.g. full repay or take settlement), the accrued interest is discarded and the inflator is re-based to 1e18, which mis-prices the debt of the loans that remain and makes the first/next borrower pay interest that lenders never receive. The condition must also require that debt was zero before the action."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "c8fd4569eae0b9482227244eb426a2613d1377d43f935658a4f8d814bec86ec9:unsettled-bad-debt-liquidation:d365af00f61ad4bbdc8c6f40c86bd9a378318a8764a7736f9ffa6c190c205578",
+      "finding": {
+        "cwe": "CWE-754",
+        "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+        "line": 235,
+        "severity": "medium",
+        "title": "Auction settlement reverts when the auction price exceeds MAX_PRICE",
+        "evidence": "_settleAuction determines the compensation bucket with `bucketIndex = auctionPrice > MIN_PRICE ? _indexOf(auctionPrice) : MAX_FENWICK_INDEX;` (line 235). _indexOf (PoolHelper.sol:75-90) reverts with BucketPriceOutOfBounds whenever `price_ > MAX_PRICE` (PoolHelper.sol:78). Auction price can legitimately exceed MAX_PRICE: _auctionPrice returns `32 * max(kickMomp, neutralPrice) * 2^-elapsedHours` (PoolHelper.sol:354-367) and neutral price/kick momp are bounded by MAX_NEUTRAL_PRICE = 50 * MAX_PRICE upheld via KickerActions._kick (line 316-319) and Deposits._priceAt, so for the first hours of an auction the price is above MAX_PRICE. Any ERC721 auction settled in that window (settlePoolDebt after 72h without collateral, or repayDebt/drawDebt/take calling _settleAuction) reverts instead of settling, and since the fraction-compensation branch and _removeAuction are unreachable the auction (and its debt) is stuck; the code also lacks the explicit `auctionPrice > MAX_PRICE` fallback that the price-index conversion needs."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:ee123ef1dd4b381865e4792216e1a34dc285c3fccfdce534ffa8f8e81b1d68c7",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "Unbounded BLAKE2b key length overflows monocypher stack buffer",
+        "evidence": "blake2b(msg, key) forwards key and len(key) straight to crypto_blake2b_keyed() with no upper bound on key_size. monocypher.c:545-546 declares 'u8 key_block[128]' and does COPY(key_block, key, key_size), so blake2b(b'x', b'A'*200) copies 200 caller-controlled bytes into a 128-byte on-stack buffer (72-byte overflow with attacker-chosen content). The same gap exists for Blake2b(key=...) at line 297. The binding validates lengths elsewhere (elligator_map line 501, elligator_key_pair line 543) but not for BLAKE2b keys, so any Python caller reaches the overflow; upstream added a 64-byte cap in 4.0.3.4."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:0ad1e4c3ad791c41d1a5360d50b828709a84ae73ff3fe1faa315bb72e78a28b6",
+      "finding": {
+        "cwe": "CWE-476",
+        "path": "c_monocypher.pyx",
+        "line": 347,
+        "severity": "medium",
+        "title": "argon2i_32 passes unchecked malloc result to C (NULL dereference)",
+        "evidence": "work_area = malloc(nb_blocks*1024) (line 345) is handed to crypto_argon2 with no NULL check, and nb_blocks is unbounded, so argon2i_32(0xffffffff, 1, password, salt) makes malloc fail and monocypher.c:752 'blk *blocks = (blk*)work_area;' plus the following block writes dereference NULL and crash the interpreter (unauthenticated DoS). Upstream added a MemoryError check after the malloc in 4.0.3.2 for this NULL dereference."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:5e7b94260a7b69d1b927a67d04b25a990bf5b6fd4d868298497699bfe0395db4",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 351,
+        "severity": "medium",
+        "title": "argon2i_32 zeroes the caller's immutable bytes password by default",
+        "evidence": "_wipe defaults to True, so crypto_wipe(password, len(password)) writes in place into whatever object the caller passed. For an immutable bytes password this modifies the object itself, including CPython's interpreter-wide single-byte bytes singletons and code constants (verified: b'a' is b'a'), so argon2i_32(8, 1, b'hunter2', salt) silently zeroes a shared object aliased anywhere else in the process without any opt-in; upstream restricted wiping to bytearray."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:1138e8aa7f9b5dc31048eae29ce8ede49889e8c77b1d178f553510f06575e828",
+      "finding": {
+        "cwe": "CWE-325",
+        "path": "c_monocypher.pyx",
+        "line": 329,
+        "severity": "medium",
+        "title": "argon2i_32 accepts zero passes, yielding a password-independent hash",
+        "evidence": "nb_iterations is copied into config.nb_passes without validation, so nb_iterations=0 skips monocypher's whole fill loop (monocypher.c:802) and the result is extended_hash() of blocks[lane_size-1], which was never written from the password/salt-derived initial hash. The returned digest therefore depends only on never-initialised work-area memory and is independent of password and salt (and can leak stale heap content); upstream added nb_iterations >= 1 validation."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:fc3f878a17548ebc06e80f7595c2376ba2f8b94426d14f5dacd6b4921419d71c",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 410,
+        "severity": "medium",
+        "title": "signature_sign/compute_signing_public_key pass caller's bytes as monocypher's wiped seed",
+        "evidence": "In the 32-byte compatibility path bytes(secret_key) returns the identical object (verified: bytes(x) is x when x is bytes), which is given to crypto_eddsa_key_pair, whose C body wipes the seed in place (monocypher.c:2224 crypto_wipe(seed, 32)). signature_sign(secret_key32, msg) and compute_signing_public_key (line 390) thus zero the caller's key object and every alias of it; reusing that object afterwards derives keys/signatures from the publicly reproducible all-zero seed. Upstream fixed this aliasing in 4.0.3.1 by passing a private copy."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:9c91443fd1c58ee1fd5e427a249d291a8d871c9766832297a7b615a8b0e79ef7",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 545,
+        "severity": "medium",
+        "title": "elligator_key_pair zeroes the caller's 32-byte seed object",
+        "evidence": "When seed is a 32-byte bytes object it is passed unchanged to crypto_elligator_key_pair, whose C body wipes it (monocypher.c:2729 crypto_wipe(seed, 32)). The caller's object and all its aliases become 32 zero bytes, so any later call that reuses the object silently generates the key pair for the all-zero seed; upstream copies the seed before the call in 4.0.3.1."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:268ad25f19d4ec2636f04938fb88782f775cb0953d76e6ac5242fb95a7ef1a71",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 181,
+        "severity": "medium",
+        "title": "lock() reads key/nonce out of bounds (no length validation)",
+        "evidence": "lock() never checks len(key)==32 or len(nonce)==24 before calling crypto_aead_lock, which dereferences key[32] and nonce[24] through bare pointers (crypto_aead_init_x/crypto_chacha20_x). lock(b'k', b'n', message) therefore makes C read 31 and 23 bytes past the ends of those Python bytes objects, consuming adjacent heap as key/nonce material; upstream added ValueError checks in 4.0.3.4."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:5435eba16c4b6876a92a5389a402096745175f66cf4873bb95b116dca5487643",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 199,
+        "severity": "medium",
+        "title": "unlock() reads key/nonce/mac out of bounds (no length validation)",
+        "evidence": "unlock() passes key, nonce and mac to crypto_aead_unlock without checking 32/24/16-byte lengths, so undersized arguments make C read past the end of the bytes buffers (the 16-byte MAC is also compared afterwards by crypto_verify16). No validation exists on this path although the incremental class validates key/nonce (lines 214-218)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:7f0faf9606740f9a892c4d29934912dee59ffb791ec623109c153bdec2c8f413",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 267,
+        "severity": "medium",
+        "title": "chacha20() reads the key out of bounds when it is shorter than 32 bytes",
+        "evidence": "The nonce length is checked (lines 266-272) but the key length is not, so crypto_chacha20_x/crypto_chacha20_djb read key[32] from the caller's buffer: chacha20(b'k', nonce24, msg) reads 31 bytes past the object. Upstream added a 32-byte key check in 4.0.3.4."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:ad5546ad9d92f3f14c0d5dcbc183731b76fb680efb5fea8a3df6f8cb14266b76",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 429,
+        "severity": "medium",
+        "title": "signature_check() reads undersized signature/public_key out of bounds",
+        "evidence": "signature_check(signature, public_key, message) calls crypto_eddsa_check with no length validation; the C function reads signature[64] and public_key[32] through bare pointers, so a 1-byte signature or public key makes it read up to 63/31 bytes past the Python object. Upstream added ValueError checks for 64/32 bytes in 4.0.3.4."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:5d97281399f0259f1dca0b0765afba41ee623a3236004da951f14d38d7d0765b",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 375,
+        "severity": "medium",
+        "title": "key_exchange() reads undersized X25519 keys out of bounds",
+        "evidence": "key_exchange() passes your_secret_key and their_public_key to crypto_x25519 without checking both are 32 bytes; the C routine reads 32 bytes from each buffer, so short arguments cause out-of-bounds reads of adjacent heap (and inputs read as key material). Upstream added length checks in 4.0.2.8/4.0.3.4."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:aaadb8da550a6ec46edc6a0779950f4c64caf9127a31e0c53a5393be8f19d5f2",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 362,
+        "severity": "medium",
+        "title": "compute_key_exchange_public_key() reads an undersized secret key out of bounds",
+        "evidence": "compute_key_exchange_public_key() forwards secret_key to crypto_x25519_public_key with no check that len(secret_key)==32; the C routine reads 32 bytes from the buffer, so a shorter bytes object causes an out-of-bounds read. Upstream added the 32-byte check in 4.0.3.4."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:4383465e33a62120a015b3cec9cceb8f12af707cd578d0780732ca200ad9e0d1",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 27,
+        "severity": "medium",
+        "title": "crypto_verify16/32/64 exposed to Python without buffer size checks",
+        "evidence": "crypto_verify16/32/64 are declared 'cpdef' inside the cdef extern block (lines 27, 29, 31), so Cython exports Python-callable module attributes that take bare const uint8_t* arguments (confirmed in the generated c_monocypher.c, which sets these names on the module). No length validation is performed, so monocypher.crypto_verify16(b'a', b'b') reads 16 bytes from each 1-byte object (CWE-125), leaking/using adjacent heap in the comparison result; upstream added 16/32/64-byte checks in 4.0.3.4."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:f1a83231c0a97dbfad847f3b7874f456ab2bce7a4f5a9279124daf5c6537114c",
+      "finding": {
+        "cwe": "CWE-20",
+        "path": "c_monocypher.pyx",
+        "line": 297,
+        "severity": "low",
+        "title": "Blake2b hash_size is not validated against the 1..64 range",
+        "evidence": "Blake2b.__init__ stores the caller-supplied hash_size unvalidated and passes it to crypto_blake2b_keyed_init. crypto_blake2b_final writes only MIN(hash_size,64) bytes (monocypher.c:629), while finalize() returns bytes(self._hash_size) (line 311), so any hash_size>64 yields a digest whose tail bytes are always zero (and a huge hash_size allocates a huge bytes object). Upstream restricts hash_size to 1..64 in 4.0.3.4."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "c93eac1755353900c1d8dd59398d7efa11533463a03e166a11cd883b7143968e:argon2i32-small-block-count:435d33cbc968a49e1b087d5479a5eed7706682a12f78e84dad4541bfd1056974",
+      "finding": {
+        "cwe": "CWE-672",
+        "path": "c_monocypher.pyx",
+        "line": 312,
+        "severity": "low",
+        "title": "Blake2b.finalize()/update() can be used after finalization, returning an all-zero hash",
+        "evidence": "There is no finalized-state guard: crypto_blake2b_final ends with WIPE_CTX(ctx) (monocypher.c:635), so ctx->hash_size becomes 0 and a second finalize() returns bytes(self._hash_size) filled entirely with zeros - a constant digest an application can unknowingly store or compare as a valid hash. update() after finalize() likewise operates on the wiped context. Upstream added RuntimeError guards in 4.0.3.4."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "ccbb6f2b2f3afd5b3386134b3539af468f8d74c467731d8832978d158020a490:intoiter-drop-panic-double-free:97f3ccf9122b86a3454d5a579fdb4bb1d5e489d70eeafb7c0bf967077b1dcecd",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "ThinVec::clear drops elements before clearing len, so a panicking element Drop re-drops already-freed elements (double free)",
+        "evidence": "clear() runs ptr::drop_in_place(&mut self[..]) at line 1084 while self.len() still reports every element, and only resets the length afterwards at line 1085 (`self.set_len(0)`). Nothing pre-zeros the length and no RAII drop guard protects it, so if any element's destructor panics (reachable from 100% safe caller code: a user type whose Drop panics, a nested ThinVec/Box/String element, or a destructor that panics on poisoned state) unwinding jumps past line 1085 and the vector keeps len == number of elements even though their memory was already released. During the very same unwind (or any later drop of the value, e.g. after catch_unwind) `ThinVec::drop` -> drop_non_singleton at line 1917 executes `ptr::drop_in_place(&mut this[..])` and then `dealloc` on the same already-dropped/freed elements and buffer, producing a double free/use-after-free and heap corruption. Confirmed locally: a ThinVec<Box<usize>> holding an element whose Drop panics, cleared from safe code, terminates the process with STATUS_HEAP_CORRUPTION (0xC0000374); the len is still 2 after the panicking clear, i.e. the set_len(0) at line 1085 never ran. This is the root cause fixed in thin-vec 0.2.16 by wrapping clear() in a DropGuard (GHSA-xphw-cqx3-667j / CVE-2026-6654 / RUSTSEC-2026-0103, CWE-415/416)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "ccbb6f2b2f3afd5b3386134b3539af468f8d74c467731d8832978d158020a490:intoiter-drop-panic-double-free:022d2d09a7a667bb873012bc75432cb20b4947ea73c4fefe8f92c58a1738eaee",
+      "finding": {
+        "cwe": "CWE-416",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "IntoIter::drop frees the moved-out elements but resets the length only afterwards, so a panicking Drop re-drops freed elements (use-after-free/double free)",
+        "evidence": "IntoIter::drop (drop_non_singleton, line 2544) moves the buffer out with `let mut vec = mem::replace(&mut this.vec, ThinVec::new())` at line 2546 and then sequentially destroys the still-counted elements with `ptr::drop_in_place(&mut vec[this.start..])` at line 2547, resetting the length only at line 2548 (`vec.set_len_non_singleton(0)`). If any element destructor panics (reachable from safe code with no unsafe in the caller), line 2548 is skipped and stack unwinding drops the local `vec`, whose len still claims all elements; ThinVec::drop -> drop_non_singleton at line 1917 then calls `ptr::drop_in_place(&mut this[..])` and `dealloc` on elements whose storage was already freed, i.e. freed memory is read (UAF) and freed a second time. std::vec::IntoIter guards this exact sequence with DropGuard; thin-vec 0.2.15 has no guard (fixed in 0.2.16, GHSA-xphw-cqx3-667j / CVE-2026-6654 / RUSTSEC-2026-0103). Confirmed locally: dropping `v.into_iter()` for a ThinVec<Box<usize>> where one element's Drop panics aborts the process with STATUS_HEAP_CORRUPTION (0xC0000374) using only safe caller code."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    }
+  ],
+  "usage_note": "Provider-reported totals; zero/missing usage is unknown, not free. No cost claim."
+}

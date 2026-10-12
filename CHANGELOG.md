@@ -20,6 +20,12 @@ All notable changes to this project are documented here. The format follows
 - A soft in-band adapter deadline (`--deadline-minutes`) that removed Pi's two
   adapter timeouts and halved total wall-clock (91 to 43 minutes); recorded as
   optimization round 24 in [Validation](docs/validation.md).
+- Target-Pi optimization rounds 25-26: a minimal Pi-aligned prompt
+  (`prompts/audit-minimal.txt`) with 48 tool calls and high reasoning raised the
+  built-in `deepseek-flash` agent to exact F1 .408 and 5/7 distinct on the seven
+  primary labels, exceeding the leak-free Pi baseline (.333, 4/7) at ~4.6x
+  tokens. Recorded as the recommended evaluation configuration, not a new global
+  default. See [Validation](docs/validation.md).
 - `benchmark --isolate`, exposing the per-case staging path already used by
   `evaluate` so an external agent cannot read the label manifest or mutate the
   source tree. Covered by

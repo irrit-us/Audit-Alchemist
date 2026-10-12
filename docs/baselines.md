@@ -82,6 +82,9 @@ line F1 .493. See [Validation](validation.md) and the
 **The built-in agent already matches Codex and DSH on the blind primary labels
 and exceeds Claude Code; Pi is the real outlier and the appropriate target.**
 The earlier belief that Codex was far ahead was an artifact of the label leak.
+A follow-up configuration (minimal prompt, 48 tool calls, high reasoning)
+reached exact F1 .408 and 5/7 distinct, exceeding clean Pi; see
+[Validation](validation.md#target-pi-optimization-rounds-25-26-2026-10-11).
 
 ## Context and task management
 

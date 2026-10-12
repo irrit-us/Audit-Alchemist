@@ -49,6 +49,8 @@ distinct metrics are reported alongside it and never folded into exact F1:
 | 22 | Self-consistency, 4 samples | 25/28 | .118 | unreviewed | More samples did not recover ajna/filelock/thin-vec; distinct exact 1/7. |
 | 23 | Cross-harness baselines (Codex, Claude Code, DSH, Pi) | 21/21 each | .333 / .129 / .129 / .033 | unreviewed | Leak-free, same model: Pi best (4/7 distinct); Codex and DSH tie, Claude worst. The built-in agent already matches Codex/DSH. The first run leaked `expected` labels to the agent and was retracted. |
 | 24 | Soft in-band deadline (Pi, off vs 15 min) | 19/21 vs 21/21 | - | unreviewed | Deadline removed both adapter timeouts and halved total wall-clock (91 vs 43 min). Detection numbers predate the leak correction; the timeout effect is leak-independent. |
+| 25 | Target Pi: default vs minimal prompt vs 48-call/high (7 primary, 2 trials) | 14/14, 13/14, 13/14 | .167 / .176 / .333 | unreviewed | Minimal prompt alone raised line F1 .278 -> .364; adding 48 calls and high effort reached Pi's clean exact F1 .333. |
+| 26 | Confirm the Pi-level configuration (7 primary, 3 trials) | 19/21 | .408 | unreviewed | Exceeds clean Pi (.333 exact, 4/7 distinct) with 5/7 distinct; costs ~4.6x tokens. |
 
 ## Accumulated experience
 
@@ -141,6 +143,15 @@ distinct metrics are reported alongside it and never folded into exact F1:
     experiment predate the leak correction, so only the completion/timeout
     effect is used; the change is opt-in and directly targets the observed
     failure mode rather than adding retries or budget.
+16. **The Pi gap was exploration depth, not model or label knowledge
+    (rounds 25-26).** With the same `deepseek-flash` model, a minimal
+    Pi-aligned prompt plus 48 tool calls and high reasoning reached exact F1
+    .408 (10/21, 5/7 distinct) versus Pi's clean .333 (8/21, 4/7) and the
+    default-prompt built-in at 16 calls (.167). The minimal prompt alone moved
+    line F1 .278 -> .364 at the same budget; the larger budget/effort delivered
+    the exact gain. Cost rose to ~4.6x tokens (26.7M vs 5.9M), so this is an
+    evaluation configuration, not a free default. The gain is a three-variable
+    bundle; isolating prompt, budget, and effort is the next round.
 
 ## Decision policy for future rounds
 

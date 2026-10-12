@@ -1,5 +1,30 @@
 # Validation
 
+## Target-Pi optimization rounds 25-26: 2026-10-11
+
+Goal: raise the built-in `deepseek-flash` agent to the leak-free Pi baseline on
+the seven primary labels. Model, blind instruction, dataset revision, and
+scoring were held fixed. Round 25 changed the system prompt and added one
+Pi-like budget/effort variant; round 26 confirmed the winning configuration at
+three trials.
+
+| Round | Variant | Config | Trials | Success | Exact TP/FP/FN | Exact F1 | Line F1 | Distinct |
+| --- | --- | --- | ---: | ---: | --- | ---: | ---: | ---: |
+| 25 | default | `audit.txt`, 16 calls, low | 14 | 14 | 3/19/11 | .167 | .278 | 2/7 |
+| 25 | minimal | `audit-minimal.txt`, 16 calls, low | 14 | 13 | 3/17/11 | .176 | .364 | 2/7 |
+| 25 | pi_like | `audit-minimal.txt`, 48 calls, high | 14 | 13 | 6/16/8 | .333 | .389 | 4/7 |
+| 26 | pi_like | `audit-minimal.txt`, 48 calls, high | 21 | 19 | 10/18/11 | **.408** | **.449** | **5/7** |
+
+Round 26 exceeds the clean Pi baseline (exact F1 .333, line F1 .417, 4/7
+distinct) with the same model. Per-case exact hits (of 3): filelock 2, fast-jwt
+3, pymonocypher 2, h11 1, zk-email 2; `ajna` and `thin-vec` remain unfound. The
+configuration costs ~4.6x tokens (26.7M versus 5.9M for the default variant), so
+it is recorded as the recommended evaluation configuration rather than a new
+global default. The three-variable change (prompt, budget, effort) is not yet
+isolated. Reports: [round 25](reports/tiny-round25.json),
+[round 26](reports/tiny-round26.json); plans `examples/target-pi-r25.toml` and
+`examples/target-pi-r26.toml`; prompt `prompts/audit-minimal.txt`.
+
 ## Cross-harness baselines: 2026-10-11
 
 Same-model comparison of the built-in auditor against four external coding-agent

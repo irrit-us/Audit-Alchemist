@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 59189
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 59188,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 167,
+            "severity": "high",
+            "title": "Chunked transfer-encoding chunk footer (CRLF) is discarded without validation, enabling request smuggling",
+            "evidence": "In ChunkedReader.__call__, after a chunk's data is fully read, line 197 sets self._bytes_to_discard = 2. On the next call the two attacker-controlled bytes following the chunk are extracted at line 164 (buf.maybe_extract_at_most) and unconditionally consumed at line 167 (self._bytes_to_discard -= len(data)) with no comparison against b\"\\r\\n\". Any two bytes are therefore accepted as the chunk terminator. Because a chunk boundary is determined by this unchecked count rather than by the literal CRLF, h11 can disagree with other HTTP processors about where a chunk ends. Confirmed by sending b\"3\\r\\nxxx__1a\\r\\n\": the stock 0.14.0 reader returns Data(data=b'xxx') and then waits for a 0x1a (26)-byte chunk, i.e. it treats the bytes after 'xxx' as a valid footer and reinterprets '1a' as the next chunk size, whereas a parser that scans for CRLF would treat 'xxx__1a' as the chunk body. This divergence is reachable by any remote peer that controls a chunked body (client to an h11 server, or upstream server to an h11 client) and is the classic precondition for HTTP request/response smuggling when h11 is deployed behind a proxy/load balancer (CWE-444). Upstream h11 0.16.0 fixed exactly this by storing the expected terminator b\"\\r\\n\" and raising LocalProtocolError when the extracted bytes do not match (GHSA-vqfr-h8mv-ghfj / CVE-2025-43859: 'Reject certain malformed Transfer-Encoding: chunked bodies ... could have enabled request-smuggling attacks'). Note: this is the concrete root cause in the target; the trailer itself (lines 158-162) does call _decode_header_lines and is not the unchecked path."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 167
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

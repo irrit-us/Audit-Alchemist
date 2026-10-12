@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 66757
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 66757,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-863",
+            "path": "src/verifier.js",
+            "line": 159,
+            "severity": "medium",
+            "title": "Array-valued iss/sub/jti/nonce claims pass identity validation via loose any-element match",
+            "evidence": "Root cause: `validateClaimValues` (src/verifier.js:154-162) accepts a claim if ANY of its values matches (`values.some(v => allowed.some(a => a.test(v)))`, line 159), and `validateClaimType` (lines 144-152) only checks `typeof` of each element (line 149) — it never rejects an array for claims that must be scalars. The `array` flag is used only to pick an error message (lines 145-147), never for enforcement, so the guard that would distinguish scalar claims from array claims is absent. Reachability: `decode()` JSON-parses the attacker-supplied token payload (src/decoder.js:31-32), so an array survives into `payload`; `verify()` (src/verifier.js:291, 310/352) passes it to `verifyToken`, which at lines 210-212 sets `arrayValue = true` for an array-valued claim and at line 226 calls `validateClaimValues(values, claim, allowed, arrayValue)`. The `iss`, `sub`, `jti` and `nonce` validators are registered without `array: true` (lines 467, 475, 479, 483) because RFC 7519 defines those claims as a single StringOrURI — this package's own typings reflect that contract (`iss?: string` for the signer vs `aud?: string | string[]`, src/index.d.ts:107-110) — yet a token carrying `\"iss\": [\"https://trusted.example\", \"https://evil.example\"]` is accepted by a verifier configured with `allowedIss: 'https://trusted.example'`, whereas the required semantics is an exact single-string match. Only `aud` (line 471) legitimately supports array any-match. The precondition is narrow: the attacker must be able to obtain a token signed by a key the verifier trusts whose `iss` is an array that includes the allowed issuer (e.g. a federated/broker IdP that mirrors caller-supplied or multi-valued issuer data, or an issuer sharing the signing key across tenants); no signature forgery is needed. Impact under that precondition: the verifier confirms an identity/authorization assertion the token does not unambiguously carry, and relying code that treats `payload.iss` as a string (per the documented contract) can disagree with the verifier about the token's issuer/subject."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-863",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

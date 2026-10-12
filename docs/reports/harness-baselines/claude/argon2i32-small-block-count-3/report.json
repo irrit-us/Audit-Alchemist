@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "pymonocypher-argon2i-overflow-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 117400
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "argon2i32-small-block-count",
+        "outcome": "success",
+        "elapsed_ms": 117400,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-787",
+            "path": "c_monocypher.pyx",
+            "line": 347,
+            "severity": "high",
+            "title": "argon2i_32 accepts nb_blocks below the required minimum, causing out-of-bounds heap write and read in crypto_argon2",
+            "evidence": "argon2i_32 takes caller-supplied nb_blocks and writes it straight into crypto_argon2_config (line 328) and sizes the work area as nb_blocks*1024 bytes (line 345) without enforcing monocypher's documented precondition nb_blocks >= 8 * nb_lanes (monocypher.h:160; nb_lanes is hard-coded to 1 at line 330). In crypto_argon2, config.nb_blocks < 4 makes segment_size and lane_size collapse to 0 (monocypher.c:752-754), but the prefill loop unconditionally writes two full 1024-byte blocks, blocks[0] and blocks[1] (monocypher.c:776-782). With nb_blocks=1 the Python side allocated only 1024 bytes, so the blocks[1] write overflows the heap chunk by 1024 bytes with data derived from the caller's password/salt/ad; with nb_blocks=0 the allocation is malloc(0) (zero/NULL-sized) while 2048 bytes are written. For nb_blocks 0..3 the later 'last_block = blocks + lane_size - 1' (monocypher.c:902) becomes blocks-1, and store64_le_buf reads 1024 bytes before the work area (monocypher.c:911), which extended_hash then mixes into the returned digest - a heap out-of-bounds read/disclosure. For nb_blocks 4..7, segment_size=1 makes window_size underflow (monocypher.c:870-880), so block 3 is read before it is initialized. Any application that lets the memory cost (nb_blocks) come from outside - e.g. KDF parameters stored with a password hash or supplied through an API - reaches these unsafe operations by calling argon2i_32 with nb_blocks < 8; the resulting corruption/leaked bytes are directly observable through the return value."
+          },
+          {
+            "cwe": "CWE-476",
+            "path": "c_monocypher.pyx",
+            "line": 345,
+            "severity": "low",
+            "title": "Unchecked malloc return value in argon2i_32 dereferenced as the Argon2 work area",
+            "evidence": "work_area = malloc(nb_blocks * 1024) (line 345) is never checked for NULL before crypto_argon2(hash, 32, work_area, ...) is called (line 347). An attacker-influenced nb_blocks (e.g. 2**30, a 1 TiB request, or any value that exhausts the process address space/memory limit) makes malloc return NULL, and crypto_argon2 immediately dereferences and writes through the pointer - 'load64_le_buf(blocks[l * lane_size + i].a, hash_area, 128)' at monocypher.c:781 (and the ZERO at monocypher.c:915) - producing a NULL-pointer dereference that crashes the process (denial of service). For nb_blocks=0, malloc(0) is implementation-defined and may also return NULL, which then gets dereferenced the same way."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-476",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        },
+        {
+          "cwe": "CWE-787",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

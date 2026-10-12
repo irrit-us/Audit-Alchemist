@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "dataset": "filelock-toctou-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 51486
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "lock-symlink-truncation",
+        "outcome": "success",
+        "elapsed_ms": 51486,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_unix.py",
+            "line": 44,
+            "severity": "high",
+            "title": "UnixFileLock follows symlinks when opening the lock file with O_TRUNC, allowing arbitrary file truncation",
+            "evidence": "UnixFileLock._acquire() builds open_flags = os.O_RDWR | os.O_TRUNC (line 41) and then calls os.open(self.lock_file, open_flags, self._context.mode) (line 44). The call passes no os.O_NOFOLLOW, so the kernel resolves any symbolic link at the lock path and applies O_TRUNC to the link target. Because os.open() runs with the victim process's privileges, the attacker never needs write permission on the target file. Reachability: an attacker with local filesystem access who can control or predict the lock path (the common case for lock files placed in shared/predictable directories such as /tmp or a per-user cache dir) pre-creates a symlink pointing at the victim file; when the application acquires the lock, the target is truncated to zero bytes. The exploit is deterministic in the pre-existing-symlink case, and even when the path is instead checked first, line 42 `if not Path(self.lock_file).exists()` is a non-atomic stat (CWE-367 TOCTOU) whose result can be invalidated before line 44, so an attacker can swap in a symlink in the gap (the advisory confirms exploitation in 1-3 attempts). The same sink is inherited by AsyncUnixFileLock in filelock/asyncio.py, which just schedules _acquire via _run_internal_method. This is CVE-2025-68146 / GHSA-w853-jp5j-5j7f, fixed upstream in 3.20.1 by adding O_NOFOLLOW to this os.open() call; the target still has the vulnerable pre-3.20.1 code."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_windows.py",
+            "line": 28,
+            "severity": "high",
+            "title": "WindowsFileLock follows reparse points (symlinks/junctions) when opening the lock file with O_CREAT|O_TRUNC",
+            "evidence": "WindowsFileLock._acquire() calls raise_on_not_writable_file(self.lock_file) (line 20, a stat-based, non-atomic check) and ensure_directory_exists() (line 21), then builds flags = os.O_RDWR | os.O_CREAT | os.O_TRUNC (lines 22-26) and calls os.open(self.lock_file, flags, self._context.mode) (line 28). The code never inspects FILE_ATTRIBUTE_REPARSE_POINT / calls GetFileAttributesW, so os.open follows an existing symlink or directory junction at the lock path and O_TRUNC zeroes the link target. Reachability: a local attacker able to create symlinks (Windows 10+ Developer Mode, or any user with SeCreateSymbolicLinkPrivilege) who controls or predicts the lock path places a symlink/junction at that path; when the victim process acquires the lock, the pointed-to file is truncated using the victim's privileges. The stat performed by raise_on_not_writable_file follows the link and therefore does not block the attack, and the gap between that check and os.open is a CWE-367 TOCTOU window. The same sink is inherited by AsyncWindowsFileLock in filelock/asyncio.py. Fixed upstream in filelock 3.20.1 by adding a GetFileAttributesW reparse-point check before opening; the target retains the vulnerable pre-3.20.1 code (CVE-2025-68146 / GHSA-w853-jp5j-5j7f)."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

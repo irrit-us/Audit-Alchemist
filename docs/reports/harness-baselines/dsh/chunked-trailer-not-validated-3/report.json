@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 1,
+    "elapsed_ms": 110892
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 110892,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 197,
+            "severity": "high",
+            "title": "Chunked reader discards the 2 bytes after each chunk without validating they are CRLF (malformed chunk footer accepted)",
+            "evidence": "Root cause: ChunkedReader only tracks how MANY bytes remain after a chunk (self._bytes_to_discard = 2 at line 197; initialized to 0 at line 154), not WHAT they must be. In the discard branch (lines 163-170) it calls buf.maybe_extract_at_most(self._bytes_to_discard) at line 164 and unconditionally consumes/decrements those bytes at line 167 without ever comparing them to b'\\r\\n'. Reachability: an attacker who controls the request body sends a Transfer-Encoding: chunked body whose chunk footer is arbitrary garbage instead of CRLF (e.g. '5\\r\\nAAAAAXX2\\r\\n45\\r\\n...'). _connection.py selects this reader for the SEND_BODY 'chunked' framing (READERS entry line 243), so every chunk terminator routes through lines 163-170; the malformed footer is silently accepted and h11 advances by exactly 2 bytes and resumes parsing the next chunk header. Consequence: h11 accepts the same byte stream as a valid message but assigns different chunk boundaries than a co-located lenient/common-parser reverse proxy (one that reads 'until CRLF' for the footer), which is the canonical HTTP request-smuggling precondition (GHSA-vqfr-h8mv-ghfj / CVE-2025-43859). Note the precondition is narrower than remote code execution: exploitation requires a second, independently buggy HTTP parser in the path (h11 alone is only the enabler), so this is reported as the root cause rather than an end-to-end exploit. The upstream fix (h11 0.16.0, commit 114803a2) replaces the byte count with the expected literal self._bytes_to_discard = b'\\r\\n' and adds a data != expected[:len(data)] check that raises LocalProtocolError('malformed chunk footer'); this file is h11 0.14.0 and contains neither."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "unexpected": [],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

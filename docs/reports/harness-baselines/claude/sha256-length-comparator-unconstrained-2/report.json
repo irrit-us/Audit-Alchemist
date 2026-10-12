@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 215181
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 215181,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 125,
+            "severity": "high",
+            "title": "Length comparator LessEqThan fed un-range-checked paddedInLength (mod-p wraparound bypass)",
+            "evidence": "In Sha256General (sha.circom:124-128) the bound 'paddedInLength <= maxBitLength' is enforced by component bitLengthVerifier = LessEqThan(maxBitsPaddedBits) with in[0] <== paddedInLength (line 126) and out === 1 (line 128). paddedInLength is a raw signal input with no bit-width constraint (line 97; via Sha256Bytes it is only passed through as paddedInLength*8 at sha.circom:33). circomlib's comparator (comparators.circom:89-114: LessEqThan(n)->LessThan(n) computes Num2Bits(n+1) of in[0]+(1<<n)-in[1]-1) is only sound when both inputs are < 2^n; the todo comment on line 125 ('verify the length passed in is less than nbits') acknowledges this precondition is never checked. Num2Bits operates on the residue mod p (p = BN254 scalar prime), so a malicious prover sets paddedInLength = p - 512: for maxByteLength=256 (maxBitLength=2048, maxBitsPaddedBits=12) the comparator input wraps to (p-512)+2^12-2049 mod p = 1535 < 2^12, its MSB bit 12 is 0, so bitLengthVerifier.out === 1 accepts an absurd ~2^254-bit length as '<= 2048'. The constraint paddedInLength === inBlockIndex*512 (line 111) is then satisfiable with inBlockIndex = (p-512)*512^-1 = p-1: the prover picks the witness freely because inBlockIndex is only witness-assigned with <-- (line 110) and the floor-verification components (lines 113-122) are commented out, so the unconstrained floor is never re-verified. The resulting selector index inBlockIndex-1 = p-2 (line 195) is likewise accepted by ItemAtIndex's guard (array.circom:25-28) due to the same mod-p wraparound, so all IsEqual outputs are 0 and the public output out is forced to 0^256, decoupled from paddedIn. Identical code exists in Sha256Partial (sha.circom:233-240, index at 292), reachable from Sha256BytesPartial. Root cause: the length public input is never range-checked below 2^maxBitsPaddedBits before entering the comparator, so the documented length bound is not actually enforced by the circuit."
+          },
+          {
+            "cwe": "CWE-129",
+            "path": "sha.circom",
+            "line": 195,
+            "severity": "high",
+            "title": "No lower bound on inBlockIndex: selector index inBlockIndex-1 = -1 (p-1) accepted, output hash forced to zero for paddedInLength=0",
+            "evidence": "paddedInLength has no lower bound anywhere: inBlockIndex <-- (paddedInLength >> 9) (sha.circom:110) and the only tie paddedInLength === inBlockIndex * 512 (line 111) are both satisfied by paddedInLength = 0 with the honest witness value inBlockIndex = 0, and bitLengthVerifier (lines 125-128) passes since 0 <= maxBitLength. Then arraySelectors[k].index <== inBlockIndex - 1 (line 195) is the field element -1 = p-1. ItemAtIndex's guard LessThan(bitLength) (array.circom:25-28) is intended to enforce index < maxArrayLen but is only sound for inputs < 2^bitLength; its Num2Bits argument (index + 2^bitLength - maxArrayLen) wraps mod p, so with index = p-1 the residue is 2^bitLength - maxArrayLen - 1, a small value with MSB 0, and the guard 'lessThan.out === 1' passes for any negative index p-s with 1 <= s <= 2^bitLength - maxArrayLen. Concretely for maxByteLength=256 (maxBitLength=2048, maxBlocks=4, bitLength=3): index = p-1 yields Num2Bits input 3, guard passes; IsEqual(i, p-1) is 0 for every compile-time i in {0,1,2,3}, calcTotal sums to 0, and out[k] = 0 for all 256 bits. Reachability: any prover feeding paddedInLength = 0 (bytes) to Sha256Bytes or Sha256BytesPartial obtains a fully satisfied circuit (standard witness generation, no oracle manipulation needed) whose public output is the all-zero 'hash' regardless of paddedIn; alternatively wrapped lengths paddedInLength = p-512k (k in {1,2,3} for this instantiation, passing the bypassable comparator at lines 125-128) give inBlockIndex = -k and index = -(k+1) in {p-2,p-3,p-4}, also accepted by the same guard. Impact: the circuit proves the false statement that the SHA-256 digest of the message equals 0, breaking soundness of the hash primitive for any consumer that accepts the computed digest or permits length 0 / unchecked length; the message bits do not constrain the output on this path. Mirrored in Sha256Partial at sha.circom:233-234 (length/index) and 292 (index sink)."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 125
+        },
+        {
+          "cwe": "CWE-129",
+          "path": "sha.circom",
+          "line": 195
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

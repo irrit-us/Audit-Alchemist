@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 116483
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 116483,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-290",
+            "path": "src/verifier.js",
+            "line": 475,
+            "severity": "medium",
+            "title": "Issuer (iss) claim accepts an array of strings, allowing issuer-validation bypass by spoofing",
+            "evidence": "The `allowedIss` option builds a claim validator at line 475 (`validators.push({ type: 'string', claim: 'iss', allowed: ensureStringClaimMatcher(allowedIss) })`) that, unlike `aud` at line 471, is not marked `array: true`, yet nothing in the validation path rejects an array-valued `iss`. Data flow from the attacker-controlled token: decoder.js lines 31-44 JSON-parse the payload; verifyToken reads `payload[claim]` at line 210, and lines 211-212 do `const arrayValue = Array.isArray(value); const values = arrayValue ? value : [value]`, so an array `iss` is spread into `values` and passed with `arrayValue=true` to `validateClaimValues` at line 226. That function's check at line 159 is `if (!values.some(v => allowed.some(a => a.test(v))))`, i.e. ANY one matching element makes the whole claim pass, and `validateClaimType` (lines 144-152, called at line 221 with the validator's `array` flag rather than the actual `arrayValue`) only verifies every element is a string. Consequently a signed JWT whose payload contains `iss: ['https://attacker.example/', 'https://valid-iss']` is accepted when the verifier was configured with `allowedIss: 'https://valid-iss'`, and the resulting verified `payload.iss` is the attacker-controlled array. This is CVE-2025-30144 / GHSA-gm45-q3v2-6cf8 (fixed in fast-jwt 5.0.6 by requiring non-array claims such as jti/iss/sub/nonce to match on every value, or by rejecting arrays unless `array: true`); the same loose-match path also affects jti, sub and nonce. Precondition: the attacker can present a token whose signature is valid for a key the verifier accepts (for example the documented get-jwks flow where the token's `iss`/`kid` drives key discovery); the bypass then defeats the intended single-issuer pinning and lets the attacker embed their own issuer in the accepted claim."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 475
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

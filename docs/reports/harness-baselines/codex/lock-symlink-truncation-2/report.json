@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "filelock-toctou-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 155110
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "lock-symlink-truncation",
+        "outcome": "success",
+        "elapsed_ms": 155110,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_unix.py",
+            "line": 44,
+            "severity": "high",
+            "title": "Symlink-following lock file open with O_TRUNC truncates arbitrary victim files",
+            "evidence": "UnixFileLock._acquire (the default lock on POSIX: __init__.py:37-38 selects UnixFileLock via the FileLock alias when fcntl is available; _api.py:330-332 calls _acquire from acquire()) builds open_flags = os.O_RDWR | os.O_TRUNC (line 41), adds O_CREAT when the path is absent (lines 42-43), and calls os.open(self.lock_file, open_flags, self._context.mode) (line 44) with NO os.O_NOFOLLOW. self.lock_file is a fully caller/attacker-influenceable path and os.open resolves symbolic links, so when that path is itself a symlink the kernel opens the link target in the victim process's context and O_TRUNC immediately truncates it to zero bytes; line 46 then os.fchmod's that same target to the default mode 0o644. Reachable whenever the lock path lives in a directory an attacker can write (e.g. a shared /tmp or world-writable cache/state dir) or the lock filename is predictable enough to pre-create: the attacker does `ln -s /home/victim/.ssh/authorized_keys /tmp/app.lock` (or points it at a config/DB/cron file, or at any file writable by a more privileged lock user) and the next lock.acquire() destroys the target file, yielding data destruction/DoS and potential privilege escalation. Upstream classifies this as a vulnerability and fixed it in 3.20.1 (changelog: 'Fix TOCTOU symlink vulnerability in lock file creation', PR #461) by adding `| os.O_NOFOLLOW` to exactly this open_flags line; 3.19.1, which this tree matches, is pre-fix."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_windows.py",
+            "line": 28,
+            "severity": "medium",
+            "title": "Windows lock file open follows reparse points (symlink/junction) and truncates the target",
+            "evidence": "WindowsFileLock._acquire (the default lock on Windows: __init__.py:33-34) opens the caller-supplied lock path with flags os.O_RDWR | os.O_CREAT | os.O_TRUNC (lines 22-26) via os.open(self.lock_file, flags, self._context.mode) (line 28) without any check that the path is a reparse point. On Windows os.open follows symbolic links/junctions, so O_TRUNC zeroes the link target and the descriptor is then locked with msvcrt.locking (line 34); raise_on_not_writable_file (line 20) also os.stat()s through the link. An attacker who can place a symlink/junction at the lock path in a shared, attacker-writable directory (Windows Developer Mode or SeCreateSymbolicLinkPrivilege allows unprivileged symlink creation) causes arbitrary file truncation in the locking process's context. Upstream fixed this in the same 3.20.1 security release by adding a GetFileAttributesW/FILE_ATTRIBUTE_REPARSE_POINT refusal before the open ('Security check: Refuse to open reparse points (symlinks, junctions)'); this tree lacks that check."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

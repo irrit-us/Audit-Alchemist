@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 393956
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 393956,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-770",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 145,
+            "severity": "high",
+            "title": "Uncapped settlement of a liquidation's bad debt from pool reserves drains reserves",
+            "evidence": "settlePoolDebt step 2 is reached whenever a liquidation ends with collateral==0 and t0Debt!=0 (line 133), i.e. a bad-debt liquidation. It computes assets = floorWmul(poolState_.t0Debt - result_.t0DebtSettled + borrower.t0Debt, inflator) + poolBalance and liabilities = wmul(DEPOSIT_BUFFER, treeSum) + totalBondEscrowed + reserveAuction.unclaimed, then at line 145 does `borrower.t0Debt -= Maths.min(borrower.t0Debt, Maths.floorWdiv(assets - liabilities, poolState_.inflator))`. There is no per-settlement / per-loan cap on how much of the pool's excess balance (the reserves that back reserve auctions and future bad-debt coverage) may be consumed: the entire `assets - liabilities` surplus is applied to the borrower's debt in a single call. Because the pool has no access control on who may create the liquidation (kick / lenderKick) or take the collateral, an attacker who controls a lender, a borrower and the kicker can deliberately produce a liquidation whose collateral is fully consumed (documented as 'Reserves can be stolen by settling artificially created bad debt'), then call Pool.settle() -> settlePoolDebt() so the attacker-created bad debt is paid out of the reserves and extracted via the buckets. Repeating the cycle drains reserves of any pool, which also removes the buffer that covers future bad debt, pushing losses onto HPB depositors. Upstream fix (merged later on master) caps this with a per-auction `t0ReserveSettleAmount` limit during the 144h settlement phase; that guard is absent here, so line 145 is the concrete root cause sink."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 486,
+            "severity": "medium",
+            "title": "_forgiveBadDebt uses unscaled depositRemaining in the bucket-bankruptcy exchange-rate check",
+            "evidence": "In _forgiveBadDebt (called from settlePoolDebt step 3, line 150, to write off a liquidation's remaining bad debt against HPB deposits), `depositRemaining` is computed in UNSCALED units (line 467: unscaledDeposit - Maths.wdiv(debt, scale); line 459 is left at 0 in the else branch). At line 486 that unscaled quantity is multiplied by the constant Maths.WAD instead of the bucket's scale: `if (depositRemaining * Maths.WAD + hpbBucket.collateral * _priceAt(index) <= bucketLP)`. The true scaled deposit is depositRemaining * scale, so whenever scale != WAD (scale grows with accrued interest) the left-hand side is understated by the factor scale/WAD and the 'exchange rate rounds to 0' test fires when it should not. The branch then zeroes hpbBucket.lps and sets bankruptcyTime (lines 488-489), making all existing LP in that bucket unclaimable. Reachable by any caller of the permissionless Pool.settle() on any liquidation that reaches the bad-debt forgiveness path; the attacker pays nothing but every LP holding the affected bucket loses their deposit. Upstream fix changes the multiplier to `scale`; the constant `Maths.WAD` here is the defect."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        },
+        {
+          "cwe": "CWE-770",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 145
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

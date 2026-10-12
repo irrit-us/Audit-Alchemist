@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "filelock-toctou-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 68209
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "lock-symlink-truncation",
+        "outcome": "success",
+        "elapsed_ms": 68209,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_unix.py",
+            "line": 44,
+            "severity": "high",
+            "title": "UnixFileLock follows symlinks and truncates the target via O_TRUNC",
+            "evidence": "In UnixFileLock._acquire the open flags are built as `os.O_RDWR | os.O_TRUNC` (line 41) and the lock file is opened with `os.open(self.lock_file, open_flags, self._context.mode)` (line 44) with no O_NOFOLLOW/O_EXCL. os.open resolves symbolic links, and O_TRUNC zeros whatever the link points at; the `Path(self.lock_file).exists()` guard at line 42 also follows links, so it neither detects nor rejects a symlink. `lock_file` is fully caller-controlled (BaseFileLock.__init__ stores `os.fspath(lock_file)`), and on POSIX the default `FileLock`/`AsyncUnixFileLock` map to this class whenever fcntl is available. An attacker who can write the lock file's parent directory (common for locks under /tmp or other shared dirs) can replace the lock path with a symlink to any file writable by the locking process; merely calling acquire() (or entering the context manager) then truncates the victim's contents and, via os.fchmod(fd, self._context.mode) at line 46, changes its permission bits. When the locking process is privileged this yields arbitrary-file destruction/DoS and permission modification."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_windows.py",
+            "line": 28,
+            "severity": "medium",
+            "title": "WindowsFileLock opens with O_TRUNC without OPEN_REPARSE_POINT and follows reparse points",
+            "evidence": "WindowsFileLock._acquire builds `os.O_RDWR | os.O_CREAT | os.O_TRUNC` (lines 22-26) and calls `os.open(self.lock_file, flags, self._context.mode)` (line 28) without opening the reparse point itself (no O_NOFOLLOW / FILE_FLAG_OPEN_REPARSE_POINT) and without O_EXCL, so a symlink placed at the caller-controlled lock path is followed and O_TRUNC zeroes the target. Reachability requires the attacker to be able to create the symbolic link/reparse point at the lock path (Windows symlink creation needs SeCreateSymbolicLinkPrivilege or Developer Mode, and write access to the lock directory), so the precondition is narrower than the Unix case, but the same unsafe link-following/truncation root cause is present."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

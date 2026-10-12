@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 117920
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 117920,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 164,
+            "severity": "high",
+            "title": "ChunkedReader discards any 2 bytes as the chunk footer instead of validating CRLF (request smuggling)",
+            "evidence": "ChunkedReader never checks the chunk terminator. After reading chunk-data it sets self._bytes_to_discard = 2 (an integer count, line 197), and the discard branch at lines 163-171 extracts up to that many bytes and merely decrements the counter (self._bytes_to_discard -= len(data), line 167); the extracted bytes are compared against nothing, unlike upstream h11 0.16.0 which stores the literal b'\\r\\n' and raises LocalProtocolError('malformed chunk footer') on mismatch (fix for CVE-2025-43859 / GHSA-vqfr-h8mv-ghfj, CVSS 9.1). Reachability: a remote peer simply frames its body with Transfer-Encoding: chunked, which selects this reader via READERS[SEND_BODY]['chunked'] (h11/_readers.py:243). Confirmed by executing the audited code: feeding b'5\\r\\nhelloXY0\\r\\n\\r\\n' or b'5\\r\\nhello\\n\\n0\\r\\n\\r\\n' to ChunkedReader yields Data(b'hello') followed by EndOfMessage instead of a RemoteProtocolError, i.e. 'XY' and even a bare LF are silently accepted as the required CRLF chunk delimiter. RFC 7230 requires CRLF after chunk-data, so any intermediary that parses the delimiter strictly (or differently) frames the same byte stream differently, producing exactly the front-end/back-end parsing discrepancy (smuggling/body desync) that the upstream security fix addresses."
+          },
+          {
+            "cwe": "CWE-400",
+            "path": "h11/_connection.py",
+            "line": 123,
+            "severity": "low",
+            "title": "Unbounded Content-Length digit length reaches int() and raises uncaught ValueError (remote DoS)",
+            "evidence": "_body_framing returns ('content-length', (int(content_lengths[0]),)) at h11/_connection.py:123, converting the raw attacker-controlled header value to a Python int. The guard added upstream in 0.15.0 (CONTENT_LENGTH_MAX_DIGITS = 20, checked in h11/_headers.py before the value is stored; the audited copy only validates it against /[0-9]+/ at h11/_headers.py:175) is absent, so a peer can send up to max_incomplete_event_size (16 KiB default) of digits. Confirmed by execution: h11.Connection(h11.SERVER).receive_data(b'GET / HTTP/1.1\\r\\nHost: x\\r\\nContent-Length: ' + b'9'*5000 + b'\\r\\n\\r\\n') followed by next_event() raises ValueError('Exceeds the limit (4300 digits) for integer string conversion') on CPython >= 3.11 rather than h11.RemoteProtocolError. This violates next_event()'s documented contract that no exception other than ProtocolError is emitted, so callers that only catch h11.ProtocolError (the expected error-handling pattern, e.g. HTTP servers) get an unhandled exception that aborts the request/connection; on interpreters without the int-conversion limit the same input forces parsing of a multi-kilobyte integer, which is the DoS the upstream cap was introduced to prevent."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-400",
+          "path": "h11/_connection.py",
+          "line": 123
+        },
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

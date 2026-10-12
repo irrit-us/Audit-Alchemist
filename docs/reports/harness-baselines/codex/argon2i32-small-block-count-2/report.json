@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "pymonocypher-argon2i-overflow-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 151074
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "argon2i32-small-block-count",
+        "outcome": "success",
+        "elapsed_ms": 151074,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-787",
+            "path": "c_monocypher.pyx",
+            "line": 345,
+            "severity": "high",
+            "title": "argon2i_32 does not enforce the minimum Argon2 block count, causing a heap buffer overflow",
+            "evidence": "argon2i_32 copies the caller-supplied nb_blocks straight into config.nb_blocks (line 328) and sizes the work area as malloc(nb_blocks * 1024) (line 345) with no lower-bound validation, even though monocypher.h documents nb_blocks >= 8 * nb_lanes (monocypher.h:160) and this binding hard-codes nb_lanes = 1 (line 330). Inside monocypher.c crypto_argon2 the effective block count is rounded down (segment_size = nb_blocks/nb_lanes/4, lane_size = segment_size*4, monocypher.c:752-754), but before that it unconditionally fills the first two 1024-byte blocks of every lane (monocypher.c:776-782), i.e. it always writes 2048 bytes to blocks[0] and blocks[1]. With nb_blocks = 1, segment_size and lane_size are 0, so the buffer is only 1024 bytes and the write at monocypher.c:781 overruns the heap allocation by 1024 bytes (nb_blocks = 0 is worse: malloc(0) followed by a 2048-byte write). With nb_blocks in 0..3 lane_size is 0, so last_block = blocks - 1 and the read at monocypher.c:911 also reads 1024 bytes before the buffer. Reachable directly from Python, e.g. monocypher.argon2i_32(1, 1, b'pw', b'salt1'), so any application that forwards an untrusted block count into this binding suffers heap memory corruption."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-787",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "dataset": "pymonocypher-argon2i-overflow-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 54781
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "argon2i32-small-block-count",
+        "outcome": "success",
+        "elapsed_ms": 54781,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-787",
+            "path": "c_monocypher.pyx",
+            "line": 347,
+            "severity": "high",
+            "title": "Unvalidated nb_blocks allows heap out-of-bounds in argon2i_32",
+            "evidence": "argon2i_32() passes caller-supplied nb_blocks straight into config.nb_blocks (line 328) with no minimum check; _validate_u32 (lines 316-319) is only applied to the buffer lengths, not to nb_blocks or nb_iterations. The work area is sized malloc(nb_blocks*1024) (line 345) and then handed to crypto_argon2 (line 347). In monocypher.c, crypto_argon2 computes segment_size = nb_blocks/nb_lanes/4 and lane_size = segment_size*4 (lines 752-753); with nb_lanes forced to 1 (line 330 of the .pyx), any nb_blocks < 4 makes segment_size = lane_size = 0. The core then unconditionally fills two 1024-byte blocks per lane, writing blocks[0] and blocks[1] (monocypher.c line 781), so nb_blocks of 0 or 1 writes up to 2048 bytes past a work_area of nb_blocks*1024 bytes (heap buffer overflow). For nb_blocks in {0,1,2,3} it additionally computes last_block = blocks + lane_size - 1 = blocks - 1 (monocypher.c line 902) and reads 1024 bytes before the allocation at line 911. The public header documents the required precondition nb_blocks >= 8 * nb_lanes (monocypher.h line 160). An attacker who controls the Argon2 cost parameters (e.g. KDF parameters parsed from untrusted input or a password-hash string) calls argon2i_32(nb_blocks=1, ...) and triggers heap memory corruption/out-of-bounds read."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-787",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

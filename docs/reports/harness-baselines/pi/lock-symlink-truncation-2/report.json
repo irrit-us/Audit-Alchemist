@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "dataset": "filelock-toctou-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 1,
+    "elapsed_ms": 66409
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "lock-symlink-truncation",
+        "outcome": "success",
+        "elapsed_ms": 66409,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_unix.py",
+            "line": 41,
+            "severity": "high",
+            "title": "Symlink following with O_TRUNC in UnixFileLock allows arbitrary file truncation",
+            "evidence": "UnixFileLock._acquire builds open_flags = os.O_RDWR | os.O_TRUNC at filelock/_unix.py:41 and then passes the caller/user-supplied lock_file path to os.open at filelock/_unix.py:44. No os.O_NOFOLLOW flag and no lstat/fstat validation of the final path component is performed, and os.open follows symbolic links. If an attacker who can write to the directory containing the lock file (or who can influence the configured lock path) creates a symlink at lock_file pointing to a victim file that the locking process can open for writing (for example ~/.ssh/authorized_keys, an application config, a database, or another user-owned file), then when the victim calls FileLock(...).acquire() or enters the lock as a context manager, os.open resolves the symlink and the O_TRUNC flag truncates the linked target to zero bytes, while O_RDWR grants a writable descriptor to it. The preceding Path(self.lock_file).exists() check at line 42 also follows symlinks, so a dangling symlink makes the code add O_CREAT and causes the symlink target to be created/truncated elsewhere. This is a concrete, reachable link-following/truncation primitive: the lock path is the only attacker-influenced input needed and acquire() is called on every normal lock usage. Upstream fixed the root cause by adding os.O_NOFOLLOW to the open flags in filelock 3.20.1; the audited copy at line 41 omits it."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "unexpected": [],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

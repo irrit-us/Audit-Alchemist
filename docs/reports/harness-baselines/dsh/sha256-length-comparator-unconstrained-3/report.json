@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 3,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 137486
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 137485,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 125,
+            "severity": "critical",
+            "title": "Unconstrained paddedInLength bypasses LessEqThan max-length check in Sha256General",
+            "evidence": "paddedInLength is an unbounded signal input (line 97) that is fed straight into the circomlib LessEqThan(maxBitsPaddedBits) comparator at lines 125-128 (bitLengthVerifier.in[0] <== paddedInLength; bitLengthVerifier.in[1] <== maxBitLength; bitLengthVerifier.out === 1) with no preceding Num2Bits(maxBitsPaddedBits) range check. circomlib's LessEqThan(n) only constrains the difference it computes (in[0] + 2^(n+1) - in[1] - 1 must decompose into n+2 bits); it does NOT constrain in[0] itself to n bits, so correctness is only guaranteed for inputs < 2^n. Because in[1] = maxBitLength is a compile-time constant and the required difference can be made small, a malicious prover can choose paddedInLength as a large field element (e.g. p - 1 style wrap-around) that is far greater than maxBitLength yet still makes bitLengthVerifier.out evaluate to 1. The only other constraint on the length, paddedInLength === inBlockIndex * 512 (line 111), is a linear equality and is satisfied by the matching field element inBlockIndex = paddedInLength * 512^-1, which the witness assignment at line 110 (inBlockIndex <-- (paddedInLength >> 9)) supplies. The result is that an out-of-range padded length is accepted, and the selected SHA-256 block index (line 195, arraySelectors[k].index <== inBlockIndex - 1) leaves the valid range. This is the exact bug class reported as 'Underconstrained Length Input of Sha256General Enables Forged Proofs' (microsoft/crescent-credentials issue #131); the fix is to range-check the length, e.g. component lenBits = Num2Bits(maxBitsPaddedBits); lenBits.in <== paddedInLength, before the comparator."
+          },
+          {
+            "cwe": "CWE-129",
+            "path": "array.circom",
+            "line": 25,
+            "severity": "critical",
+            "title": "ItemAtIndex selector index is not range-checked, allowing an out-of-range index to select an all-zero output",
+            "evidence": "ItemAtIndex bounds the selector only with lessThan = LessThan(bitLength) at lines 25-28 (lessThan.in[0] <== index; lessThan.in[1] <== maxArrayLen; lessThan.out === 1), which assumes index < 2^bitLength and constrains only the difference index + 2^bitLength - maxArrayLen, not index itself, and there is no check that exactly one eqs[i].out is 1 (the upstream zk-email template asserts calcTotalIndex.sum === 1; that check is absent here). The index is supplied by sha.circom:195 as inBlockIndex - 1, and inBlockIndex is only tied to paddedInLength by the linear relation paddedInLength === inBlockIndex * 512 (sha.circom:111). An attacker can therefore satisfy the constraints with an index outside [0, maxArrayLen): setting paddedInLength = 0 gives inBlockIndex = 0 and index = -1, i.e. the field element p-1. LessThan then computes (p-1) + 2^bitLength - maxArrayLen ≡ 2^bitLength - maxArrayLen - 1 (mod p), which is a non-negative value below 2^bitLength, so Num2Bits succeeds, the MSB is 0, lessThan.out === 1 passes, and the range check is bypassed. Because p-1 is not equal to any i in [0, maxArrayLen), every eqs[i].out = IsEqual(i, index) is 0, so calcTotal.nums[i] = 0 and out[k] <== calcTotal.sum = 0. The circuit thus accepts a witness with paddedInLength = 0 (or any wrapped length from the sha.circom:125 comparator bypass) and emits an all-zero 256-bit SHA-256 output that is completely detached from the real compression state, enabling forged proofs. Fix: range-constrain index (or inBlockIndex) with Num2Bits and restore the exactly-one-match constraint."
+          },
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 237,
+            "severity": "high",
+            "title": "Unconstrained paddedInLength bypasses LessEqThan max-length check in Sha256Partial",
+            "evidence": "Sha256Partial contains the same duplicated root cause: paddedInLength is an unbounded signal input (line 219) fed directly into LessEqThan(maxBitsPaddedBits) at lines 237-240 (bitLengthVerifier.in[0] <== paddedInLength; bitLengthVerifier.in[1] <== maxBitLength; bitLengthVerifier.out === 1) with no Num2Bits(maxBitsPaddedBits) range check, while circomlib's LessEqThan(n) only guarantees correctness for inputs below 2^n. As in Sha256General, the accompanying constraint paddedInLength === inBlockIndex * 512 (line 234) and the witness assignment at line 233 do not bound paddedInLength to maxBitLength, so a prover can pass a wrapped large field element that keeps bitLengthVerifier.out === 1 and then drive the selector index inBlockIndex - 1 out of range (line 292), reaching the same unvalidated LessThan in array.circom:25 and the all-zero-output forgery. This template is reachable from Sha256BytesPartial (sha.circom lines 47-79), which is a public entry point. Fix: range-constrain paddedInLength before the comparator in both templates."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 125
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 237
+        },
+        {
+          "cwe": "CWE-129",
+          "path": "array.circom",
+          "line": 25
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 3,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 403663
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 403663,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-754",
+            "path": "ajna-v2/src/base/Pool.sol",
+            "line": 419,
+            "severity": "medium",
+            "title": "kickReserveAuction can be called while liquidation auctions with bad debt are still unsettled",
+            "evidence": "`kickReserveAuction()` has no guard that liquidation auctions are cleared before kicking the claimable-reserve auction (rc6 contains neither the older `_revertIfAuctionClearable(auctions, loans)` nor the fix's `_revertIfActiveAuctions(auctions)`; the only checks are the 2-week/72-hour timers). Any external caller can therefore kick a reserve auction (`KickerActions.kickReserveAuction`, Pool.sol:421) while a liquidation auction whose borrower still carries bad debt is pending. `KickerActions.kickReserveAuction` derives the claimable amount from the pool's full `t0PoolDebt * inflator` (see `_claimableReserves`, PoolHelper.sol:299-324), including debt that will never be repaid, moves it into `reserveAuction_.unclaimed` and pays msg.sender a 1% kicker award. Because `SettlerActions.settlePoolDebt` (SettlerActions.sol:135-146) settles a borrower's bad debt from pool reserves computed as `assets - liabilities`, and `liabilities` includes `reserveAuction_.unclaimed`, kicking the reserve auction first removes the reserves that would have absorbed the bad debt; the un-covered debt is then written off against the HPB bucket via `_forgiveBadDebt` (SettlerActions.sol:443-500), transferring the loss to HPB/lender deposits. Upstream fixed exactly this by adding `_revertIfActiveAuctions` (commit e258a849, \"Liquidation of positions with bad debt can cause losses for HPB depositors\")."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 145,
+            "severity": "high",
+            "title": "Anyone can settle a borrower's bad debt out of pool reserves with no cap, allowing reserves to be drained",
+            "evidence": "In `settlePoolDebt`, once the borrower has no collateral left (`borrower.collateral == 0`) the remaining `borrower.t0Debt` is reduced directly by `Maths.min(borrower.t0Debt, Maths.floorWdiv(assets - liabilities, poolState_.inflator))`, i.e. pool reserves are used to repay the debt. There is no cap (no time gate, no per-borrower reserve limit) and `settle()` is permissionless (`ERC20Pool.settle`, ERC20Pool.sol:363). An attacker controlling a lender account and a borrower account can manufacture bad debt: deposit in a bucket far above market to inflate LUP, pull almost all collateral from the loan (BorrowerActions removeCollateral path), lender-kick the borrower to revive HTP, `bucketTake` until the collateral is consumed so only a small residual debt remains, then call `settle()` to have that residual debt paid from reserves; the attacker then withdraws the LP, extracting the reserves, and repeats. Reachable and unbounded in this snapshot; upstream removed reserve-funded bad debt settlement (commits 290d6cf6 / ce7b42b4, fix for Sherlock-3 \"Reserves can be stolen by settling artificially created bad debt from them\")."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 486,
+            "severity": "medium",
+            "title": "Bucket-bankruptcy check in _forgiveBadDebt uses unscaled deposit value",
+            "evidence": "`_forgiveBadDebt` tracks `depositRemaining` in unscaled (Fenwick) units (it is `unscaledDeposit - Maths.wdiv(debt, scale)`), but the bankruptcy check multiplies it by `Maths.WAD` instead of the bucket's `scale`: `if (depositRemaining * Maths.WAD + hpbBucket.collateral * _priceAt(index) <= bucketLP)`. When a bucket's scale differs from 1e18 the exchange-rate-rounds-to-zero test is off by the scale factor, so a healthy bucket can be declared bankrupt and `hpbBucket.lps` set to 0 (forfeiting all depositors' LP) or a genuinely dust bucket can be missed. The branch is reachable by anyone calling `settle()` on a kicked borrower that still has bad debt (requires `borrower.t0Debt != 0 && borrower.collateral == 0` after step 1) in a pool where the HPB deposit carrying the write-off has a non-1e18 scale. Upstream fixed this by scaling `depositRemaining` (commits 34734cbc / 03d255d7, \"HPB may be incorrectly bankrupt due to use of unscaled value in _forgiveBadDebt\")."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 145
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        },
+        {
+          "cwe": "CWE-754",
+          "path": "ajna-v2/src/base/Pool.sol",
+          "line": 419
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

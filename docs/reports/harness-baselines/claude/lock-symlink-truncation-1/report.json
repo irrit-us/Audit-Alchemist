@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "filelock-toctou-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 89271
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "lock-symlink-truncation",
+        "outcome": "success",
+        "elapsed_ms": 89270,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_unix.py",
+            "line": 44,
+            "severity": "high",
+            "title": "UnixFileLock opens lock path with O_TRUNC and no O_NOFOLLOW, truncating symlink target",
+            "evidence": "In _acquire, open_flags = os.O_RDWR | os.O_TRUNC (line 41) is passed to os.open(self.lock_file, open_flags, self._context.mode) (line 44) with no O_NOFOLLOW and no lstat check, so the open follows any symlink planted at the lock path and the kernel truncates the victim file to 0 bytes with the locking process's credentials. The Path(self.lock_file).exists() guard (line 42) also follows the link, and when the target does not exist it adds O_CREAT (line 43), creating/truncating the link target instead. Reachability: any caller doing FileLock(path).acquire() / 'with FileLock(path)' (or AsyncUnixFileLock/BaseAsyncFileLock, which route to this _acquire) reaches the sink; the attacker only needs to create a symlink at the lock path before acquisition, which is the classic precondition for predictable/shared lock paths (e.g. /tmp/myapp.lock). Upstream later fixed exactly this by adding os.O_NOFOLLOW and deferring ftruncate until after flock succeeds (filelock 4.0.12 _unix.py lines 79-85, referencing issue #591), confirming the root cause; SoftFileLock is not affected because its O_CREAT|O_EXCL open refuses to follow an existing symlink (EEXIST)."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_windows.py",
+            "line": 28,
+            "severity": "low",
+            "title": "WindowsFileLock opens lock path through reparse points, truncating symlink target",
+            "evidence": "In _acquire, flags = os.O_RDWR | os.O_CREAT | os.O_TRUNC (lines 22-26) is passed to os.open(self.lock_file, flags, self._context.mode) (line 28) with no reparse-point/symlink check, and the preceding raise_on_not_writable_file (line 20) stats through the link, so os.open follows a symlink planted at the lock path and O_TRUNC zeroes the target file as the locking user. Reachability is gated by link-creation privilege on Windows (SeCreateSymbolicLinkPrivilege/Developer Mode, or an admin-level actor; verified on this host that os.symlink without it fails with WinError 1314), hence low severity. Upstream 4.0.12 replaced this os.open with NtCreateFile + FILE_OPEN_REPARSE_POINT and explicitly rejects reparse points bound to the opened handle (filelock 4.0.12 _windows.py lines 188-190 and 215-271), confirming the same root-cause class was fixed there."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

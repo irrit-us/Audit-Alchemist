@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 4,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 710245
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 710245,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-191",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 466,
+            "severity": "high",
+            "title": "Bad-debt forgiveness underflows and reverts, leaving the liquidation unsettled",
+            "evidence": "`_forgiveBadDebt` is the only path that clears a bad-debt auction. In the `depositToRemove >= debt` branch it computes `uint256 depositUsed = Maths.wdiv(debt, scale)` (round-to-nearest) with no cap at the bucket's `unscaledDeposit`, then on line 467 does `depositRemaining = unscaledDeposit - depositUsed` and on line 470 removes `depositUsed` from the Fenwick tree. `wdiv` rounds up, so whenever `wmul(scale, unscaledDeposit) >= debt` holds while `wdiv(debt, scale) > unscaledDeposit` (which is possible for any bucket whose accumulated scale is <= ~2e18, i.e. a bucket that has accrued only modest interest), the subtraction on line 467 underflows and Solidity 0.8 reverts the whole `settle` call. The bad-debt liquidation can then never be cleared: `borrower.t0Debt` stays non-zero, the auction stays at `auctions.head`, and `_revertIfAuctionClearable` (invoked by addQuoteToken/moveQuoteToken/removeQuoteToken) reverts every lender operation. Upstream fixed this exact line by capping it: `Maths.min(Maths.wdiv(debt, scale), unscaledDeposit)`."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 486,
+            "severity": "high",
+            "title": "Bad-debt forgiveness values the remaining deposit with WAD instead of the bucket scale, wrongly forfeiting lender LP",
+            "evidence": "After forgiving bad debt from the HPB, the code decides whether the bucket must be bankrupted using `if (depositRemaining * Maths.WAD + hpbBucket.collateral * _priceAt(index) <= bucketLP)`. `depositRemaining` is an *unscaled* amount, so its real value is `depositRemaining * scale`, where `scale = Deposits.scale(...)` is >= WAD and grows as interest accrues. Multiplying by the constant `Maths.WAD` instead of the bucket's own `scale` understates the bucket's remaining value, so the `<= bucketLP` test is satisfied for buckets that still hold funds. The branch then executes `hpbBucket.lps = 0` (line 488) and sets `bankruptcyTime`, permanently wiping every existing LP holder's claim in that bucket. Any permissionless `settle` of a bad-debt auction can hit this path for the HPB. Upstream changed the multiplier to `scale` (`depositRemaining * scale + hpbBucket.collateral * _priceAt(index) <= bucketLP`)."
+          },
+          {
+            "cwe": "CWE-770",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 145,
+            "severity": "medium",
+            "title": "Unbounded use of pool reserves to settle bad debt",
+            "evidence": "Once step 1 leaves the borrower with `t0Debt != 0 && collateral == 0`, step 2 executes `borrower.t0Debt -= Maths.min(borrower.t0Debt, Maths.floorWdiv(assets - liabilities, poolState_.inflator))`, where `assets - liabilities` is the entire claimable reserve pool. There is no per-auction limit and no early-window restriction, so a single permissionless `settle` call made just after the 72-hour cooldown can consume all accumulated reserves to write off one borrower's bad debt. Upstream 1.0.0 added `Liquidation.t0ReserveSettleAmount` (set at kick to half the origination fee) and only allows settling up to that limit during the first 144 hours, precisely to stop reserves from being drained by one bad-debt liquidation."
+          },
+          {
+            "cwe": "CWE-754",
+            "path": "ajna-v2/src/base/Pool.sol",
+            "line": 419,
+            "severity": "medium",
+            "title": "Reserve auction can be kicked while a bad-debt liquidation is still unsettled",
+            "evidence": "`Pool.kickReserveAuction()` calls `KickerActions.kickReserveAuction(...)` unconditionally; unlike `KickerActions._kick`, it never checks `auctions.noOfAuctions`/the liquidation queue, so any account can start a claimable reserve auction while borrower auctions (including a bad-debt auction with zero collateral) are still unsettled. The kicked reserve amount is moved into `reserveAuction_.unclaimed`, and `settlePoolDebt` counts `reserveAuction_.unclaimed` in `liabilities` (line 141), so those quote tokens can no longer be used to cover the pending bad debt; the shortfall is socialized to lenders while the attacker (or any taker) can burn AJNA against `unclaimed`. Upstream 1.0.0 added a guard before the call, documented as `unsettled liquidation AuctionActive()`: `_revertIfActiveAuctions(auctions)`."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-191",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 466
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        },
+        {
+          "cwe": "CWE-754",
+          "path": "ajna-v2/src/base/Pool.sol",
+          "line": 419
+        },
+        {
+          "cwe": "CWE-770",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 145
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

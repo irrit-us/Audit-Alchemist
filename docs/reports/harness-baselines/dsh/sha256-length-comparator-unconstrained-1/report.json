@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 3,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 174539
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 174539,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 125,
+            "severity": "critical",
+            "title": "Sha256General length bound uses LessEqThan on an unconstrained field element",
+            "evidence": "Sha256General(maxBitLength) instantiates `component bitLengthVerifier = LessEqThan(maxBitsPaddedBits)` and feeds the raw field signal into it: `bitLengthVerifier.in[0] <== paddedInLength;` (line 126) and `bitLengthVerifier.out === 1;` (line 128). paddedInLength is never range-checked with Num2Bits anywhere in the file; the only other constraint is `paddedInLength === inBlockIndex * 512` (line 111), which merely forces a multiple of 512 mod p. circomlib's LessEqThan/LessThan only decomposes the modular difference (in[0] + 2^n - in[1], or in[1]+1 variant), assuming inputs already fit in n bits, so an attacker can choose paddedInLength = p-1 and inBlockIndex = (p-1)/512 (p = BN254 scalar); the internal difference wraps to 511 (< 2^maxBitsPaddedBits) and `out === 1` is satisfied even though paddedInLength is astronomically larger than maxBitLength. Sha256Bytes forwards the unconstrained value at line 33 (`sha.paddedInLength <== paddedInLength * 8`) without a bit-width constraint, so the only length bound protecting the SHA-256 block selection is bypassable. This is the root cause of the known forged-proof issue (microsoft/crescent-credentials#131, selfxyz/self#578)."
+          },
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 237,
+            "severity": "critical",
+            "title": "Sha256Partial length bound uses LessEqThan on an unconstrained field element",
+            "evidence": "Sha256Partial(maxBitLength) repeats the same defect as Sha256General: `component bitLengthVerifier = LessEqThan(maxBitsPaddedBits);` with `bitLengthVerifier.in[0] <== paddedInLength;` (line 238) and `bitLengthVerifier.out === 1;` (line 240). `paddedInLength` is only tied to `inBlockIndex` by `paddedInLength === inBlockIndex * 512` (line 234) and is never constrained to maxBitsPaddedBits bits, so the comparator's internal Num2Bits decomposes a modular difference that an attacker can force small (e.g. paddedInLength = p-1 with inBlockIndex = (p-1)/512). Sha256BytesPartial feeds its unconstrained byte length through line 65 (`sha.paddedInLength <== paddedInLength * 8`), making the bypass reachable from the prehash API as well. The intended `paddedInLength <= maxBitLength` guard is therefore not enforced."
+          },
+          {
+            "cwe": "CWE-129",
+            "path": "array.circom",
+            "line": 25,
+            "severity": "high",
+            "title": "ItemAtIndex bounds check on the block index is itself unconstrained and has no exactly-one-match constraint",
+            "evidence": "ItemAtIndex(maxArrayLen) validates its index only with `component lessThan = LessThan(bitLength); lessThan.in[0] <== index; lessThan.in[1] <== maxArrayLen; lessThan.out === 1;` (lines 25-28) and never range-constrains `index`, so the same modular-overflow bypass applies (for maxBlocks=3, index = p-2 gives an internal difference of p+3 = 3, so `lessThan.out === 1`). Contrary to the comment at line 39, there is no constraint that exactly one `eqs[i].out` equals 1, so an out-of-range index makes every IsEqual output 0 and `calcTotal.sum = 0`. sha.circom lines 195 and 292 feed this component with `arraySelectors[k].index <== inBlockIndex - 1`, where `inBlockIndex` is an unconstrained witness derived from the unconstrained paddedInLength. A prover can set inBlockIndex = p-1 (so paddedInLength = 512*(p-1) mod p = p-512, which still satisfies the length equality and passes the length check at line 125) and index = p-2; the bound check passes via wraparound, yet no selector matches, so all 256 output bits of Sha256General/Sha256Partial are forced to 0. The circuit therefore accepts a forged all-zero SHA-256 digest detached from any real compression state."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 125
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 237
+        },
+        {
+          "cwe": "CWE-129",
+          "path": "array.circom",
+          "line": 25
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

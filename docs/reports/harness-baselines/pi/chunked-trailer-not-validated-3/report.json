@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 146562
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 146562,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 164,
+            "severity": "high",
+            "title": "Chunked body chunk terminator (trailing CRLF) is not validated",
+            "evidence": "ChunkedReader accepts any two bytes as the terminator of a chunk instead of requiring CRLF. After a chunk's payload is consumed, __init__ sets self._bytes_to_discard = 2 (line 197) and __call__ later does `data = buf.maybe_extract_at_most(self._bytes_to_discard)` (line 164) followed by `self._bytes_to_discard -= len(data)` (line 167) with no comparison against b\"\\r\\n\"; any two bytes are silently discarded and the next chunk-size line is parsed from whatever follows. This code is reached for every message whose framing selects the chunked reader (READERS['chunked'] -> ChunkedReader, populated by _connection.py from Transfer-Encoding: chunked), with attacker-controlled bytes supplied through Connection.receive_data(). Reproduced against this tree: feeding a SERVER connection `GET /one HTTP/1.1\\r\\nHost: localhost\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n5\\r\\nAAAAAXX2\\r\\n45\\r\\n0\\r\\n\\r\\n` is accepted and decoded as body b'AAAAA45' even though `XX` is an invalid chunk terminator. A front-end proxy/lb whose chunked parser consumes bytes up to the next CRLF (the pound bug described in GHSA-vqfr-h8mv-ghfj) can therefore accept the same byte stream but frame it differently, giving inconsistent request boundaries (request smuggling). The fix in h11 0.15.0/0.16.0 makes _bytes_to_discard a byte string b\"\\r\\n\" and raises LocalProtocolError when the consumed bytes differ."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 98213
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 98213,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 164,
+            "severity": "critical",
+            "title": "Chunk footer after chunk data is not validated to be CRLF (request smuggling primitive)",
+            "evidence": "CVE-2025-43859: ChunkedReader consumes exactly self._bytes_to_discard (=2, a bare count set at h11/_readers.py:197) bytes after each chunk and accepts them unconditionally. At lines 163-167 it calls buf.maybe_extract_at_most(self._bytes_to_discard) and only subtracts len(data); it never compares the bytes to b'\\r\\n' as RFC 7230 requires, so ANY two bytes terminate a chunk. The upstream fix (0.16.0) changed _bytes_to_discard to b'\\r\\n' and raises LocalProtocolError('malformed chunk footer') on mismatch. The bytes are fully attacker-controlled and reach the sink directly: ChunkedReader is the body reader selected by the attacker's 'Transfer-Encoding: chunked' header (READERS map, h11/_readers.py:243), fed from the raw connection by Connection.receive_data. Verified against this exact 0.14.0 tree: h11.Connection(CLIENT).receive_data(b'HTTP/1.1 200 OK\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n5\\r\\nHELLOXX0\\r\\n\\r\\n') yields Response, Data(b'HELLO'), EndOfMessage (the junk 'XX' footer is accepted), and any bytes following it are parsed as a brand-new message; the pristine 0.16.0 rejects the same stream. A stream that h11 splits at the fake boundary while a stricter intermediary (e.g. a proxy that consumes the chunk terminator with a generic read-until-EOL helper) splits it differently is the classic front-end/back-end desync, enabling HTTP request smuggling and request/response queue poisoning. Per the advisory, standalone exploitation requires a co-located parser whose chunk parsing diverges, so this is a smuggling primitive reachable whenever h11 parses untrusted chunked framing rather than an end-to-end exploit by itself."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

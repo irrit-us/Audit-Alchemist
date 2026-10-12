@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 100606
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 100606,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 164,
+            "severity": "high",
+            "title": "Chunked body chunk-footer (CRLF) bytes are discarded without validation, enabling HTTP request smuggling",
+            "evidence": "In ChunkedReader.__call__, after a data chunk is fully consumed the reader sets self._bytes_to_discard = 2 (line 197) and on the next call blindly extracts up to that many bytes with buf.maybe_extract_at_most(self._bytes_to_discard) (line 164) and decrements the counter (line 167) without ever checking that the bytes are the RFC 7230-required CRLF. Attacker-controlled bytes therefore replace the chunk terminator: for example '5\\r\\nhelloXX5\\r\\nworld\\r\\n0\\r\\n\\r\\n' is accepted, with 'XX' silently swallowed as the footer. Because the following bytes are re-parsed as normal chunk framing/next message, a front-end that strictly requires CRLF can be desynchronized from h11, allowing a smuggled request to be parsed as a new request (confirmed by running the 0.14.0 package: 'accepted malformed footer: True' and a pipelined GET reaching next_event). The fix in 0.16.0 stores the literal b'\\r\\n' in _bytes_to_discard and raises LocalProtocolError('malformed chunk footer') when extracted bytes do not match, whereas this baseline (0.14.0) never validates them. The defect is reachable from any peer supplying an HTTP/1.1 message with Transfer-Encoding: chunked via Connection.receive_data/next_event."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

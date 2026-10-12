@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 1,
+    "elapsed_ms": 118329
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 118329,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-290",
+            "path": "src/verifier.js",
+            "line": 159,
+            "severity": "medium",
+            "title": "allowedIss issuer validation bypassed by an array-valued iss claim (loose any-match)",
+            "evidence": "validateClaimValues() at src/verifier.js:159 accepts a claim whenever ANY payload value matches ANY allowed matcher (`values.some(v => allowed.some(a => a.test(v)))`). This function is used for the single-valued `iss` validator registered at lines 474-476, which passes no `array` flag. The validator's `array` flag is consumed only to choose an error string in validateClaimType (lines 144-152) and is never enforced, so nothing rejects an `iss` array. Data flow: verify() decodes the token (line 281) and calls verifyToken() (line 310/352); decoder.js accepts a JSON object payload containing an array claim; in the validator loop value = payload['iss'], arrayValue = true, values = the array (lines 210-212); validateClaimType at line 221 passes because every element is a string; then line 226 calls validateClaimValues, and the loose `some` at line 159 lets a token with iss = ['https://attacker-domain/', 'https://valid-iss'] satisfy `allowedIss: 'https://valid-iss'`. An attacker reaches this by submitting a signed JWT whose payload carries that array. In deployments that derive the verification key from payload.iss (e.g. get-jwks with providerDiscovery, as in the advisory PoC), the attacker's own domain is used to fetch the attacker's public key, so the attacker-signed token verifies and issuer spoofing/auth bypass results (CVE-2025-30144 / GHSA-gm45-q3v2-6cf8). The upstream fix changed this path to require `values.every(...)` for non-array claims and to route genuinely-array claims (`aud`) through a separate any-match helper."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "unexpected": [],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

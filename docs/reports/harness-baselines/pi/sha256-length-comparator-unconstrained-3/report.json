@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 1,
+    "elapsed_ms": 333529
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 333528,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 126,
+            "severity": "high",
+            "title": "SHA-256 message-length bound uses LessEqThan on an unconstrained field input, allowing a near-p/negative length and an all-zero hash",
+            "evidence": "In Sha256General the only upper bound on the attacker-supplied SHA-256 message length is `component bitLengthVerifier = LessEqThan(maxBitsPaddedBits); bitLengthVerifier.in[0] <== paddedInLength; bitLengthVerifier.in[1] <== maxBitLength; bitLengthVerifier.out === 1;` (lines 125-128; identical block at 237-240 in Sha256Partial). `paddedInLength` is a free field element and is never range-checked with Num2Bits, but circomlib's LessThan/LessEqThan is only a sound integer comparator when both operands fit in `maxBitsPaddedBits` bits: it enforces range only through `n2b.in <== in[0] + (1<<n) - in[1]` and the sign bit of the resulting (n+1)-bit decomposition. A malicious prover can therefore choose `paddedInLength` equal to a small negative representative modulo the BN254 prime p (e.g. p-k), so the modular sum wraps to a small value and `bitLengthVerifier.out === 1` is satisfied for an out-of-range/negative length. Because `inBlockIndex` is tied to the length only by the field equation `paddedInLength === inBlockIndex * 512` (line 111/234), which is satisfiable for any length via field division, this is the only length check and it is bypassable. The derived selector index `arraySelectors[k].index <== inBlockIndex - 1` (line 196) is then a large near-p value that also defeats ItemAtIndex's `LessThan(bitLength)` bound (array.circom lines 25-28), so no `eqs[i]` matches and every `out[k]` is forced to 0. The prover thus produces a valid proof that the all-zero 256-bit value is the SHA-256 digest of an arbitrary/malformed message, breaking soundness for any consumer of Sha256General/Sha256Bytes (e.g. commitment schemes). Reachability: fully attacker-controlled witness inputs `paddedIn`, `paddedInLength` to Sha256Bytes/Sha256General; no external precondition beyond the ability to generate a proof."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "unexpected": [],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

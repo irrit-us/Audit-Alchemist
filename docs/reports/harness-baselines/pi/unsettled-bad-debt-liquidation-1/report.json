@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 1,
+    "elapsed_ms": 519160
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 519160,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-841",
+            "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+            "line": 168,
+            "severity": "high",
+            "title": "bucketTake writes down a borrower's debt using an impaired bucket deposit claim before other bad debt is recognized",
+            "evidence": "In TakerActions.bucketTake the target borrower's debt is reduced at line 168 (borrower.t0Debt = vars.t0BorrowerDebt - vars.t0RepayAmount). t0RepayAmount is produced by _calculateTakeFlowsAndBondChange (lines 749-774), which values the chosen bucket's quote deposit claim at face value via quoteTokenAmount = unscaledDeposit * bucketScale and divides it by the auction price, without requiring that this deposit already absorbed the bad debt of other undercollateralized loans. bucketTake only checks auctionPrice <= bucketPrice (line 439) and does not require the auction price to be at/below the external market price, so a high-priced bucket can be used. Reachable permissionlessly on any auction older than the 1h cooldown (line 699): an attacker can (1) deposit into a very high price bucket, (2) open a dust-collateralized loan A against it, (3) open a large well-collateralized loan B, (4) self-kick A then B so A's kick penalty pushes LUP to MIN_PRICE and B becomes liquidatable, and (5) after the cooldown call bucketTake(B, depositTake=false, highPriceIndex). The impaired bucket claim repays almost all of B's t0Debt at line 168 while only a small slice of B's collateral moves into the bucket; _rewardBucketTake (line 625) then mints the difference-value LP to the taker, who withdraws most of B's real collateral. The unpaid dust bad debt of A is left for the remaining bucket depositors/reserves, i.e. the workflow allows an already loss-bearing deposit claim to extract a healthy borrower's collateral before the loss is recognized and allocated (the on-chain Ajna protocol compromise)."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "unexpected": [],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

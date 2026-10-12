@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 63055
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 63055,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "high",
+            "title": "Panic in IntoIter::drop element deallocation re-drops buffer (double free / use-after-free)",
+            "evidence": "IntoIter::drop's helper drop_non_singleton (lines 2544-2550) takes the buffer out of the iterator with mem::replace(&mut this.vec, ThinVec::new()) (line 2546), stores it in the local `vec`, and only afterwards calls vec.set_len_non_singleton(0) (line 2548) to mark the elements dead. Between those two points it runs ptr::drop_in_place(&mut vec[this.start..]) (line 2547), which invokes the user-controlled Drop of each remaining element. If any element's Drop panics, line 2548 is never executed, so the local `vec` is still considered to hold vec.len() live elements. Rust then unwinds out of drop_non_singleton and drops the local `vec`; ThinVec::drop (lines 1910-1930) calls drop_in_place(&mut this[..]) on that stale length, dropping every element a second time. Elements [0, start) were already moved out by Iterator::next (ptr::read, line 2510) and may already have been consumed/dropped, and the element whose Drop panicked is dropped again as well, so this is a double free / use-after-free. The trigger is entirely safe Rust: define T with a Drop impl that panics, build a ThinVec<T> of heap-owning values (String/Box/Vec), call .into_iter() and drop the iterator before consuming it (e.g. after one next()), or wrap the region in panic::catch_unwind and reuse the Vec; this matches RUSTSEC-2026-0103 / CVE-2026-6654 (fixed only in thin-vec >=0.2.16). The standard library's IntoIter uses a DropGuard to write the new length before running fallible destructors; this code lacks that guard, which is the root cause."
+          },
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 1084,
+            "severity": "high",
+            "title": "Panic in ThinVec::clear element deallocation skips set_len(0), causing double free on later drop",
+            "evidence": "ThinVec::clear (lines 1082-1087) performs ptr::drop_in_place(&mut self[..]) (line 1084) and only then resets the length with self.set_len(0) (line 1085). drop_in_place runs each element's user-controlled Drop; if one of them panics, set_len(0) is skipped and the ThinVec still advertises its old len while the elements at and before the panicking index have already been dropped. The Vec is not repaired during unwinding, so when the ThinVec itself is later dropped (ThinVec::drop, line 1917, which does drop_in_place(&mut this[..]) over the stale length) every already-dropped element is dropped a second time => double free / use-after-free. Reachable from safe Rust with a T whose Drop panics while the vec holds heap-owning values, e.g. let v = thin_vec![Poison(Box::new(1),\"ok\"), Poison(Box::new(2),\"panic\")]; catch_unwind(AssertUnwindSafe(|| v.clear())) and then let v drop. Same root cause and advisory as the IntoIter case (RUSTSEC-2026-0103 / CVE-2026-6654); the length update must happen before/independently of the fallible destructor (drop guard), as std::vec::Vec does."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

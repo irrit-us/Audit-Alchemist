@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 1,
+    "elapsed_ms": 266717
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 266717,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-841",
+            "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+            "line": 168,
+            "severity": "critical",
+            "title": "bucketTake reward is priced with an attacker-controlled bucket price, letting the taker drain collateral and leave bad debt to LPs",
+            "evidence": "Root cause is the liquidation workflow in TakerActions.bucketTake -> _takeBucket -> _calculateTakeFlowsAndBondChange -> _rewardBucketTake. At line 168 (`borrower.t0Debt = vars.t0BorrowerDebt - vars.t0RepayAmount;`) the target borrower's debt is written down using values derived from the target bucket's quote deposit and scale (lines 431, 442, 749, 755), and _rewardBucketTake mints LP to the taker for `vars.collateralAmount * (vars.bucketPrice - vars.auctionPrice)` valued at vars.bucketPrice (lines 624-628), even though the taker only pays the much lower auction price. Bucket prices are permissionless and set solely by addQuoteToken deposits (no oracle), so an attacker can: (1) addQuoteToken into a very high-priced bucket with their own quote; (2) drawDebt against a tiny dust collateral amount so the position is liquidatable at the self-inflated LUP (PoolHelper._isCollateralized line 164 has no safety margin); (3) self-kick to create the auction; then (4) call bucketTake after the 1-hour cooldown with depositTake=false. The call settles/repays the auctioned borrower's debt at line 168, credits the newly purchased collateral into the bucket (line 664), and mints the taker an outsized LP reward because bucketPrice is self-inflated while auctionPrice is the real market price. The attacker then calls removeCollateral on the same bucket to burn that LP and withdraw the real collateral (ERC20Pool.removeCollateral has no lock), while the residual under-collateralized debt is socialized to genuine LP deposits via settle/_forgiveBadDebt. This is the reward-manipulation exploit used on mainnet against the 2023-07 legacy deployment (~$775K across seven pools). Reachable by any unprivileged account controlling the bucket deposit, the borrower position and the kicker/taker; no oracle or admin action is required."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "unexpected": [],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

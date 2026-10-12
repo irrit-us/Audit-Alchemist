@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 1,
+    "false_negatives": 0,
+    "precision": 0.5,
+    "recall": 1.0,
+    "f1": 0.6666666666666666,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 248631
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 248631,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 126,
+            "severity": "high",
+            "title": "Unconstrained SHA-256 message bit length defeats the length comparator (Sha256General)",
+            "evidence": "paddedInLength (declared line 97) is the only bound on how many SHA-256 blocks may be hashed, but it is never constrained to fit in maxBitsPaddedBits bits. Its sole constraint is paddedInLength === inBlockIndex * 512 (line 111), which in the BN254 scalar field is satisfiable for EVERY field element because 512 is invertible mod p, so paddedInLength can be a small negative such as p-512*m (with witness inBlockIndex = -m). LessEqThan(maxBitsPaddedBits) (line 125) is only sound when both operands fit in maxBitsPaddedBits bits: circomlib LessThan computes n2b.in = in[0]+(1<<n)-in[1] through Num2Bits(n+1) and out = 1-n2b.out[n]. With in[0]=paddedInLength (line 126) and in[1]=maxBitLength the decomposition wraps mod p, so for paddedInLength = p-512*m (m=1..5) the term 2^n-maxBitLength-1-512*m stays non-negative and bit n is 0, making the comparator return 1 even though the value is negative. The constraint bitLengthVerifier.out === 1 (line 128) therefore accepts paddedInLength far outside [0, maxBitLength]. The same negative value makes inBlockIndex-1 (arraySelectors[k].index, line 195) ~= p, which also fools ItemAtIndex's unconstrained LessThan(bitLength) (array.circom lines 25-28); no array index i equals that out-of-range index, so every eqs[i].out is 0 and ItemAtIndex returns 0, forcing out[256] (line 196) to the all-zeros hash for arbitrary input. Reachable end-to-end via Sha256Bytes, line 33: sha.paddedInLength <== paddedInLength * 8."
+          },
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 238,
+            "severity": "high",
+            "title": "Unconstrained SHA-256 message bit length defeats the length comparator (Sha256Partial)",
+            "evidence": "Same root cause as Sha256General. paddedInLength (declared line 219) is constrained only by paddedInLength === inBlockIndex * 512 (line 234), which is satisfiable for any field element since 512 is invertible mod the BN254 scalar field, so the prover can pass a negative length p-512*m with witness inBlockIndex = -m. LessEqThan(maxBitsPaddedBits) (line 237) requires its operands to fit in maxBitsPaddedBits bits (circomlib LessThan decomposes in[0]+(1<<n)-in[1] with Num2Bits(n+1)), but line 238 feeds the unconstrained paddedInLength into it; the reduction mod p makes the comparison return 1 for the negative value, so bitLengthVerifier.out === 1 (line 240) is satisfied although paddedInLength lies outside [0, maxBitLength]. The huge negative index then also passes ItemAtIndex's unsound LessThan (array.circom lines 25-28) while matching no in-range array index, so the selector output is 0 and out[k] (line 293) becomes the all-zeros hash regardless of the preHash/state passed in. Reachable via Sha256BytesPartial, line 65: sha.paddedInLength <== paddedInLength * 8."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "unexpected": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 238
+        }
+      ],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

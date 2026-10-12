@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 129134
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 129134,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "critical",
+            "title": "Double free / use-after-free when an element destructor panics in IntoIter::drop",
+            "evidence": "IntoIter::drop is not panic-safe. drop_non_singleton (lines 2544-2550) moves the vector out (mem::replace at 2546), then calls ptr::drop_in_place(&mut vec[this.start..]) at line 2547 while the header length still covers all original elements; the repair vec.set_len_non_singleton(0) at line 2548 only runs if drop_in_place completes. All of this is reachable from safe code: ThinVec::into_iter (line 2175) plus into_iter().next() (line 2503) ptr::reads yielded elements out (line 2510) without shrinking the header len, so after a partial consume the vec still claims len == n. If any T::drop panics during the drop_in_place at 2547 (e.g. a type with a panicking destructor dropped directly, or reached via catch_unwind), control never reaches line 2548, and unwinding drops the local `vec` through ThinVec::drop (lines 1910-1931, ptr::drop_in_place(&mut this[..]) at 1917) with the stale generous len n. That re-drops: (a) elements [0..start) already moved out by next()/next_back() and owned by the caller (use-after-free/double free), (b) elements [start..k] already dropped before the panicking element, and (c) the panicking element itself (double panic -> abort). Contrast the same crate's correct pattern in truncate (lines 1057-1064), which decrements len before drop_in_place precisely so a panicking Drop cannot re-drop. Upstream fixed exactly this in 0.2.16 by adding a DropGuard whose destructor sets the length to 0 before the elements are dropped ('Leak on panic'), confirming the root cause is the missing panic-safety here. Precondition: dropping a ThinVec/IntoIter<T> where T's destructor panics while not-yet-yielded elements remain."
+          },
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 1084,
+            "severity": "high",
+            "title": "Panic in element destructor during ThinVec::clear leaves stale length, causing double free on later drop",
+            "evidence": "ThinVec::clear (lines 1082-1087) calls ptr::drop_in_place(&mut self[..]) at line 1084 and only afterwards self.set_len(0) at line 1085. If any element's destructor panics, the set_len(0) never executes and the vector the caller still owns keeps its old length even though the prefix of elements was already dropped (slice drop glue drops the remaining elements during unwinding). Any later use of that value, in particular dropping (or clearing) the ThinVec after catch_unwind, runs ThinVec::drop (lines 1917-1924) which drops all len elements again, double-freeing the already-dropped elements and double-panicking on the panicking one. Reachable from safe code with a T that has a panicking Drop; upstream 0.2.16 fixed exactly this by adding a DropGuard that sets len to 0 during unwinding ('Decrement len even in the case of a panic'), confirming it is an acknowledged panic-safety defect rather than intended behavior."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

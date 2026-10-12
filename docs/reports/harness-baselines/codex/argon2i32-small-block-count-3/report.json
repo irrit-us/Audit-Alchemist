@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "dataset": "pymonocypher-argon2i-overflow-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 2,
+    "false_negatives": 0,
+    "precision": 0.3333333333333333,
+    "recall": 1.0,
+    "f1": 0.5,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 76428
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "argon2i32-small-block-count",
+        "outcome": "success",
+        "elapsed_ms": 76428,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-122",
+            "path": "c_monocypher.pyx",
+            "line": 345,
+            "severity": "high",
+            "title": "argon2i_32: unvalidated nb_blocks produces undersized work_area and a heap buffer overflow in crypto_argon2",
+            "evidence": "argon2i_32() is a public module-level API that takes nb_blocks straight from the caller: line 328 sets `config.nb_blocks = nb_blocks` (nb_lanes is forced to 1 on line 330) and line 345 allocates `malloc((<size_t> nb_blocks) * (<size_t> 1024))` with no lower-bound check. Monocypher requires nb_blocks >= 8 * nb_lanes (monocypher.h: 'uint32_t nb_blocks;  // memory hardness, >= 8 * nb_lanes') and does not re-check it. Inside monocypher.c:752-754 the block count is rounded down -- `segment_size = nb_blocks / nb_lanes / 4`, `lane_size = segment_size * 4` -- so for nb_blocks < 4 segment_size and lane_size are 0, yet the initialization loop at monocypher.c:776-782 unconditionally writes two 1024-byte blocks per lane (`load64_le_buf(blocks[l * lane_size + i].a, hash_area, 128)` for i in {0,1}), i.e. 2048 bytes, while the Python wrapper only allocated nb_blocks*1024 bytes. For nb_blocks == 0 or 1 that is a heap out-of-bounds write of 1024-2048 bytes (a 1024-byte chunk receives 2048 bytes). For nb_blocks == 2 or 3 the writes happen to fit, but monocypher.c:902 computes `blk *last_block = blocks + lane_size - 1` = blocks-1 and monocypher.c:911 reads 1024 bytes before the allocation via `store64_le_buf(final_block, last_block->a, 128)`; those out-of-bounds bytes are then hashed into the returned digest at monocypher.c:918 (`extended_hash(hash, hash_size, final_block, 1024)`), so the derived key is also a function of adjacent heap memory. Any application that exposes the Argon2 cost parameters (nb_blocks) to user input or configuration reaches attacker-controlled heap corruption by calling argon2i_32(1, ...)."
+          },
+          {
+            "cwe": "CWE-476",
+            "path": "c_monocypher.pyx",
+            "line": 347,
+            "severity": "low",
+            "title": "argon2i_32: malloc() return value is never checked before being passed to crypto_argon2",
+            "evidence": "Line 345 stores the result of malloc() in work_area and line 347 immediately passes it to `crypto_argon2(...)` inside a try/finally that only frees the pointer; a NULL return is never detected. Since nb_blocks is an unchecked uint32_t that can be up to 0xffffffff, a caller can request nb_blocks * 1024 bytes (up to ~4 TiB), which fails on normal hosts and returns NULL; crypto_argon2 then unconditionally dereferences the pointer (e.g. `load64_le_buf(blocks[l * lane_size + i].a, ...)` at monocypher.c:781, `store64_le_buf(blocks + lane_size - 1 ...)` at monocypher.c:911, and `ZERO(p, 128 * nb_blocks)` at monocypher.c:915), producing a NULL-pointer dereference and process crash (denial of service) instead of a Python exception."
+          },
+          {
+            "cwe": "CWE-190",
+            "path": "c_monocypher.pyx",
+            "line": 345,
+            "severity": "low",
+            "title": "argon2i_32: size_t multiplication nb_blocks * 1024 can wrap on 32-bit builds",
+            "evidence": "The work-area size is computed as `(<size_t> nb_blocks) * (<size_t> 1024)` with no overflow check. On a 32-bit build size_t is 32 bits, so a caller-supplied nb_blocks such as 0x400001 makes the product wrap to 1024, allocating a 1 KiB buffer while monocypher.c:754-757 treats the area as `(nb_blocks/4)*4` = 0x400000 blocks (4 GiB) of 1024-byte blocks; the writes in monocypher.c:777-782 and the fill loops corrupt the heap far past the allocation. The precondition is a 32-bit interpreter/platform (e.g. win32 Python), where any nb_blocks above 2^22 that wraps the product below the true requirement triggers the overflow; on 64-bit builds this specific wrap cannot occur."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "unexpected": [
+        {
+          "cwe": "CWE-190",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        },
+        {
+          "cwe": "CWE-476",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        }
+      ],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

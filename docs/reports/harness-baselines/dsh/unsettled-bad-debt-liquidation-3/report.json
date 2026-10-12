@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 535652
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 535652,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 145,
+            "severity": "high",
+            "title": "Permissionless settle writes off arbitrarily large liquidation bad debt against pool reserves, letting an attacker drain reserves",
+            "evidence": "ERC20Pool.settle(address,uint256) (ERC20Pool.sol:363) is external/permissionless and calls SettlerActions.settlePoolDebt. When a liquidated borrower is left with debt but zero collateral (line 133: borrower.t0Debt != 0 && borrower.collateral == 0), the remaining debt is settled out of the pool's reserves: assets = floorWmul(t0Debt - t0DebtSettled + borrower.t0Debt, inflator) + poolBalance (line 135) and liabilities = DEPOSIT_BUFFER*treeSum(deposits) + totalBondEscrowed + unclaimed (lines 137-141); line 145 then runs borrower.t0Debt -= min(borrower.t0Debt, floorWdiv(assets - liabilities, inflator)). There is no cap tying the reserve spend to this auction (this version has no Liquidation.t0ReserveSettleAmount and no 144h reserve-settle window; those were added as the fix). The attacker controls lender, borrower and kicker accounts in the same pool: (1) deposit quote into a bucket far above market to inflate LUP, (2) draw a loan and use the inflated LUP to pull almost all collateral (BorrowerActions.repayDebt's only collateral guard is the current LUP, lines 378-383), (3) lenderKick the loan so the kicker penalty/blocks the remaining bucket funds, (4) bucketTake(depositTake=true) the remaining collateral so the borrower has only a few quote-token units of debt and zero collateral, then (5) call settle on that borrower, which extinguishes the residual artificial bad debt from pool reserves via line 145. The attacker then withdraws the bucket funds and pockets the amount that was written off from reserves. Because the settled amount is bounded only by the pool's reserves, this is repeatable and drains reserves (lender/protocol funds), matching Sherlock 2023-09 Ajna issue H-1 'Reserves can be stolen by settling artificially created bad debt from them'."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 486,
+            "severity": "medium",
+            "title": "Unscaled depositRemaining in _forgiveBadDebt bankruptcy check wrongly bankrupts HPB buckets",
+            "evidence": "During settlePoolDebt, when the borrower's bad debt still cannot be covered, _forgiveBadDebt is invoked (line 150). In the branch where the HPB deposit covers the debt, depositRemaining is computed unscaled as unscaledDeposit - depositUsed (line 467) and then used unscaled at line 486: `depositRemaining * Maths.WAD + hpbBucket.collateral * _priceAt(index) <= bucketLP`. All other terms are WAD-scaled (Maths.WAD and _priceAt return WAD; bucketLP is LP in WAD), so the left side is understated by the bucket's scale factor. Whenever the bucket scale is > 1, the condition is satisfied far more often than intended, so lines 488-489 set hpbBucket.lps = 0 and bankruptcyTime = block.timestamp, making all lenders' LP unclaimable in a bucket that is not actually insolvent. This is permissionlessly reachable via settle() on any bad-debt auction whose HPB deposit covers the debt, and matches Sherlock 2023-09 Ajna issue M-3."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 145
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

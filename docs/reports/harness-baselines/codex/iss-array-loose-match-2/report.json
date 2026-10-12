@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 280592
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 280592,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-863",
+            "path": "src/verifier.js",
+            "line": 159,
+            "severity": "medium",
+            "title": "Loose any-match validation of array-valued iss/sub/nonce/jti claims bypasses claim pinning",
+            "evidence": "validateClaimValues now matches with `if (!values.some(v => allowed.some(a => a.test(v))))` (line 159). Upstream fast-jwt 5.0.6 has two distinct matchers: an `.every(...)` scalar matcher and a `.some(...)` validateClaimArrayValues used ONLY when the validator sets `array: true` (aud). This copy deleted validateClaimArrayValues and the `else if (array)` routing branch in verifyToken (lines 223-227), so the `.some` matcher is now applied to EVERY string claim, including iss/sub/nonce/jti which are registered without array:true (lines 466-484). validateClaimType (lines 144-152) only checks that element types equal 'string'; it never enforces that a non-array claim is a scalar, so a token whose iss is an array passes the type check and then only needs ONE element to equal the configured allowedIss. Reachability: verifyToken loops validators (line 209), normalizes payload[claim] into `values` (lines 210-212), type-checks it, then calls validateClaimValues at line 226 which reaches the loose `.some` at line 159. Runtime PoC with secret 'topsecret' and allowedIss 'https://trusted.example': this copy ACCEPTS iss=[\"https://evil.example\",\"https://trusted.example\"], while upstream 5.0.6 rejects it with FAST_JWT_INVALID_CLAIM_VALUE (scalar iss='https://evil.example' is rejected by both). Precondition: the attacker must present a token that is validly signed by the trusted key but whose iss/sub/nonce/jti is an array containing the trusted value (e.g. a shared/multi-tenant signing key or an issuer that emits array claims); under that precondition the verifier treats the token as issuer/subject/nonce-valid while carrying extra attacker-chosen values that downstream code reading payload.iss/payload.sub will trust, defeating issuer/subject pinning and the intent of allowedIss/allowedSub/allowedNonce."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-863",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

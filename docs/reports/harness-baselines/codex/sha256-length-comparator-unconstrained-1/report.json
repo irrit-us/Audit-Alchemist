@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 3,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 207275
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 207274,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 128,
+            "severity": "high",
+            "title": "SHA256 length comparator unconstrained: paddedInLength is not range-checked (Sha256General)",
+            "evidence": "In Sha256General (sha.circom:88) the input paddedInLength (declared line 97) is bounded by component bitLengthVerifier = LessEqThan(maxBitsPaddedBits) with bitLengthVerifier.in[0] <== paddedInLength; bitLengthVerifier.in[1] <== maxBitLength; bitLengthVerifier.out === 1 (lines 125-128). paddedInLength is never constrained to maxBitsPaddedBits bits, so this length comparator is only apparently restrictive. circomlib LessThan(n) (comparators.circom) range-checks only the single sum in[0]+(1<<n)-in[1] via Num2Bits(n+1) and derives out from that sum bit, so a paddedInLength congruent to a small negative mod the BN254 prime (e.g. p-512, or -64*k) keeps the sum small and makes lessThan.out evaluate to 1 incorrectly. The attacker-chosen paddedInLength then drives the non-deterministic witness inBlockIndex <-- (paddedInLength >> 9) (line 110), whose only tie to the input is the field-multiplicative equation paddedInLength === inBlockIndex * 512 (line 111), so inBlockIndex can be made ~p/512. Consequently arraySelectors[k].index <== inBlockIndex - 1 (line 195) is far out of range and defeats ItemAtIndex's own LessThan(bitLength) range check for the same reason, so arraySelectors[k].out is 0 for every bit. Unsafe sink: out[k] <== arraySelectors[k].out (line 196) emits an all-zero 256-bit digest for any message. Reachability precondition is narrow, as the audit notes: a consumer that instantiates Sha256Bytes/Sha256General as an isolated library template and does not otherwise constrain paddedInLength; EmailVerifier additionally applies AssertZeroPadding to emailHeaderLength/emailBodyLength so the end-to-end EmailVerifier path is not claimed here."
+          },
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 240,
+            "severity": "high",
+            "title": "SHA256 length comparator unconstrained: paddedInLength is not range-checked (Sha256Partial)",
+            "evidence": "Sha256Partial (sha.circom:211) has the same unconstrained length comparator as Sha256General. paddedInLength (declared line 219) is fed to LessEqThan(maxBitsPaddedBits) with bitLengthVerifier.in[0] <== paddedInLength; bitLengthVerifier.in[1] <== maxBitLength; bitLengthVerifier.out === 1 (lines 237-240) but is never constrained to maxBitsPaddedBits bits. Because circomlib LessThan(n) only range-checks in[0]+(1<<n)-in[1], a paddedInLength equal to a small negative (a large field element near p, e.g. p-512) makes that sum small and yields bitLengthVerifier.out === 1 incorrectly, so paddedInLength is not actually bounded by maxBitLength. The unconstrained witness inBlockIndex <-- (paddedInLength >> 9) (line 233) with only paddedInLength === inBlockIndex * 512 (line 234) lets inBlockIndex be ~p/512, so arraySelectors[k].index <== inBlockIndex - 1 (line 292) is out of range and ItemAtIndex returns 0. Unsafe sink: out[k] <== arraySelectors[k].out (line 293) then returns an all-zero 256-bit digest. Narrow precondition as in the General case: standalone/library use of Sha256BytesPartial/Sha256Partial with an unconstrained paddedInLength."
+          },
+          {
+            "cwe": "CWE-1284",
+            "path": "array.circom",
+            "line": 28,
+            "severity": "high",
+            "title": "ItemAtIndex index range check is unsound; out-of-bounds index silently yields 0",
+            "evidence": "ItemAtIndex (array.circom:15) validates the selector with component lessThan = LessThan(bitLength); lessThan.in[0] <== index; lessThan.in[1] <== maxArrayLen; lessThan.out === 1 (lines 25-28), but index is never constrained to bitLength bits. circomlib LessThan(n) range-checks only the sum in[0]+(1<<n)-in[1], so an index congruent to a large field element / small negative (for example inBlockIndex-1 when paddedInLength is set to p-512 in sha.circom) satisfies lessThan.out === 1 while still being >= maxArrayLen. Unlike the upstream implementation there is no calcTotalIndex.sum === 1 assertion, so when index matches no i, every eqs[i].out is 0 and the sum of eqs[i].out*in[i] is 0; unsafe sink out <== calcTotal.sum (line 45) therefore returns 0 instead of being rejected. Reached from sha.circom:195 and sha.circom:292 where index <== inBlockIndex - 1, making the SHA256 output all zeros regardless of the message."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-1284",
+          "path": "array.circom",
+          "line": 28
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 128
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 240
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

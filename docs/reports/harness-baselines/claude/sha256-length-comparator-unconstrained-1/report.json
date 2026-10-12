@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 3,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 304034
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 304034,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 128,
+            "severity": "high",
+            "title": "paddedInLength range check is unsound: LessEqThan bypass via field wraparound lets a prover declare an out-of-range bit length",
+            "evidence": "paddedInLength is a raw field-element input of Sha256General (sha.circom:97) that is never bounded before use; Sha256Bytes feeds it straight in as paddedInLength*8 (sha.circom:33) and Sha256BytesPartial likewise (sha.circom:65), so it is attacker-chosen in every proof. The only length check is bitLengthVerifier = LessEqThan(maxBitsPaddedBits) with in[0] <== paddedInLength, in[1] <== maxBitLength, out === 1 (sha.circom:125-128). Circomlib comparators only constrain in[0]+2^n-in[1] to be an (n+1)-bit value and assume in[0] < 2^n; nothing enforces that assumption here. Since the arithmetic is mod the BN254 scalar field p, any paddedInLength >= p - 2^n + maxBitLength + 2 wraps the comparator's internal sum to a small value and out === 1 still holds. Verified concretely: maxBitLength=1024 (maxByteLength=128, n=11, 2^n=2048) accepts paddedInLength = p-512 (internal value 511, top bit 0); maxBitLength=8192 (maxByteLength=1024, n=14, 2^n=16384) accepts paddedInLength = p-512t for t=1..15 (e.g. p-7680, internal value 511). Through the Sha256Bytes wrappers the same set is reachable from the public byte-length input as L = p-64t, because sha.paddedInLength = 8*L mod p (sha.circom:33, 65). The paired constraint paddedInLength === inBlockIndex*512 (sha.circom:111) is likewise satisfiable for these lengths with inBlockIndex = -t mod p (e.g. p-1), since the line-110 assignment inBlockIndex <-- (paddedInLength >> 9) is a non-deterministic hint, not a constraint. Result: the template's contract that the declared length is <= maxBitLength is not enforced, which is the root cause of the reported forged-proof vulnerability on this template chain (microsoft/crescent-credentials issue #133, 'Underconstrained Length Input of Sha256Bytes Enables Forged Proofs')."
+          },
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 240,
+            "severity": "high",
+            "title": "Same unsound paddedInLength range check in Sha256Partial (precomputed-state hashing)",
+            "evidence": "Sha256Partial, used by Sha256BytesPartial for chunked hashing with a precomputed state (sha.circom:47, 211), repeats the pattern: paddedInLength is an unbounded input signal (sha.circom:219) consumed directly by bitLengthVerifier = LessEqThan(maxBitsPaddedBits) with in[0] <== paddedInLength, in[1] <== maxBitLength, out === 1 (sha.circom:237-240), and tied to the selector index only by the mod-p equality paddedInLength === inBlockIndex * 512 (sha.circom:233-234). With maxBitLength = 8*maxByteLength the attacker sets paddedInLength = p - 512t for any t within the comparator slack (e.g. Sha256BytesPartial(1024): p-512t, t=1..15); the field wraparound makes the range check pass even though the declared length is ~p, and inBlockIndex = -t (crafted witness; the line-233 hint is not a constraint) satisfies line 234. Downstream circuits that rely on this circuit's length being a multiple of 512 within maxBitLength therefore accept proofs whose declared input length is far outside the valid range, and the partial-hash output is selected by the resulting p-t-1 index (line 292, all-zero output as detailed in the item-3 finding)."
+          },
+          {
+            "cwe": "CWE-191",
+            "path": "sha.circom",
+            "line": 195,
+            "severity": "high",
+            "title": "inBlockIndex has no lower bound; index = inBlockIndex - 1 wraps to p-1/negative and an all-zero hash is proven for arbitrary paddedIn",
+            "evidence": "inBlockIndex is produced by a non-deterministic hint (sha.circom:110) and constrained only by paddedInLength === inBlockIndex * 512 (sha.circom:111); there is no constraint inBlockIndex >= 1. With the public input paddedInLength = 0 the unmodified witness generator yields inBlockIndex = 0 (0 === 0*512 holds and the hint 0 >> 9 = 0 agrees), so arraySelectors[k].index <== inBlockIndex - 1 (sha.circom:195) evaluates to the field element p-1. ItemAtIndex's guard lessThan.in[0] <== index; lessThan.in[1] <== maxArrayLen; lessThan.out === 1 (array.circom:25-28) nevertheless passes: circomlib LessThan(bitLength) only checks that index + 2^bitLength - maxArrayLen decomposes into bitLength+1 bits, and for index = p-1 that value is 2^bitLength - maxArrayLen - 1 < 2^bitLength (guaranteed >= 0 by assert(2 ** bitLength > maxArrayLen) at array.circom:17), so its top bit is 0 and the guard is satisfied although p-1 is not < maxArrayLen. No IsEqual selector matches index (array.circom:35-41), so calcTotal.sum = 0 and out[k] <== arraySelectors[k].out (sha.circom:196) is 0 for all 256 bits. Consequence: a valid proof (all constraints satisfiable with the stock toolchain; paddedIn bytes are arbitrary, each only Num2Bits(8)-checked at sha.circom:27-31) of the false statement SHA256(paddedIn) = 0^256 with claimed length 0. The crafted-witness variant inBlockIndex = -t with paddedInLength = p-512t (finding 1) walks the same wrap: index = p-t-1 passes the identical LessThan check whenever t <= 2^bitLength - maxArrayLen - 1 (verified for maxBitLength=1024, maxBlocks=2, t=1 and maxBitLength=8192, maxBlocks=16, t=1..15), and again no selector matches, so the out-of-range-length forgery outputs the all-zero hash. Sha256Partial contains the identical construction at sha.circom:233-234 and 292."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 128
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 240
+        },
+        {
+          "cwe": "CWE-191",
+          "path": "sha.circom",
+          "line": 195
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

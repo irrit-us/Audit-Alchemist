@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "dataset": "pymonocypher-argon2i-overflow-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 116879
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "argon2i32-small-block-count",
+        "outcome": "success",
+        "elapsed_ms": 116879,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-122",
+            "path": "c_monocypher.pyx",
+            "line": 347,
+            "severity": "medium",
+            "title": "Heap buffer overflow in argon2i_32 from unvalidated nb_blocks",
+            "evidence": "argon2i_32 (c_monocypher.pyx:322) takes caller-supplied nb_blocks and assigns it straight into config.nb_blocks at line 328 with no range check, while the password/salt/key/ad lengths are validated by _validate_u32. Line 345 then allocates work_area = malloc(nb_blocks * 1024) and line 347 hands that buffer to crypto_argon2. Monocypher's own contract (monocypher.h:160) requires nb_blocks >= 8 * nb_lanes, and nb_lanes is hard-coded to 1 at line 330, so any nb_blocks < 8 is invalid; the C implementation nevertheless starts by unconditionally writing two 1024-byte blocks per lane (monocypher.c:776-783, blocks[l*lane_size + i] for i in {0,1}) before any count-dependent loop. For nb_blocks=1 only 1024 bytes are allocated but blocks[1] is written at offset 1024-2047 -> 1024-byte heap overflow; for nb_blocks=0 malloc(0) is used and blocks[0]/blocks[1] are still written. For nb_blocks=2 or 3 segment_size/lane_size round down to 0, so monocypher.c:902 computes last_block = blocks - 1 and reads/writes before the allocation (monocypher.c:902-915). An attacker controlling the work factor (e.g. a remotely supplied KDF parameter) reaches heap corruption/DoS; fixed upstream in 4.0.2.8 by adding this very check after config.nb_lanes = 1."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

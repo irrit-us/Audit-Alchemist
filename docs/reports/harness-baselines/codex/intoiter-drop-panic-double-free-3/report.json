@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 131986
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 131986,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "high",
+            "title": "Double free / double drop of elements when a destructor panics during IntoIter drop",
+            "evidence": "impl<T> Drop for IntoIter<T> (src/lib.rs:2539-2556) moves the buffer into a temporary owning local (line 2546, mem::replace(&mut this.vec, ThinVec::new())), drops the not-yet-yielded elements with ptr::drop_in_place(&mut vec[this.start..]) (line 2547), and only afterwards shrinks the length with vec.set_len_non_singleton(0) (line 2548). The length is not reset before the drop call and vec is an owning ThinVec local, so if any remaining elements destructor panics, the slice drop-glue drops the rest of the elements and then unwinding drops the vec local, running ThinVec::drop -> drop_non_singleton (src/lib.rs:1915-1924) over the still-full [..] slice: every element in [start, len) is destroyed a second time (double free / use-after-free) and the already-moved-out elements in [0, start) are destroyed too. Reachable from fully safe user code: any T whose Drop impl can panic, e.g. let v = thin_vec![Bad(1), Bad(0xbadbeef), Bad(3)]; drop(v.into_iter()); where Bad::drop panics. Contrast ThinVec::truncate (src/lib.rs:1055-1066), which deliberately calls set_len_non_singleton(new_len) BEFORE drop_in_place so a panicking destructor cannot re-drop the value; IntoIter::drop omits that guard. Reproduced locally against this exact source: a 3-element IntoIter whose middle element panics once on drop runs the element destructors a second time (observed call stack IntoIter::drop::drop_non_singleton -> ThinVec::drop::drop_non_singleton), and a String-owning variant aborts with STATUS_HEAP_CORRUPTION (0xC0000374), a real heap double-free/heap-corruption primitive from safe code."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

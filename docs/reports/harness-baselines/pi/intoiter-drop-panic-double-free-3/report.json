@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 76863
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 76862,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "critical",
+            "title": "Double free / use-after-free in IntoIter::drop when an element's Drop panics",
+            "evidence": "IntoIter::drop's drop_non_singleton moves the buffer out of the iterator with mem::replace at line 2546 and then drops the remaining elements with ptr::drop_in_place(&mut vec[this.start..]) at line 2547. The length-reset vec.set_len_non_singleton(0) at line 2548 is only reached if drop_in_place returns normally. If a T::drop panics, line 2548 is skipped, so the local `vec` still has its full original len. Unwinding then runs the destructor of the local `vec` (ThinVec<T>: Drop at line 1910), which calls ptr::drop_in_place(&mut this[..]) at line 1917 over the still-full length, re-dropping memory for every element, including the already-moved-out prefix [0..start] that next() yielded and the [start..] elements already destroyed by line 2547. This is a double free / use-after-free of heap-owning types (String, Box, Vec, etc.). Reachable from entirely safe Rust: create a ThinVec<T> where T owns heap memory and T::drop can panic, call v.into_iter(), consume part of it (or none), and drop the iterator (e.g. inside catch_unwind) so that line 2547 panics; the unwinding re-drops the buffer. Upstream fixed exactly this by wrapping the drop in a DropGuard that resets len even on unwind (0.2.16), and RUSTSEC-2026-0103 (GHSA-xphw-cqx3-667j) confirms it as code-execution/memory-corruption."
+          },
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 1084,
+            "severity": "critical",
+            "title": "Double free / use-after-free in ThinVec::clear when an element's Drop panics",
+            "evidence": "ThinVec::clear calls ptr::drop_in_place(&mut self[..]) at line 1084 and only then resets the length with self.set_len(0) at line 1085. If any element's Drop panics during the drop_in_place, line 1085 is never executed, leaving the ThinVec's header len unchanged. When the owning ThinVec is subsequently dropped (ThinVec<T>: Drop at line 1910), it calls ptr::drop_in_place(&mut this[..]) at line 1917 over that stale length, dropping every element a second time and freeing heap memory that was already freed. Reachable from entirely safe Rust: a ThinVec<T> of heap-owning elements whose Drop can panic, wrapped in catch_unwind so v.clear() panics at line 1084 and control unwinds out; the still-live v is then dropped at scope exit and double-frees the elements. Upstream fixed this in 0.2.16 by resetting len through a DropGuard that runs even on unwind, and RUSTSEC-2026-0103 lists ThinVec::clear as one of the two double-free root causes."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

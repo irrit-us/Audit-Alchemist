@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 73064
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 73064,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "high",
+            "title": "IntoIter::drop double-frees elements when an element's Drop panics",
+            "evidence": "In `IntoIter::drop` -> `drop_non_singleton` (lines 2544-2550), the vector is moved into a local `vec` at line 2546, `ptr::drop_in_place(&mut vec[this.start..])` is called at line 2547, and the length is only reset by `vec.set_len_non_singleton(0)` at line 2548. If any element's `Drop::drop` panics, unwinding skips line 2548 and drops the local `vec` while its header still holds the original length. `ThinVec::drop` (lines 1915-1923) then calls `ptr::drop_in_place(&mut this[..])` and `dealloc(...)` on the now-empty `this.vec`, so every element is dropped and the buffer is freed a second time. This includes the range `[start..len)` already dropped by line 2547 and the prefix `[0..start)` already moved out by `IntoIter::next` (line ~2510). Reachable from safe code: `let mut it = v.into_iter(); let _ = it.next(); drop(it);` where a remaining element's Drop panics; e.g. `catch_unwind(|| drop(it))` then the process observes the double free. This is the exact issue fixed in thin-vec 0.2.16 (RELEASES.md: 'Fix two double-drop issues with ThinVec::clear() and ThinVec::into_iter() when the Drop implementation of the item panics') by wrapping line 2547 in a DropGuard. PoC: /tmp/pocdd PoC 2."
+          },
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 1084,
+            "severity": "high",
+            "title": "ThinVec::clear double-frees elements when an element's Drop panics",
+            "evidence": "`ThinVec::clear` (lines 1082-1087) calls `ptr::drop_in_place(&mut self[..])` at line 1084 and only afterwards runs `self.set_len(0)` at line 1085. If any element's `Drop::drop` panics, unwinding skips line 1085 while the still-live vector retains its original length. When that vector is subsequently dropped, `ThinVec::drop` (lines 1915-1923) calls `ptr::drop_in_place(&mut this[..])` and `dealloc(...)`, dropping and freeing the already-dropped elements a second time (double free / use-after-free). Reachable from safe code without any unsafe block by the caller: build a vector whose element Drop can panic, call `v.clear()`, let the panic unwind (or catch it with `catch_unwind`), then drop `v`. This is the second issue fixed in thin-vec 0.2.16 (RELEASES.md) by wrapping line 1084 in a DropGuard that always runs `set_len(0)`. PoC: /tmp/pocdd PoC 1 and /tmp/pocfree."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

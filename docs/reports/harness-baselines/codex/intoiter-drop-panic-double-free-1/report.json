@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 98705
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 98705,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "high",
+            "title": "Double free in IntoIter::drop when an element's Drop panics",
+            "evidence": "IntoIter::drop's drop_non_singleton moves the buffer out with mem::replace (line 2546) into the local `vec`, then calls ptr::drop_in_place(&mut vec[this.start..]) (line 2547) and only afterwards does vec.set_len_non_singleton(0) (line 2548). drop_in_place has no unwind guard: if any element in vec[start..] has a Drop impl that panics, unwinding skips line 2548, so the local `vec` is itself dropped with its original length still recorded and ThinVec::drop (line 1917) re-runs drop_in_place over the whole range [0..len). That range includes elements in [0..start) that were already moved out by IntoIter::next (line 2510, ptr::read without forget/mark) and already dropped by the caller, and the tail elements that drop_in_place already dropped before the panicking one. Every one of those values is destroyed a second time, so types owning heap pointers (e.g. String/ThinVec) are freed twice. Reachable from entirely safe code: define a type whose Drop panics, push at least two elements into a ThinVec, call .into_iter(), consume at least one item with next(), then drop the iterator. The 0.2.16 upstream release note ('Fix two double-drop issues with ThinVec::clear() and ThinVec::into_iter() when the Drop implementation of the item panics') confirms this is the fixed sink; the fix replaces the unguarded sequence with a DropGuard that zeroes the length first."
+          },
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 1084,
+            "severity": "high",
+            "title": "Double free in ThinVec::clear when an element's Drop panics",
+            "evidence": "ThinVec::clear performs ptr::drop_in_place(&mut self[..]) (line 1084) and sets the length to zero only afterwards (line 1085). If an element's Drop impl panics partway through the slice, the length reset on line 1085 never runs, so the vector still reports its original len and ThinVec::drop (line 1917) drops the same range again, re-dropping every element that was already destroyed (the panicking element and all preceding ones) and double-freeing the heap resources they own. Reachable from safe code: build a ThinVec of two or more values whose Drop panics, then call v.clear(); the panic unwinds out of clear() and the subsequent drop of the still-non-zero-length vector frees the same allocations a second time. The 0.2.16 upstream release note names ThinVec::clear() as the sibling double-drop fixed alongside IntoIter::drop, and the fix wraps the drop in a DropGuard that zeroes the length even on panic."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

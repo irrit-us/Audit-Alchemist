@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 1,
+    "false_negatives": 0,
+    "precision": 0.5,
+    "recall": 1.0,
+    "f1": 0.6666666666666666,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 184523
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 184523,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-290",
+            "path": "src/verifier.js",
+            "line": 159,
+            "severity": "medium",
+            "title": "allowedIss (and jti/sub/nonce) accepted via loose element match when token claim is an array",
+            "evidence": "The scalar-claim validators for iss (line 475), jti (467), sub (479) and nonce (483) are registered without the array flag, yet validateClaimValues matches loosely: `if (!values.some(v => allowed.some(a => a.test(v))))` (line 159) passes as soon as ANY element matches an allowed value. In verifyToken, a token-supplied array is always normalized into a candidate list (`const arrayValue = Array.isArray(value)` line 211; `const values = arrayValue ? value : [value]` line 212), the element-wise type check at line 221 accepts an array of strings, and line 226 then applies the `.some()` predicate - so a JWT with `iss: [\"https://attacker.example/\", \"https://trusted-issuer\"]` (RFC 7519 requires iss to be a single string) is fully accepted because one element equals the configured allowedIss. Only aud is flagged `array: true` (line 471); for iss the flag is purely cosmetic, and the 'None of ...' message at line 157 confirms the partial-match semantics. The advisory exploit path (GHSA-gm45-q3v2-6cf8 / CVE-2025-30144) is the get-jwks pattern: the verifier's key fetcher resolves the JWKS from the token's iss domain, so an attacker serves their own JWKS, signs a forged token whose iss array contains both their domain and the trusted issuer, and the verifier accepts attacker-signed payloads because the issuer allow-list check passes on the matching element. Fixed upstream in fast-jwt 5.0.6 (commit cc26b1d) by requiring `values.every(...)` for scalar claims and routing arrays only through the `array`-flagged validator."
+          },
+          {
+            "cwe": "CWE-863",
+            "path": "src/verifier.js",
+            "line": 216,
+            "severity": "high",
+            "title": "Array payload silently skips every claim validator (exp/nbf/iss/aud/jti/nonce bypass)",
+            "evidence": "A JWT whose payload is a JSON array (e.g. `[]` or `[\"x\"]`) passes the decoder's object check because `typeof [] === 'object'` with no Array.isArray guard (src/decoder.js:38), and then in verifyToken the guard `if (!(claim in payload)) { continue }` (lines 216-218) is false for every string claim of an array (`'exp' in [] === false`), so each validator registered at lines 441-484 (nbf, exp, maxAge, jti, aud, iss, sub, nonce) is silently skipped. Only the signature check (line 139) runs, so any validly signed token - e.g. one minted with a shared HS256 secret or by a sibling service - is accepted regardless of expiration, not-before, issuer, audience or jti constraints; a correctly-signed `[\"x\"]` payload verifies while the equivalent object payload is correctly rejected as expired. `requiredClaims` (lines 198-204) is the only guard but is opt-in. Fixed upstream in fast-jwt 6.3.0 (CVE-2026-107723 / GHSA-5hjw-83fp-phq9) by rejecting array payloads in the decoder."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "unexpected": [
+        {
+          "cwe": "CWE-863",
+          "path": "src/verifier.js",
+          "line": 216
+        }
+      ],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

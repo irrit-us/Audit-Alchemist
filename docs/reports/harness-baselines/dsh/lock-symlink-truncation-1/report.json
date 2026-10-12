@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "dataset": "filelock-toctou-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 3,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 71619
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "lock-symlink-truncation",
+        "outcome": "success",
+        "elapsed_ms": 71618,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_unix.py",
+            "line": 44,
+            "severity": "high",
+            "title": "UnixFileLock follows a symlink at the lock path and truncates its target (O_TRUNC without O_NOFOLLOW)",
+            "evidence": "UnixFileLock._acquire() builds open_flags = os.O_RDWR | os.O_TRUNC (line 41) and then calls os.open(self.lock_file, ...) (line 44) with no O_NOFOLLOW and no lstat/symlink rejection. self.lock_file is the caller-supplied lock path (BaseFileLock.__init__, _api.py:184, os.fspath(lock_file)), which is frequently a predictable path in a world-writable directory such as /tmp. If a local attacker plants a symlink at that path pointing at a file the victim can write (e.g. /home/victim/.ssh/config), os.open resolves the link and O_TRUNC empties the target before fcntl.flock is even attempted. This is deterministic, not only a race: Path(self.lock_file).exists() (line 42) follows the link, reports True, so O_CREAT is omitted and the open truncates the link target immediately. Even when the link is swapped in after the exists() check, the check-then-open gap on lines 42-44 is a TOCTOU window (CWE-367) that lets the attacker win. After truncation the victim continues to hold and later fchmod/flock/close the descriptor, so the destructive write happens under the victim's own credentials without any write access to the target being needed. Fixed upstream in filelock 3.20.1 by adding O_NOFOLLOW (CVE-2025-68146 / GHSA-w853-jp5j-5j7f)."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_windows.py",
+            "line": 28,
+            "severity": "high",
+            "title": "WindowsFileLock follows a symlink/reparse point at the lock path and truncates its target (O_CREAT|O_TRUNC)",
+            "evidence": "WindowsFileLock._acquire() computes flags = os.O_RDWR | os.O_CREAT | os.O_TRUNC (lines 22-26) and calls os.open(self.lock_file, flags, ...) (line 28) without verifying that the path is a regular file or rejecting a reparse point (symlink/junction). The preceding guard raise_on_not_writable_file(self.lock_file) (line 20) does not help because it resolves the link target via os.stat (see _util.py:22) and only classifies mode/writability, it never refuses a symlink; the subsequent open resolves the reparse point and truncates the target. A local attacker on Windows (symlink creation requires Developer Mode or the create-symbolic-link privilege; junctions are also usable) who can write the directory containing a predictable lock path can therefore make the victim truncate an arbitrary file it can write. Upstream fixed this by adding a GetFileAttributesW reparse-point check before opening (CVE-2025-68146 / GHSA-w853-jp5j-5j7f)."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_util.py",
+            "line": 22,
+            "severity": "low",
+            "title": "raise_on_not_writable_file inspects a symlink's target via os.stat instead of lstat",
+            "evidence": "raise_on_not_writable_file() calls os.stat(filename) (line 22), which follows symbolic links, and then bases its PermissionError / IsADirectoryError decision on the link target's st_mode/st_mtime (lines 26-36). This helper gates the WindowsFileLock and SoftFileLock acquire paths (called at _windows.py:20 and _soft.py:17). A hostile symlink planted at the lock path therefore makes the writability pre-check inspect and disclose attributes of an attacker-chosen target file rather than reject the link, and it is the 'check' half of the check-then-open pattern that reaches os.open in _windows.py:28. Upstream changed this to os.lstat and moved the real defense to the open (O_NOFOLLOW / reparse-point check) in the 3.20.1 fix for CVE-2025-68146."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_util.py",
+          "line": 22
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

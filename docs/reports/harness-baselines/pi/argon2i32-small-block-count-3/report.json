@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "pymonocypher-argon2i-overflow-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 68464
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "argon2i32-small-block-count",
+        "outcome": "success",
+        "elapsed_ms": 68464,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-787",
+            "path": "c_monocypher.pyx",
+            "line": 347,
+            "severity": "high",
+            "title": "Unvalidated argon2 nb_blocks causes heap out-of-bounds write/read",
+            "evidence": "argon2i_32() copies the attacker/caller-controlled nb_blocks straight into config.nb_blocks at c_monocypher.pyx:328 and sizes the scratch buffer with malloc(nb_blocks*1024) at c_monocypher.pyx:345, but never enforces Monocypher's documented contract 'nb_blocks: memory hardness, >= 8 * nb_lanes' (monocypher.h:160). In crypto_argon2 (monocypher.c:749-751) nb_lanes is 1, so segment_size = nb_blocks/4 and lane_size = segment_size*4. When nb_blocks is small this rounds lane_size down to 0, yet the 'fill first 2 blocks of each lane' loop still writes blocks[0] and blocks[1] (monocypher.c:772-778), i.e. 2048 bytes. For nb_blocks=1 (and 0), malloc only allocated 1024 (or 0) bytes, so blocks[1] is a 1024-byte heap out-of-bounds write reached directly through the public argon2i_32() call at c_monocypher.pyx:347. Additionally, for nb_blocks in {0,1,2,3} lane_size==0 makes last_block = blocks + lane_size - 1 = blocks - 1 at monocypher.c:907, an out-of-bounds read of 1024 bytes before the buffer that is hashed into the returned key. No length/range check exists between the Python argument and the C call, so any caller supplying nb_blocks<8 triggers memory corruption."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-787",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

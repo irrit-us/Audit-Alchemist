@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 55523
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 55523,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "high",
+            "title": "IntoIter::drop double-free/UAF when an element's Drop panics",
+            "evidence": "In IntoIter::drop's drop_non_singleton (lines 2544-2554), the internal vec is moved out via mem::replace into a local `vec` (2546), its remaining elements are freed with ptr::drop_in_place(&mut vec[this.start..]) (2547), and only afterwards is the length neutralized with vec.set_len_non_singleton(0) (2548). If any element's destructor panics, unwinding skips set_len_non_singleton(0), so the local `vec` still has a nonzero length and its own Drop (ThinVec::drop, line 1910) runs drop_in_place over the same elements a second time, re-freeing already-freed memory (double free / use-after-free). Reachable from safe code: build a ThinVec<T> where T's Drop panics (e.g. thin_vec![T(1), T(2)]), call .into_iter(), and drop the IntoIter before fully consuming it (or let an element drop panic), then catch the unwind; std's vec::IntoIter avoids this with a DropGuard that deallocates without re-dropping. CVE-2026-6654 / RUSTSEC-2026-0103 (thin-vec <0.2.16)."
+          },
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 1084,
+            "severity": "high",
+            "title": "ThinVec::clear double-free/UAF when an element's Drop panics",
+            "evidence": "clear() (lines 1082-1086) frees its elements with ptr::drop_in_place(&mut self[..]) (1084) and only then resets the length with self.set_len(0) (1085). If an element's destructor panics, set_len(0) is never reached, so the ThinVec keeps a nonzero length; when the container is subsequently dropped, ThinVec::drop (1910) drop_in_place's the same slice again, re-freeing already-freed elements (double free / use-after-free). The std Vec::clear sets len to 0 *before* drop_in_place for exactly this reason. Reachable from safe code with a panicking Drop type: v.clear() inside catch_unwind, then drop v. CVE-2026-6654 / RUSTSEC-2026-0103 (thin-vec <0.2.16)."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

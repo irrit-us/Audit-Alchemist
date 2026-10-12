@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 92236
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 92236,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 164,
+            "severity": "critical",
+            "title": "Chunked-body CRLF terminator (chunk trailer) is consumed without validation, enabling HTTP request smuggling",
+            "evidence": "Root cause: ChunkedReader.__call__ treats the two bytes that follow each chunk's payload as the chunk terminator without checking that they are CRLF. The expected footer is encoded only as an integer count (self._bytes_to_discard = 2 at line 197); lines 163-170 then call data = buf.maybe_extract_at_most(self._bytes_to_discard) and self._bytes_to_discard -= len(data), blindly discarding whatever two bytes the peer sent. There is no comparison against b'\\r\\n', so any 2 bytes (e.g. 'XX') are accepted as the chunk terminator (upstream h11 >= 0.16.0 fixes this by storing b'\\r\\n' and raising LocalProtocolError('malformed chunk footer') on mismatch). Reachability via the public API: a peer that sends 'Transfer-Encoding: chunked' causes _body_framing to return ('chunked', ()) at h11/_connection.py:116-118, which selects READERS[SEND_BODY]['chunked'] == ChunkedReader (h11/_readers.py:242-246); every subsequent Connection.receive_data()/next_event() (h11/_connection.py:339-352) feeds attacker-controlled bytes into this reader. Impact: h11 accepts malformed chunked bodies, e.g. '5\\r\\nAAAAAXX2\\r\\n45\\r\\n0\\r\\n\\r\\n' is parsed by h11 as one chunk of data 'AAAAA' (the 'XX' terminator garbage silently discarded), while a peer parser that consumes the terminator by 'read until CRLF' sees a different chunk boundary, so the same byte stream is interpreted as different requests -> request smuggling / parser-differential desynchronization. Precondition (per GHSA-vqfr-h8mv-ghfj / CVE-2025-43859): exploitation requires a second, differently-lenient HTTP processor; h11's leniency alone is not by itself an end-to-end exploit."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

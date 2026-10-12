@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 177478
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 177477,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "high",
+            "title": "Double free / use-after-free in IntoIter::drop when an element's Drop panics",
+            "evidence": "Reachable from 100% safe code. `IntoIter::drop` (lines 2539-2556) calls the nested `drop_non_singleton` (2544-2550): it moves the backing `ThinVec` out with `mem::replace(&mut this.vec, ThinVec::new())` (2546), then destroys the not-yet-yielded elements with `ptr::drop_in_place(&mut vec[this.start..])` (2547), and only afterwards does `vec.set_len_non_singleton(0)` (2548). If any element's `Drop` panics (panic=unwind, the default), line 2548 never executes and the local `vec` is dropped during unwinding with its length still equal to the full original length; `ThinVec::drop` (1910-1930) then runs `ptr::drop_in_place(&mut this[..])` (1917) over 0..len, (a) re-dropping elements [start, panic_idx) that were already destroyed by the panicked drop_in_place (double free) and (b) dropping elements [0, start) that `Iterator::next` (2503-2513) already moved out via `ptr::read` and that the caller still owns (use-after-free / double drop of live values). Trigger: `let v = thin_vec![String::from(\"a\"), PanicOnDrop(...), ...]; let it = v.into_iter(); drop(it);` where a remaining element's Drop panics. This is RUSTSEC-2026-0103 / CVE-2026-6654 / GHSA-xphw-cqx3-667j (thin-vec < 0.2.16; this tree claims 0.2.15). The std fix pattern (set the length to 0 via a drop guard/zeroing BEFORE the element drop) is absent here; e.g. `truncate` at 1055-1066 in this same file does order `set_len` before `drop_in_place`, confirming the ordering here is the defect, not intended behavior. Impact: heap double free reachable from safe Rust, exploitable for memory corruption (the advisory documents an ACE primitive via vtable hijacking)."
+          },
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 1084,
+            "severity": "high",
+            "title": "Double free in ThinVec::clear when an element's Drop panics",
+            "evidence": "Reachable from 100% safe code. `ThinVec::clear` (lines 1082-1087) runs `ptr::drop_in_place(&mut self[..])` (1084) BEFORE `self.set_len(0)` (1085). If an element's `Drop` panics mid-clear (panic=unwind), `set_len(0)` is skipped and the `ThinVec` still reports its old length; when it is subsequently dropped (the normal case: it is a local variable, so it is dropped while the panic unwinds), `ThinVec::drop` (1910-1930) executes `ptr::drop_in_place(&mut this[..])` (1917) over 0..old_len, re-dropping the elements [0, panic_idx) that were already destroyed (double free). Trigger: `let mut v = thin_vec![String::from(\"x\"), DropsPanic, ...]; v.clear();` The std-equivalent implementation avoids this by being `self.truncate(0)`, and this file's own `truncate` (1055-1066) correctly decrements the length before each `drop_in_place`, confirming the ordering in `clear` is a defect. Advisory reference: RUSTSEC-2026-0103 / CVE-2026-6654 (thin-vec < 0.2.16; this tree claims 0.2.15). Impact: heap double free from safe Rust, memory corruption."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

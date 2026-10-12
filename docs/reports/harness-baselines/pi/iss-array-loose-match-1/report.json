@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 167192
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 167192,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-843",
+            "path": "src/verifier.js",
+            "line": 159,
+            "severity": "high",
+            "title": "JWT issuer validation bypass via array `iss` loose match",
+            "evidence": "The `iss` validator is registered without any scalar-only guard (src/verifier.js:474-476) even though `iss` must be a single string everywhere else in the library (signer.js:270-271 enforces `typeof iss === 'string'`; index.d.ts:108 types it as `string`; only `aud` is declared array-capable at src/verifier.js:470-472). In verifyToken the raw claim is used without rejecting arrays: `const value = payload[claim]` (line 210), `const arrayValue = Array.isArray(value)` (line 211), `const values = arrayValue ? value : [value]` (line 212). `validateClaimType` (lines 144-152) only checks `typeof` of each element, so an array of strings passes the type check, and `validateClaimValues` then matches with ANY semantics: `if (!values.some(v => allowed.some(a => a.test(v))))` (line 159). An attacker who supplies a signature-valid token whose payload contains `iss: [\"<allowed-issuer>\", \"<attacker-value>\"]` therefore passes the `allowedIss` check as long as exactly one array element matches, instead of being required to present a single string `iss`. The same omission applies to `jti`/`sub`/`nonce`. The array is attacker-controlled payload data and reaches the loose comparison via verifier(token) -> decode -> verifyToken -> validators loop (lines 209-227) -> validateClaimValues; the only precondition is that the token passes signature verification (or the deployment explicitly allows `alg: none`), so no array/scalar type guard protects the sink."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-843",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

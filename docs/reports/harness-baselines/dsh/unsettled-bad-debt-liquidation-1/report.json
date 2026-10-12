@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 2,
+    "false_negatives": 0,
+    "precision": 0.3333333333333333,
+    "recall": 1.0,
+    "f1": 0.5,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 522728
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 522728,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-841",
+            "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+            "line": 168,
+            "severity": "high",
+            "title": "bucketTake/take can leave a liquidation with residual bad debt unsettled while seizing all collateral",
+            "evidence": "bucketTake (ERC20Pool.sol:443) and take (ERC20Pool.sol:394) are permissionless and both rewrite the auctioned borrower at line 168 as borrower.t0Debt = vars.t0BorrowerDebt - vars.t0RepayAmount after line 167 has already removed vars.collateralAmount from borrower.collateral. In the collateral-constrained branch of _calculateTakeFlowsAndBondChange (lines 771-778) vars.collateralAmount is set to the full totalCollateral_ and vars.t0RepayAmount = Math.mulDiv(totalCollateral_, borrowerPrice, inflator_), which for an undercollateralized auction is strictly less than vars.t0BorrowerDebt; the quote-constrained branch (lines 753-761) behaves the same whenever the bucket deposit is smaller than the debt. The subsequent update in _takeLoan only settles the auction when _isCollateralized(borrowerDebt, borrower.collateral, newLup_, poolType) is true (line 523), which is false when borrower.collateral has been reduced to 0, so Loans.update is called with inAuction_ = true (line 549) and Pool._updatePostTakeState keeps the leftover debt inside poolBalances.t0DebtInAuction (Pool.sol:604-605). The workflow therefore leaves an auction permanently holding bad debt (collateral == 0, t0Debt > 0) instead of forcing settlement. Reachability: after the 1-hour cooldown (line 699) anyone can call bucketTake on any active auction; an attacker controlling a borrower, a lender and a kicker can inflate LUP by depositing quote into a very high bucket, pull almost all collateral because repayDebt only checks encumberedCollateral = wdiv(borrowerDebt, newLup) against that inflated LUP (BorrowerActions.sol:378-383), kick the loan so it leaves the HTP heap, then bucketTake to manufacture the residual bad debt."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 145,
+            "severity": "high",
+            "title": "settle spends pool reserves to cancel arbitrarily created liquidation bad debt with no per-auction cap",
+            "evidence": "settle() (ERC20Pool.sol:363) is permissionless and calls settlePoolDebt. Once the auctioned borrower has collateral == 0 (line 133), assets (line 135) is the whole pool debt plus the raw quote-token balance and liabilities (lines 137-141) reserves only the 0.1% deposit buffer, escrowed auction bonds and unclaimed reserves. Line 145 then subtracts min(borrower.t0Debt, floorWdiv(assets - liabilities, inflator)) from the borrower's debt, i.e. claimable reserves are converted into repayment of the borrower's bad debt, and the 72-hour guard at line 113 is skipped entirely when collateral == 0. Because the bad debt is attacker-creatable (see the TakerActions.sol:168 finding: a controlled borrower/lender/kicker can inflate LUP, withdraw collateral up to that inflated LUP, kick and then bucketTake), an attacker can generate residual bad debt at will, let settle cancel it against reserves, then redeem the bucket LP/take reward and keep the difference, repeating the cycle to drain reserves. This is Sherlock 2023-09 issue 71, later fixed by removing unconditional reserve settlement of bad debt."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 486,
+            "severity": "medium",
+            "title": "Bad-debt forgiveness tests bucket solvency with an unscaled deposit, wrongly bankrupting a solvent HPB",
+            "evidence": "In _forgiveBadDebt, depositRemaining is the unscaled Fenwick quantity computed at line 467 (unscaledDeposit - depositUsed), but the bankruptcy test at line 486 multiplies it by Maths.WAD instead of the bucket's scale (which is already available as `scale` from Deposits.findIndexAndSumOfSum at line 455). For any bucket that has accrued interest the scale is greater than WAD, so depositRemaining * WAD understates the bucket's real remaining value; a bucket that still holds meaningful quote/collateral can satisfy `<= bucketLP`, and lines 488-489 then set hpbBucket.lps = 0 and hpbBucket.bankruptcyTime = block.timestamp, forfeiting every existing LP holder's claim while the assets remain. The function is permissionlessly reachable through settle()/settlePoolDebt (line 150) whenever a liquidated borrower has zero collateral and residual debt after step 1, so any third party can trigger the wrongful bankruptcy at other depositors' expense. This is Sherlock 2023-09 issue 25 (M-3), fixed by scaling depositRemaining before the check."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "unexpected": [
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 145
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        }
+      ],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

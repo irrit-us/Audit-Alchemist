@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "filelock-toctou-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 52030
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "lock-symlink-truncation",
+        "outcome": "success",
+        "elapsed_ms": 52030,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_unix.py",
+            "line": 44,
+            "severity": "high",
+            "title": "UnixFileLock truncates symlink target via O_TRUNC without O_NOFOLLOW",
+            "evidence": "UnixFileLock._acquire builds open_flags as os.O_RDWR | os.O_TRUNC (line 41) and only ORs in os.O_CREAT when `not Path(self.lock_file).exists()` (line 42), then calls os.open(self.lock_file, open_flags, mode) (line 44). Path.exists() resolves symlinks, so when the lock path is a symlink to an existing regular file the check returns True, O_CREAT is omitted, and os.open() follows the link and truncates the target to zero bytes (and opens it O_RDWR). No O_NOFOLLOW / os.lstat validation is performed anywhere before the open, and the exists() check is also a TOCTOU window in which an attacker can plant the symlink after the check. Any local attacker who can create a symlink at the configured lock-file path (e.g. a lock placed in a shared/attacker-writable directory such as /tmp, or any directory the attacker can write) can therefore make the locking process destroy the contents of an arbitrary file it can write — including files owned by a more privileged user running the lock — yielding arbitrary file truncation/data loss and integrity impact. The same _acquire is inherited unchanged by AsyncUnixFileLock in filelock/asyncio.py:330, so the async API exposes the identical sink. filelock/_soft.py is not affected because it adds os.O_EXCL, which forces EEXIST on a symlink instead of following it. Also note the symlink branch: a dangling link to a nonexistent target additionally makes os.open create the attacker-chosen target file."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_windows.py",
+            "line": 28,
+            "severity": "low",
+            "title": "WindowsFileLock opens lock path with O_CREAT|O_TRUNC following reparse points",
+            "evidence": "WindowsFileLock._acquire builds flags os.O_RDWR | os.O_CREAT | os.O_TRUNC unconditionally (lines 22-26) and calls os.open(self.lock_file, flags, mode) (line 28) without any symlink/reparse-point check. If the lock-file path is (or is replaced by) a symlink or other reparse point to an existing file, the open follows it and truncates the target, giving the same arbitrary-file-truncation primitive as the Unix path. Reachability is limited because creating symlinks on Windows normally requires SeCreateSymbolicLinkPrivilege (administrator or Developer Mode), hence the lower severity, but the code provides no defense (no O_NOFOLLOW/Handle-based check, and raise_on_not_writable_file at line 20 uses os.stat which also dereferences links). The async AsyncWindowsFileLock inherits this _acquire unchanged."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

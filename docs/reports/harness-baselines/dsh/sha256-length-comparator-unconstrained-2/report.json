@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 210569
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 210569,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-20",
+            "path": "sha.circom",
+            "line": 126,
+            "severity": "high",
+            "title": "Length comparator overflow: LessEqThan on un-range-checked paddedInLength accepts out-of-range lengths",
+            "evidence": "Sha256General declares `signal input paddedInLength;` (line 97) and immediately feeds the raw prover-supplied value into circomlib `LessEqThan` at lines 125-128 (`bitLengthVerifier.in[0] <== paddedInLength; bitLengthVerifier.in[1] <== maxBitLength; bitLengthVerifier.out === 1`). No Num2Bits/range constraint is applied to paddedInLength first (the only other related statements are the witness assignment at line 110 and the equality at line 111). circomlib comparators explicitly assume their inputs are already bounded to n bits: LessEqThan(n) computes `Num2Bits(n+1)` over `in[0] + 2^n - in[1] - 1` and only inspects the MSB. A malicious prover sets `paddedInLength = p-1` (p = BN254 scalar modulus 21888242871839275222246405745257275088548364400416034343698204186575808495617); the internal sum wraps to `(p-1) + 2^n - maxBitLength - 1 = 2^n - maxBitLength - 1 < 2^n`, so the most-significant bit is 0 and `bitLengthVerifier.out === 1` is satisfied even though p-1 >> maxBitLength. The companion equality `paddedInLength === inBlockIndex * 512` (line 111) is met by `inBlockIndex = (p-1)/512`, so no constraint rejects the oversized length. Through Sha256Bytes the bit length is `paddedInLengthBytes * 8` (line 33), so the prover sets the byte length to `(p-1)/8` (an integer because p = 1 mod 8). The same defect is duplicated verbatim in Sha256Partial at lines 237-240. This is the upstream-advisory 'Length Check Bypass' (microsoft/crescent-credentials#131, selfxyz/self#578): the intended bound `paddedInLength <= maxBitLength` is not enforced."
+          },
+          {
+            "cwe": "CWE-129",
+            "path": "sha.circom",
+            "line": 195,
+            "severity": "high",
+            "title": "Selector index `inBlockIndex - 1` can be field-wrapped to p-1, bypassing ItemAtIndex bounds check and producing an all-zero forged hash",
+            "evidence": "`inBlockIndex` is produced by the witness-only operator `<-- (paddedInLength >> 9)` at line 110 and is tied to the length only by `paddedInLength === inBlockIndex * 512` at line 111; the floor/range verifiers that would bound it are commented out (lines 113-122). The length check accepts `paddedInLength = 0`, which forces `inBlockIndex = 0`, so line 195 computes `arraySelectors[k].index <== inBlockIndex - 1 = -1 ≡ p-1 (mod p)` for all 256 selectors (same at line 292 in Sha256Partial). ItemAtIndex validates this index with `LessThan(bitLength)` at array.circom lines 25-28, but that comparator is unsound for out-of-range field elements: it decomposes `index + 2^b - maxArrayLen` with Num2Bits(b+1) and tests the MSB; with `index = p-1` the value wraps to `2^b - maxArrayLen - 1`, which is < 2^b (since 2^b > maxArrayLen), so `lessThan.out === 1` passes even though p-1 is far outside [0, maxArrayLen). Because no `i` in [0, maxArrayLen) equals p-1, every `IsEqual` output is 0, so `CalculateTotal.sum` is 0 (array.circom lines 34-45) and all 256 output bits become 0. A prover can thus satisfy the entire circuit while asserting that a message hashes to the all-zero digest with no compression block selected. By also using the length overflow above, the same all-zero output can be produced for an out-of-range `paddedInLength` near p, decoupling the claimed length from any real SHA-256 state (upstream 'Selector Bypass', microsoft/crescent-credentials#131 / selfxyz/self#578)."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-129",
+          "path": "sha.circom",
+          "line": 195
+        },
+        {
+          "cwe": "CWE-20",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

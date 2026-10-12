@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 93950
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 93950,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 164,
+            "severity": "high",
+            "title": "Chunked-encoding chunk terminator (footer) is discarded without validation, enabling HTTP request smuggling",
+            "evidence": "In ChunkedReader.__call__, once a chunks data is fully consumed the reader sets self._bytes_to_discard = 2 (line 197) and on the next invocation extracts that many bytes via buf.maybe_extract_at_most(self._bytes_to_discard) (line 164) and subtracts them (line 167) without ever checking that the extracted bytes equal the required CRLF chunk terminator; only the byte count is enforced, never the byte content. Attacker-supplied bytes occupying the position where CRLF belongs are silently swallowed and parsing resumes at the next chunk-size line. Confirmed locally: feeding POST / HTTP/1.1<CRLF>Host: x<CRLF>Transfer-Encoding: chunked<CRLF><CRLF>5<CRLF>helloXX0<CRLF><CRLF> to h11.Connection(h11.SERVER).receive_data yields Request, Data(b hello ), EndOfMessage(headers=[]), with no RemoteProtocolError, i.e. the malformed footer XX is accepted. Upstream h11 0.16.0 fixes exactly this by storing the literal CRLF and comparing the discarded bytes, raising LocalProtocolError(malformed chunk footer); the 0.14.0 code here (identical to the released PyPI 0.14.0) lacks that comparison. Because h11 accepts a non-CRLF chunk terminator while a front-end proxy or other component that requires strict CRLF either rejects the message or consumes those bytes differently, the two parsers desynchronize over the same byte stream, enabling HTTP request smuggling/desync (CWE-444). Precondition: the peer must be able to send a malformed chunked body and h11 must be paired with a component that parses the terminator more strictly; this is a parser-differential rather than a standalone compromise."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

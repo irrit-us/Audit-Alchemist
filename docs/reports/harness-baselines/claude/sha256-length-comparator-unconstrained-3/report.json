@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 413581
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 413581,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 128,
+            "severity": "high",
+            "title": "Sha256General length comparator is unconstrained: paddedInLength can be 0 (or an out-of-range field element), breaking the SHA-256 soundness relation",
+            "evidence": "Root cause: paddedInLength (sha.circom:97) is an unconstrained field-element input. Its only validation is the LessEqThan length comparator at sha.circom:125-128 (bitLengthVerifier.out === 1). circomlib's LessThan(n) (comparators.circom:89-99) does not range-check its inputs: it only requires that the modular linear combination in[0] + 2^n - in[1] (lessEqThan adds 1 to in[1]) be representable as an (n+1)-bit value via Num2Bits(n+1), so any paddedInLength >= p - 2^n satisfies out === 1 even though paddedInLength > maxBitLength. There is also no lower bound: nothing forces paddedInLength >= 512 (i.e. inBlockIndex >= 1), and the author's comment at sha.circom:195 ('block numbers are 1 indexed') shows inBlockIndex == 0 was never expected. Reachability: (1) A prover sets paddedInLength = 0 (an entirely in-range value that trivially passes sha.circom:125-128: Num2Bits input 511, top bit 0, so out=1). (2) paddedInLength === inBlockIndex * 512 (sha.circom:111) then forces inBlockIndex = 0. (3) arraySelectors[k].index <== inBlockIndex - 1 (sha.circom:195) becomes the field element p-1. (4) ItemAtIndex's guard (array.circom:25-28) is the same wrappable LessThan: (p-1) + 2^bitLength - maxArrayLen reduces mod p to 2^bitLength - maxArrayLen - 1, which is always in [0, 2^bitLength) with top bit 0, so lessThan.out === 1 passes (numerically verified: maxBlocks=1 -> 2, maxBlocks=2 -> 1, maxBlocks=3 -> 4). (5) No eqs[i] = IsEqual(i, p-1) matches, so calcTotal.sum = 0 and every out[k] <== arraySelectors[k].out (sha.circom:196) is 0. Alternative bypass: paddedInLength = p - 512 also satisfies the length comparator whenever 2^maxBitsPaddedBits >= maxBitLength + 1024 (e.g. maxBitLength = 1024: Num2Bits input 511, verified), again yielding inBlockIndex = -1 and out = 0^256. Effect: any prover can satisfy Sha256General/Sha256Bytes (byte path: paddedInLength = 0 at sha.circom:33; or p-64, since 8*(p-64) = -512 mod p) and obtain out = 0 for arbitrary paddedIn content, proving the false statement that a SHA-256 digest equals zero; the circuit output is no longer bound to the supplied padded message/length, i.e. forged proofs of SHA-256 statements (the known 'underconstrained length input of Sha256General' soundness break, microsoft/crescent-credentials issue #131, inherited from this upstream code)."
+          },
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 240,
+            "severity": "high",
+            "title": "Sha256Partial length comparator is unconstrained: paddedInLength can be 0 or an out-of-range field element, yielding a forged all-zero partial hash",
+            "evidence": "The partial-hash template has the identical defect as Sha256General. paddedInLength (sha.circom:219) is an unconstrained field-element input validated only by the LessEqThan comparator at sha.circom:237-240 (bitLengthVerifier.out === 1); circomlib's LessThan(n) (comparators.circom:89-99) only constrains the wrapped combination in[0] + 2^n - in[1] with Num2Bits(n+1), and LessEqThan adds 1 to in[1], so values paddedInLength >= p - 2^n pass the bound check, and there is no lower bound forcing inBlockIndex >= 1. Chain: with paddedInLength = 0 (or any length < 512), the constraint paddedInLength === inBlockIndex * 512 (sha.circom:234) gives inBlockIndex = 0; arraySelectors[k].index <== inBlockIndex - 1 (sha.circom:292) becomes p-1, which passes ItemAtIndex's unsound index guard (array.circom:25-28) because (p-1) + 2^bitLength - maxArrayLen wraps to 2^bitLength - maxArrayLen - 1 (top bit 0 -> lessThan.out === 1); no IsEqual matches p-1, so calcTotal.sum = 0 and out[k] <== arraySelectors[k].out (sha.circom:293) is 0 for all 256 bits. The wraparound variant paddedInLength = p - 512 (byte path: Sha256BytesPartial with paddedInLength = p-64, sha.circom:65, since 8*(p-64) = -512 mod p) passes the comparator whenever 2^maxBitsPaddedBits >= maxBitLength + 1024 and likewise forces out = 0. Because Sha256BytesPartial is exported and used for resumable/partial email hashing, an attacker can forge the false statement that the partial SHA-256 result is the all-zero digest regardless of the supplied padded message and preHash, breaking any downstream equality check against a prover-influenced hash value."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 128
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 240
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

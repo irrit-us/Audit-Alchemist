@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 556946
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 556946,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-693",
+            "path": "ajna-v2/src/base/Pool.sol",
+            "line": 419,
+            "severity": "high",
+            "title": "kickReserveAuction lacks the pending-liquidation guard, letting a CRA kick shield reserves from bad-debt settlement and shift the loss onto HPB depositors",
+            "evidence": "kickReserveAuction() (Pool.sol:419-434) calls KickerActions.kickReserveAuction directly without the _revertIfAuctionClearable guard that every other state-changing entry point enforces (RevertsHelper.sol:50-62, used by addQuoteToken/moveQuoteToken/removeQuoteToken/removeCollateral/addCollateral), so it reverts with AuctionNotCleared only when a head auction is clearable (kickTime > 72h old) or has a zero-collateral bad-debt borrower. Reachability: an attacker/liquidator kicks a loan whose debt exceeds the value of the collateral that can be swapped into the highest-priced buckets (a bad-debt liquidation), waits 72h so the auction is clearable but deliberately leaves it unsettled, then calls kickReserveAuction(). KickerActions.kickReserveAuction records reserveAuction_.unclaimed and PoolHelper._claimableReserves (PoolHelper.sol:299-324) counts reserveAuction_.unclaimed inside guaranteedFunds, i.e. as a pool liability. When settle() is finally called for the bad-debt loan, step 2 of settlePoolDebt (SettlerActions.sol:133-158) computes claimable reserves but cannot touch quote tokens backstopping the kicked reserve auction, so instead of the pool's reserves absorbing the shortfall, step 3 _forgiveBadDebt (SettlerActions.sol:443-499) deletes HPB depositors' deposits and can bankrupt the bucket, socializing the liquidation loss onto lenders. This is the exact scenario fixed upstream by adding _revertIfAuctionClearable to kickReserveAuction (commit 656eccf, PR #977, test testReserveAuctionUnsettledLiquidation) and then hardening it to _revertIfActiveAuctions (revert whenever auctions_.noOfAuctions != 0; commit e258a84, PR #1024, finding M-07 'Liquidation of positions with bad debt can cause losses for HPB depositors')."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 486,
+            "severity": "high",
+            "title": "Wrong scale in _forgiveBadDebt bucket-bankruptcy check prematurely bankrupts solvent HPB buckets and zeros LP claims",
+            "evidence": "In _forgiveBadDebt (SettlerActions.sol:443-499) the bankruptcy test at line 486 compares depositRemaining * Maths.WAD + hpbBucket.collateral * _priceAt(index) <= bucketLP. depositRemaining comes from line 467 as depositRemaining = unscaledDeposit - Maths.wdiv(debt, scale), i.e. it is an unscaled (t0) quantity, so it must be converted with the bucket's interest scale returned at line 455 (uint256 scale from Deposits.findIndexAndSumOfSum) to be comparable with the WAD-scaled right-hand terms (bucketLP is LP quote value, collateral * _priceAt(index) is value * 1e18). Multiplying by Maths.WAD instead of scale understates the remaining deposit value by the factor scale/1e18; because a bucket's scale is >= 1e18 and grows with accrued interest, the left-hand side stays smaller and the condition fires when the bucket is still solvent. Reachability: this path is reached whenever settle() forgives bad debt (bad-debt borrower with insufficient collateral, amortize/bucketDepth remaining), and for any HPB bucket whose scale is meaningfully above 1e18 the check falsely triggers: hpbBucket.lps is set to 0 and bankruptcyTime = block.timestamp (lines 488-489), so existing lenders' LP is erased and their claim on the remaining deposits/collateral is lost (they are additionally reset via Bucket.addLenderLP when bankruptcyTime >= lender.depositTime, Buckets.sol:86). This is the exact defect fixed upstream in commit 03d255d (PR #971, 'Incorrect(Unscaled) deposits are used to check bucket bankruptcy in forgive bad debt'), which changes the term to depositRemaining * scale."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        },
+        {
+          "cwe": "CWE-693",
+          "path": "ajna-v2/src/base/Pool.sol",
+          "line": 419
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

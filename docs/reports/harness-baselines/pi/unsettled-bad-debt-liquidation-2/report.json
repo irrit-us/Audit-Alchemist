@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 200548
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 200548,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-754",
+            "path": "ajna-v2/src/base/Pool.sol",
+            "line": 419,
+            "severity": "high",
+            "title": "kickReserveAuction can be called while a bad-debt liquidation is still unsettled, draining reserves and shifting the loss to HPB depositors",
+            "evidence": "kickReserveAuction() (src/base/Pool.sol:419) immediately calls KickerActions.kickReserveAuction (line 421) without checking that pending liquidations are settled; unlike repayDebt/addQuoteToken/moveQuoteToken (lines 158, 194, 229) it never invokes the available _revertIfAuctionClearable guard (src/libraries/helpers/RevertsHelper.sol:50). For a borrower whose auction already lost all collateral but still has t0Debt (borrower.t0Debt != 0 && borrower.collateral == 0), settle() has not yet removed that unrecoverable bad debt, yet poolBalances.t0Debt still includes it. KickerActions.kickReserveAuction computes the claimable amount via _claimableReserves(t0PoolDebt, ...) (src/libraries/helpers/PoolHelper.sol:299), where claimable = 0.995*debt + balance - (buffer*deposits + bonds + unclaimed); the unrecoverable debt therefore inflates the reserve auction. Any external user can call kickReserveAuction() and then takeReserves() to sell/claim those reserves while the liquidation is unsettled (permissionless, nonReentrant only). Once the reserves are transferred out, settle()'s step 2 ('settle debt with pool reserves', SettlerActions.sol:132-146) finds assets <= liabilities, so it cannot absorb the bad debt, and step 3 _forgiveBadDebt (SettlerActions.sol:457) removes the loss from the next HPB buckets' deposits, imposing it on HPB depositors instead of pool reserves. The upstream fix added _revertIfAuctionClearable (commit 656eccf7, testReserveAuctionUnsettledLiquidation) and later the stricter _revertIfActiveAuctions (commit e258a849, 'Liquidation of positions with bad debt can cause losses for HPB depositors') at exactly this entry point."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-754",
+          "path": "ajna-v2/src/base/Pool.sol",
+          "line": 419
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

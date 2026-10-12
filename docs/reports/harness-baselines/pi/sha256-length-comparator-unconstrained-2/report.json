@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 1,
+    "elapsed_ms": 125155
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 125155,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 126,
+            "severity": "high",
+            "title": "paddedInLength reaches bit-width-sensitive LessEqThan without a bit-width constraint",
+            "evidence": "paddedInLength is a free input signal (sha.circom:97) that is only tied to inBlockIndex by the equality paddedInLength === inBlockIndex * 512 (line 111) and then fed directly into LessEqThan(maxBitsPaddedBits) at line 126 (bitLengthVerifier.in[0] <== paddedInLength) with bitLengthVerifier.out === 1 at line 128. LessEqThan/LessThan are only sound when both inputs fit in maxBitsPaddedBits bits, but no Num2Bits/range constraint is applied to paddedInLength, so it can be a field element near p (e.g. p-512 for the small negative length -512·k). Because the comparison arithmetic is done modulo p, such a value makes paddedInLength + 2^n - (maxBitLength+1) wrap to a small non-negative number, so out === 1 is satisfied even though the value is out of range. The matching negative witness inBlockIndex (which also satisfies line 111) is then passed to the final-block selector as arraySelectors[k].index <== inBlockIndex - 1 (line 175/289). ItemAtIndex (array.circom) also feeds this value to LessThan without a bit-width constraint, so the out-of-range index is accepted; no eqs[i] matches any small i, CalculateTotal returns 0, and every out[k] becomes 0, letting a malicious prover produce a valid proof whose SHA256 output is the all-zero 256-bit array for an arbitrary input. Scope note: only the standalone SHA256 template is affected; EmailVerifier's AssertZeroPadding prevents the end-to-end attack."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "unexpected": [],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

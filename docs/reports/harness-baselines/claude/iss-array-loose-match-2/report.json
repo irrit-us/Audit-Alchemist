@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 150242
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 150241,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-863",
+            "path": "src/verifier.js",
+            "line": 159,
+            "severity": "high",
+            "title": "JWT iss allow-list matched loosely: array-valued iss accepted if any element is an allowed issuer",
+            "evidence": "The iss validator is registered without an array flag (src/verifier.js:474-476), but nothing rejects an array-valued iss: in the validators loop (src/verifier.js:209-228) the claim is normalized at 211-212 (`const values = arrayValue ? value : [value]`) and validateClaimType (src/verifier.js:144-152, called at 221) only verifies `typeof` of each element of that normalized array, so `iss: [\"https://attacker.example/\", \"https://trusted-issuer.example\"]` passes the type check even though RFC 7519 defines iss as a single StringOrURI and this is exactly the check the fixed upstream version adds (an `isArray && !allowArray` rejection in validateClaimType). Acceptance is then decided at line 159 by `if (!values.some(v => allowed.some(a => a.test(v))))`, which succeeds when ANY element matches an entry of allowedIss; the exact-string matcher (src/verifier.js:13-15) is exact only per element, so a token that was not issued by the configured issuer is accepted. Reachable whenever the attacker can obtain a token signed by a key the verifier resolves as trusted (e.g. verifier configured with a key-fetch function so keys are resolved from a JWKS that does not itself validate iss - the documented CVE-2025-30144 / GHSA-gm45-q3v2-6cf8 exploitation path, where a malicious issuer publishes its own JWKS and issues tokens with iss = [attacker-host, allowed-issuer]); under that model attacker-signed payloads are treated as coming from the trusted issuer. Verified empirically: replicating the exact code path with allowedIss='https://trusted-issuer.example' rejects iss='https://attacker.example' but ACCEPTS iss=['https://attacker.example','https://trusted-issuer.example']. The same per-element `some` matching applies to the jti/sub/nonce validators (src/verifier.js:466-483, which also omit the string-vs-array guard)."
+          },
+          {
+            "cwe": "CWE-863",
+            "path": "src/verifier.js",
+            "line": 216,
+            "severity": "medium",
+            "title": "All claim validators (exp/nbf/iss/aud/sub/jti/nonce) silently skipped when the JWT payload is a JSON array",
+            "evidence": "The decoder admits a JSON array as the payload: src/decoder.js:38 only rejects a payload that is falsy or `typeof payload !== 'object'`, and JSON.parse('[...]') yields an array, so it passes. In verifyToken every validator is then skipped when the claim name is not a property of the payload (src/verifier.js:216-218, `if (!(claim in payload)) { continue }`); for an array payload all of 'exp'/'nbf'/'iss'/'aud'/'sub'/'jti'/'nonce' are absent (verified: `'exp' in JSON.parse('[]') === false` for every claim), because arrays expose only index/length properties. Consequently the exp/nbf/maxAge time checks and the iss/aud/sub/jti/nonce allow-list checks at 144-228 never execute, and an expired or foreign-issuer token whose payload is an array is returned as valid at line 312 (the signature is still verified). Precondition, stated narrowly: the attacker must supply a token already signed by a key the verifier trusts (e.g. key-fetch/JWKS mode where the resolved key is attacker-controlled, or a signing service that signs attacker-supplied claim sets) - this is the GHSA-5hjw-83fp-phq9 / CVE-2026-107723 path fixed in fast-jwt 6.3.0 by requiring a plain-object payload; no forgery of the signature itself is claimed."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-863",
+          "path": "src/verifier.js",
+          "line": 159
+        },
+        {
+          "cwe": "CWE-863",
+          "path": "src/verifier.js",
+          "line": 216
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

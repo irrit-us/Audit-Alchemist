@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 69753
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 69753,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "high",
+            "title": "Panic in an element's Drop during IntoIter::drop skips length reset, causing double free / use-after-free",
+            "evidence": "IntoIter::drop's helper drop_non_singleton (lines 2544-2549) takes ownership of the buffer with `let mut vec = mem::replace(&mut this.vec, ThinVec::new())` (2546), destroys the remaining elements with `ptr::drop_in_place(&mut vec[this.start..])` (2547), and only afterwards resets the length with `vec.set_len_non_singleton(0)` (2548). `ptr::drop_in_place` runs arbitrary safe user code (the `Drop` impl of T). If any element's Drop panics, line 2548 never executes, so the header still reports the original length. The local `vec` is then unwound out of `drop_non_singleton`, and `ThinVec::drop` (lines 1910-1930) calls `ptr::drop_in_place(&mut this[..])` over that stale length, freeing elements that were already dropped - a double free / use-after-free, and it also re-drops the `[0..start)` prefix whose elements were already yielded and moved out to the caller. The panic path is reachable from safe Rust with no unsafe required: push a heap-owning T whose Drop can panic (e.g. a String wrapper), then `let mut it = v.into_iter(); it.next(); drop(it)` while a remaining element panics; alternatively catch the unwind with `catch_unwind`. std::vec::IntoIter guards this exact case with a DropGuard and resets state before dropping; thin-vec has no such guard. The crate itself demonstrates awareness of this bug class: `truncate` (lines 1058-1063) deliberately decrements the length *before* each `drop_in_place` with the comment \"so a panic on Drop doesn't re-drop the just-failed value\", whereas this sink resets the length only after the drop completes. Confirmed as RUSTSEC-2026-0103 / CVE-2026-6654 (GHSA-xphw-cqx3-667j), patched in thin-vec >= 0.2.16; root cause present here in 0.2.15."
+          },
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 1084,
+            "severity": "high",
+            "title": "Panic in an element's Drop during ThinVec::clear skips set_len(0), causing double free on the later container drop",
+            "evidence": "`ThinVec::clear` (lines 1082-1087) runs `ptr::drop_in_place(&mut self[..])` (1084) and only then resets the length with `self.set_len(0)` (1085). If any element's Drop panics while the slice is being dropped, line 1085 is skipped and the header keeps the old non-zero length, so the elements that were already destroyed are still considered live. When the ThinVec is dropped later (ThinVec::drop, lines 1910-1930), `drop_non_singleton` calls `ptr::drop_in_place(&mut this[..])` over the stale length and frees the already-freed elements again - double free / use-after-free. This is reachable from safe Rust: wrap the call in `std::panic::catch_unwind(AssertUnwindSafe(|| v.clear()))` with a heap-owning element whose Drop panics, then let `v` go out of scope (PoC in the same advisory). Same root cause as the IntoIter::drop finding and same CVE (RUSTSEC-2026-0103 / CVE-2026-6654); note `truncate` (lines 1058-1063) decrements the length before dropping each element to avoid exactly this, but `clear` does not."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

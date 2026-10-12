@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 107196
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 107196,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-290",
+            "path": "src/verifier.js",
+            "line": 475,
+            "severity": "medium",
+            "title": "Improper iss claim validation accepts an array of issuers (issuer spoofing bypass)",
+            "evidence": "createVerifier registers the iss validator at line 475 without array:true (contrast aud at line 471), so iss is configured as a scalar StringOrURI claim. The check that should enforce this, validateClaimType (lines 144-152), only verifies each element's primitive type (line 149) and never rejects an array for a non-array claim: the 'array' flag is used solely to choose the error message, and the guard added upstream in 5.0.6/6.0.0 (if (isArray && !allowArray) throw) is absent. verifyToken therefore unwraps the attacker-controlled value at lines 210-212 (arrayValue = Array.isArray(value); values = arrayValue ? value : [value]) and passes the whole array to validateClaimValues, whose check at line 159 (values.some(v => allowed.some(a => a.test(v)))) succeeds if ANY element matches an allowed issuer. Reachability: an attacker who can obtain or influence a signed token whose iss is an array (e.g. a create-token/JWKS endpoint that signs request-controlled claims, a legitimately trusted issuer, or any issuer for which the verifier resolves a trusted key) submits 'iss': ['https://attacker-domain/','https://valid-iss']; with allowedIss:'https://valid-iss' the verifier accepts the token, bypassing issuer pinning, and downstream logic trusting iss (plus libraries such as get-jwks that do not independently validate iss) treats the attacker's token as issued by the trusted issuer. Precondition: the signature must still verify against a key the verifier trusts. Fixed in fast-jwt 5.0.6 (CVE-2025-30144 / GHSA-gm45-q3v2-6cf8) by requiring iss to be a string."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 475
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

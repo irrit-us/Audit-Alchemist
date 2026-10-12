@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "dataset": "filelock-toctou-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 3,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 131760
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "lock-symlink-truncation",
+        "outcome": "success",
+        "elapsed_ms": 131760,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_unix.py",
+            "line": 44,
+            "severity": "high",
+            "title": "UnixFileLock follows attacker-controlled symlink and truncates arbitrary file via O_TRUNC",
+            "evidence": "UnixFileLock is the default FileLock on POSIX whenever fcntl is importable (filelock/__init__.py:37-38), so normal `FileLock(path).acquire()` reaches this sink. In _acquire(), line 41 sets `open_flags = os.O_RDWR | os.O_TRUNC`, line 42 independently checks `Path(self.lock_file).exists()` and only then line 43 adds os.O_CREAT, and line 44 calls `os.open(self.lock_file, open_flags, self._context.mode)` with no os.O_NOFOLLOW. An attacker with write access to the lock file's parent directory (e.g. a world-writable /tmp, or any directory the victim shares with the attacker) wins the check-to-open race by creating/replacing the lock path with a symlink to a victim file that the victim process can write. Because the kernel resolves symlinks by default and O_TRUNC truncates the resolved target, os.open() opens and truncates the victim's file to zero bytes; the attacker needs no permission on the victim file because the victim process itself performs the open with its own credentials. The check-then-open sequence is a TOCTOU window and the missing O_NOFOLLOW is the linked root cause (CWE-362/367/59). This is the unpatched code for CVE-2025-68146; upstream fixed it in 3.20.1 by adding os.O_NOFOLLOW (commit 4724d7f8c3393ec1f048c93933e6e3e6ec321f0e, GHSA-w853-jp5j-5j7f). Real cascading victims include virtualenv's pyvenv.cfg and PyTorch's compiled caches/model checkpoints."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_windows.py",
+            "line": 28,
+            "severity": "high",
+            "title": "WindowsFileLock follows attacker-controlled symlink/junction and truncates arbitrary file via O_TRUNC",
+            "evidence": "WindowsFileLock is the default FileLock on win32 (filelock/__init__.py:33-34). In _acquire(), line 20 runs raise_on_not_writable_file(), line 22-26 builds `flags = os.O_RDWR | os.O_CREAT | os.O_TRUNC` with no reparse-point check, and line 28 calls `os.open(self.lock_file, flags, self._context.mode)` unconditionally. On Windows, os.open resolves symlinks and directory junctions unless FILE_FLAG_OPEN_REPARSE_POINT/O_NOFOLLOW semantics are requested. An attacker with local filesystem access and the ability to create symlinks or junctions (Developer Mode on Windows 10+, or admin) races between the writability check and the open, pointing the lock path at a victim file; the O_TRUNC open then follows the reparse point and truncates the victim file to zero bytes. Unlike Unix, the Windows path has no existence check at all, so the reparse point only has to be present when os.open runs. This is the unpatched Windows side of CVE-2025-68146; upstream 3.20.1 fixed it by calling GetFileAttributesW via ctypes and refusing to open when FILE_ATTRIBUTE_REPARSE_POINT is set (GHSA-w853-jp5j-5j7f)."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_soft.py",
+            "line": 27,
+            "severity": "medium",
+            "title": "SoftFileLock symlink at lock path silently defeats lock acquisition (O_EXCL EEXIST swallowed)",
+            "evidence": "SoftFileLock is the fallback FileLock on platforms without fcntl (filelock/__init__.py:40-41). In _acquire(), line 17 performs the permission check raise_on_not_writable_file() (os.stat follows symlinks), lines 20-25 build flags `os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_TRUNC`, and line 27 calls os.open() with no O_NOFOLLOW. If an attacker creates a symlink at self.lock_file (persistently, or raced in between the line 17 check and the line 27 open), POSIX open with O_CREAT|O_EXCL fails with EEXIST regardless of where the symlink points. The exception handler at lines 28-33 swallows EEXIST as 'lock already held' and returns without setting self._context.lock_file_fd, so BaseFileLock.acquire() (filelock/_api.py:329-344) never sees is_locked and spins until Timeout (or raises immediately with blocking=False). The attacker therefore causes a persistent denial of service and silent loss of mutual exclusion without needing any write permission on the lock path itself. This is the unpatched code for CVE-2026-22701 (GHSA-qmgc-5h2g-mvrw), fixed in 3.20.3 by adding O_NOFOLLOW to SoftFileLock._acquire()."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_soft.py",
+          "line": 27
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

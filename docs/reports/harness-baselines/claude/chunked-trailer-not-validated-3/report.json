@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 227709
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 227709,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 164,
+            "severity": "high",
+            "title": "Chunked-Encoding chunk footer not validated: arbitrary two bytes accepted after chunk data (request-smuggling enabler)",
+            "evidence": "Root cause: ChunkedReader records the two bytes that RFC 7230 requires between chunk-data and the next chunk-size only as a count (`self._bytes_to_discard = 2`, line 197) and then consumes them at lines 163-170 via `buf.maybe_extract_at_most(self._bytes_to_discard)` (line 164) followed by an unconditional `self._bytes_to_discard -= len(data)` (line 167). The extracted bytes are never compared against b'\\r\\n', so any attacker-chosen footer (e.g. 'XX', '\\n\\n', or bytes that a different parser would treat as the start of the next chunk header/request) is silently discarded and the message is accepted as well-formed. Reachability: any remote peer that sends a message with `Transfer-Encoding: chunked` reaches this code - the READERS table maps 'chunked' to ChunkedReader (lines 242-246) and Connection.receive_data()/next_event() in _connection.py drive __call__ over attacker-controlled bytes; no local privileges or special configuration are needed. Verified PoC against this exact tree (h11 0.14.0): feeding `POST / HTTP/1.1\\r\\nHost: x\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n5\\r\\nhelloXX0\\r\\n\\r\\n` yields Data(b'hello') + EndOfMessage with no error, while the patched h11 0.16.0 raises RemoteProtocolError(\"malformed chunk footer: bytearray(b'XX') (expected b'\\r\\n')\"). Impact: parser divergence / inconsistent interpretation of HTTP message boundaries (CWE-444). This is the root cause fixed upstream in 0.16.0 as CVE-2025-43859 / GHSA-vqfr-h8mv-ghfj (\"Reject certain malformed Transfer-Encoding: chunked bodies that were previously accepted\"); per that advisory, exploitation as request smuggling requires an h11-based server to be deployed behind an intermediary with a matching chunked-parsing bug (e.g. a load balancer/proxy that delimits these bytes differently), which is the precondition under which a stream h11 reads as one message is read by the intermediary as another - no end-to-end smuggling is claimed for h11 in isolation."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

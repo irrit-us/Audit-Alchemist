@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "filelock-toctou-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 34967
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "lock-symlink-truncation",
+        "outcome": "success",
+        "elapsed_ms": 34967,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_unix.py",
+            "line": 44,
+            "severity": "high",
+            "title": "UnixFileLock follows symlinks with O_TRUNC and truncates/ chmods arbitrary target files",
+            "evidence": "UnixFileLock._acquire sets open_flags = os.O_RDWR | os.O_TRUNC (line 41) and calls os.open(self.lock_file, open_flags, self._context.mode) (line 44) without os.O_NOFOLLOW. os.open resolves symlinks by default, so if an attacker can place a symlink at the lock-file path before the victim acquires the lock, the kernel opens the symlink target with O_TRUNC and truncates it to zero bytes; the following os.fchmod(fd, self._context.mode) (line 46) also changes the target's permissions to the lock mode (default 0o644). The guard at line 42 (Path(self.lock_file).exists()) itself follows symlinks, so when the target exists O_CREAT is omitted but O_TRUNC is still applied. Reachability: any caller of the public FileLock/UnixFileLock.acquire()/context-manager API ends in BaseFileLock.acquire -> self._acquire() (filelock/_api.py acquire loop), and AsyncUnixFileLock.acquire() delegates to the same _acquire via _run_internal_method (filelock/asyncio.py line 232). Precondition for exploitation is that the attacker can write to or pre-populate the directory containing the lock file (e.g. a shared/world-writable temp directory) or otherwise influence the lock path; under that precondition arbitrary files writable by the victim process are destroyed/opened for write, and can be chmod'd, so this is a link-following/TOCTOU file-clobber flaw."
+          },
+          {
+            "cwe": "CWE-59",
+            "path": "filelock/_windows.py",
+            "line": 28,
+            "severity": "low",
+            "title": "WindowsFileLock follows reparse points/symlinks with O_TRUNC",
+            "evidence": "The win32 WindowsFileLock._acquire builds flags os.O_RDWR | os.O_CREAT | os.O_TRUNC (lines 22-26) and calls os.open(self.lock_file, flags, self._context.mode) (line 28). Because O_TRUNC is present and no reparse-point/symlink protection is applied (Windows has no O_NOFOLLOW), if an attacker can create a symlink/junction at the lock path the open resolves it and truncates the target file. The preceding raise_on_not_writable_file() check follows the link too and does not prevent the truncation. Exploitation requires the attacker to already have symlink/junction creation rights on the host (admin or Developer Mode), so severity is lower than the Unix case, but the unsafe operation is concrete and reachable through the same public acquire() API on win32."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

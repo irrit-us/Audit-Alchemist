@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "dataset": "pymonocypher-argon2i-overflow-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 5,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 142896
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "argon2i32-small-block-count",
+        "outcome": "success",
+        "elapsed_ms": 142895,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-787",
+            "path": "c_monocypher.pyx",
+            "line": 347,
+            "severity": "high",
+            "title": "argon2i_32 with nb_blocks < 2 causes heap buffer overflow in crypto_argon2",
+            "evidence": "argon2i_32 (c_monocypher.pyx:322) accepts any unsigned int nb_blocks, stores it in config.nb_blocks (line 328), allocates work_area = malloc(nb_blocks * 1024) (line 345), and calls crypto_argon2 (line 347) with no lower-bound check, even though monocypher.h:160 documents the precondition nb_blocks >= 8 * nb_lanes. The C implementation derives segment_size = nb_blocks/1/4 and lane_size = 4*segment_size (monocypher.c:752-753) but unconditionally fills the first two blocks of each lane: FOR_T(u32, i, 0, 2) load64_le_buf(blocks[l*lane_size + i].a, hash_area, 128) (monocypher.c:776-781). With nb_blocks = 1 the work area is only 1024 bytes yet blocks[1] is written at offset 1024..2047, a 1024-byte heap overflow; with nb_blocks = 0 malloc(0) succeeds and 2048 bytes are written past it. Reachable by any Python caller, e.g. argon2i_32(1, 1, b'password', b'salt'), and by any application that forwards an untrusted or config-supplied KDF cost parameter into this API: heap metadata/corruption occurs before any error can be raised."
+          },
+          {
+            "cwe": "CWE-125",
+            "path": "c_monocypher.pyx",
+            "line": 347,
+            "severity": "medium",
+            "title": "argon2i_32 with nb_blocks 2-3 causes 1 KiB out-of-bounds read hashed into the output",
+            "evidence": "For nb_blocks in {2, 3} and nb_lanes = 1, crypto_argon2 computes segment_size = nb_blocks/1/4 = 0 and lane_size = segment_size*4 = 0 (monocypher.c:752-753), so all segment fill loops iterate zero times. After the pass loop the code executes blk *last_block = blocks + lane_size - 1 (monocypher.c:902), which underflows to blocks - 1, and store64_le_buf(final_block, last_block->a, 128) (monocypher.c:911) reads 1024 bytes located before the malloc'ed work_area (heap chunk headers and neighboring allocation data). extended_hash then absorbs that out-of-bounds data into the 32-byte digest returned by argon2i_32 (c_monocypher.pyx:347-352). Reachable with a plain call such as argon2i_32(2, 1, b'password', b'salt'); consequence is an out-of-bounds heap read (ASan/valgrind abort, potential crash) and a KDF output that depends on unrelated heap contents."
+          },
+          {
+            "cwe": "CWE-457",
+            "path": "c_monocypher.pyx",
+            "line": 347,
+            "severity": "low",
+            "title": "argon2i_32 with nb_iterations = 0 reads uninitialized work-area memory",
+            "evidence": "nb_iterations is copied unvalidated into config.nb_passes (c_monocypher.pyx:329), although monocypher.h:161 documents the precondition nb_passes >= 1. With nb_iterations = 0 the fill loop FOR_T(u32, pass, 0, config.nb_passes) (monocypher.c:802) and all slice/segment loops (803-895) are skipped; only the two seed blocks written at monocypher.c:776-782 are initialized. The final block blocks[lane_size-1] is therefore uninitialized malloc memory when it is read at monocypher.c:902/911 and hashed into the returned digest (c_monocypher.pyx:347). Reachable via argon2i_32(8, 0, b'password', b'salt'); the KDF output is then derived from uninitialized heap contents (use of uninitialized resource), providing no CPU-hardening whatsoever."
+          },
+          {
+            "cwe": "CWE-476",
+            "path": "c_monocypher.pyx",
+            "line": 345,
+            "severity": "low",
+            "title": "Unchecked malloc result in argon2i_32 can pass NULL work_area into crypto_argon2",
+            "evidence": "work_area = malloc((<size_t> nb_blocks) * (<size_t> 1024)) at c_monocypher.pyx:345 does not check for NULL. nb_blocks may be any uint32 value (Cython accepts 0..0xffffffff for the assignment at line 328), so e.g. argon2i_32(0xffffffff, 1, b'p', b's') requests a ~4 TiB allocation, which fails on typical systems. The NULL pointer is passed directly to crypto_argon2 (line 347), which immediately writes blocks[l*lane_size + i] (monocypher.c:781) through it, causing an access violation that terminates the Python interpreter (denial of service) rather than raising MemoryError; the finally block only frees the (NULL) pointer."
+          },
+          {
+            "cwe": "CWE-121",
+            "path": "c_monocypher.pyx",
+            "line": 281,
+            "severity": "high",
+            "title": "blake2b/blake2b_keyed_init: key longer than 128 bytes causes stack buffer overflow",
+            "evidence": "blake2b (c_monocypher.pyx:276-282) forwards the raw length of the Python key to crypto_blake2b_keyed (line 281), and Blake2b.__init__ does the same to crypto_blake2b_keyed_init (line 297); Cython performs no length check when converting bytes to const uint8_t* and no bound is enforced on len(key). crypto_blake2b_keyed -> crypto_blake2b_keyed_init then executes u8 key_block[128] = {0}; COPY(key_block, key, key_size); (monocypher.c:545-546), where COPY is a byte loop, so any key_size > 128 writes attacker-supplied key bytes past a 128-byte stack buffer inside the callee frame, corrupting saved state/return addresses. BLAKE2 permits key_size <= 64 and the wrapper's own docstring says 'optional 32-byte key', but nothing rejects longer keys: blake2b(b'msg', key=b'A'*1024) is accepted and smashes the stack. Reachable whenever an application uses caller-influenced key material (e.g. a passphrase) for keyed hashing."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-121",
+          "path": "c_monocypher.pyx",
+          "line": 281
+        },
+        {
+          "cwe": "CWE-125",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        },
+        {
+          "cwe": "CWE-457",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        },
+        {
+          "cwe": "CWE-476",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        },
+        {
+          "cwe": "CWE-787",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

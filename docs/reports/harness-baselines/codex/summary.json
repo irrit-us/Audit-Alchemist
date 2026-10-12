@@ -1,0 +1,606 @@
+{
+  "schema_version": 1,
+  "harness": "codex",
+  "trials": 21,
+  "success": 21,
+  "failed": 0,
+  "adapter_timeouts": 0,
+  "elapsed_ms": {
+    "mean": 183871.85714285713,
+    "max": 551875,
+    "total": 3861309
+  },
+  "exact": {
+    "tp": 4,
+    "fp": 37,
+    "fn": 17,
+    "line_tp": 6,
+    "line_fp": 34,
+    "line_fn": 15,
+    "precision": 0.0975609756097561,
+    "recall": 0.19047619047619047,
+    "f1": 0.12903225806451613,
+    "distinct_hits": [
+      "argon2i32-small-block-count",
+      "iss-array-loose-match",
+      "sha256-length-comparator-unconstrained"
+    ]
+  },
+  "line": {
+    "line_tp": 6,
+    "line_fp": 34,
+    "line_fn": 15,
+    "precision": 0.15,
+    "recall": 0.2857142857142857,
+    "f1": 0.19672131147540983,
+    "distinct_hits": [
+      "argon2i32-small-block-count",
+      "iss-array-loose-match",
+      "sha256-length-comparator-unconstrained"
+    ]
+  },
+  "cases": [
+    {
+      "run": "argon2i32-small-block-count-1",
+      "case_id": "argon2i32-small-block-count",
+      "trial": 1,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-787",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 134780
+    },
+    {
+      "run": "chunked-trailer-not-validated-1",
+      "case_id": "chunked-trailer-not-validated",
+      "trial": 1,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 97290
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1",
+      "case_id": "intoiter-drop-panic-double-free",
+      "trial": 1,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 2,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 98705
+    },
+    {
+      "run": "iss-array-loose-match-1",
+      "case_id": "iss-array-loose-match",
+      "trial": 1,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 475
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 107196
+    },
+    {
+      "run": "lock-symlink-truncation-1",
+      "case_id": "lock-symlink-truncation",
+      "trial": 1,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 4,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 4,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_soft.py",
+          "line": 27
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_util.py",
+          "line": 22
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 135933
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1",
+      "case_id": "sha256-length-comparator-unconstrained",
+      "trial": 1,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 3,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 128
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 240
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "array.circom",
+          "line": 28
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 207274
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-1",
+      "case_id": "unsettled-bad-debt-liquidation",
+      "trial": 1,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 2,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-770",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 145
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 393956
+    },
+    {
+      "run": "argon2i32-small-block-count-2",
+      "case_id": "argon2i32-small-block-count",
+      "trial": 2,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "findings": [
+        {
+          "cwe": "CWE-787",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 151074
+    },
+    {
+      "run": "chunked-trailer-not-validated-2",
+      "case_id": "chunked-trailer-not-validated",
+      "trial": 2,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 93950
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2",
+      "case_id": "intoiter-drop-panic-double-free",
+      "trial": 2,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 2,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 55523
+    },
+    {
+      "run": "iss-array-loose-match-2",
+      "case_id": "iss-array-loose-match",
+      "trial": 2,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "findings": [
+        {
+          "cwe": "CWE-863",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 280592
+    },
+    {
+      "run": "lock-symlink-truncation-2",
+      "case_id": "lock-symlink-truncation",
+      "trial": 2,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 2,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 155110
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-2",
+      "case_id": "sha256-length-comparator-unconstrained",
+      "trial": 2,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "line_tp": 1,
+      "line_fp": 1,
+      "line_fn": 0,
+      "findings": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 238
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 248631
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-2",
+      "case_id": "unsettled-bad-debt-liquidation",
+      "trial": 2,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 3,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-754",
+          "path": "ajna-v2/src/base/Pool.sol",
+          "line": 419
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 145
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 403663
+    },
+    {
+      "run": "argon2i32-small-block-count-3",
+      "case_id": "argon2i32-small-block-count",
+      "trial": 3,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 1,
+      "fp": 2,
+      "fn": 0,
+      "line_tp": 1,
+      "line_fp": 1,
+      "line_fn": 0,
+      "findings": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        },
+        {
+          "cwe": "CWE-476",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        },
+        {
+          "cwe": "CWE-190",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 76428
+    },
+    {
+      "run": "chunked-trailer-not-validated-3",
+      "case_id": "chunked-trailer-not-validated",
+      "trial": 3,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 92236
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3",
+      "case_id": "intoiter-drop-panic-double-free",
+      "trial": 3,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 1,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 131986
+    },
+    {
+      "run": "iss-array-loose-match-3",
+      "case_id": "iss-array-loose-match",
+      "trial": 3,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "findings": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 74187
+    },
+    {
+      "run": "lock-symlink-truncation-3",
+      "case_id": "lock-symlink-truncation",
+      "trial": 3,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 2,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        },
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_windows.py",
+          "line": 28
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 52030
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-3",
+      "case_id": "sha256-length-comparator-unconstrained",
+      "trial": 3,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 1,
+      "fp": 2,
+      "fn": 0,
+      "line_tp": 1,
+      "line_fp": 2,
+      "line_fn": 0,
+      "findings": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 195
+        },
+        {
+          "cwe": "CWE-1284",
+          "path": "array.circom",
+          "line": 28
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 318890
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3",
+      "case_id": "unsettled-bad-debt-liquidation",
+      "trial": 3,
+      "instruction": "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation.",
+      "outcome": "success",
+      "tp": 0,
+      "fp": 4,
+      "fn": 1,
+      "line_tp": 0,
+      "line_fp": 4,
+      "line_fn": 1,
+      "findings": [
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 145
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        },
+        {
+          "cwe": "CWE-670",
+          "path": "ajna-v2/src/libraries/external/KickerActions.sol",
+          "line": 235
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/BorrowerActions.sol",
+          "line": 381
+        }
+      ],
+      "error": null,
+      "elapsed_ms": 551875
+    }
+  ]
+}

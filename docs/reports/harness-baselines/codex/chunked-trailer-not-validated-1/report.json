@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "h11-chunked-framing-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 97290
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "chunked-trailer-not-validated",
+        "outcome": "success",
+        "elapsed_ms": 97290,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-444",
+            "path": "h11/_readers.py",
+            "line": 164,
+            "severity": "critical",
+            "title": "Chunked reader discards chunk terminator without validating CRLF (request smuggling)",
+            "evidence": "Reachable sink: after a chunk's payload is fully consumed, ChunkedReader sets self._bytes_to_discard = 2 (h11/_readers.py:197) and on the next __call__ blindly extracts and throws those 2 bytes away via buf.maybe_extract_at_most(self._bytes_to_discard) (h11/_readers.py:164) with no comparison against the required CRLF, then resumes parsing the next chunk header (h11/_readers.py:172-201). Attacker-controlled bytes reach this sink through the normal receive path: Connection.receive_data() -> next_event() selects the SEND_BODY 'chunked' reader (h11/_readers.py:242-244), so any HTTP peer sending 'Transfer-Encoding: chunked' drives ChunkedReader directly. Reproduced: feeding a SERVER Connection the body b'5\\r\\nhelloXX5\\r\\nworld\\r\\n0\\r\\n\\r\\n' yields Data(b'hello'), Data(b'world'), EndOfMessage() with no error, even though 'XX' is not the RFC 7230 chunk terminator '\\r\\n'; the reader silently swallows it. Upstream fixed this in h11 0.16.0 by tracking the expected bytes (self._bytes_to_discard = b'\\r\\n', h11 0.16.0 _readers.py:153/200) and raising LocalProtocolError 'malformed chunk footer' on mismatch (_readers.py:162-174). Because h11 accepts malformed chunk boundaries that strict front-ends/proxies reject (or delimit differently), an attacker can desynchronize where a proxy ends a request body and where h11 resumes parsing, smuggling a second request/response (CVE-2025-43859 / GHSA-vqfr-h8mv-ghfj, CVSS 9.1). The chunk-ext/trailer path is not the root cause; the missing CRLF check on the chunk footer at line 164 is."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 164
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

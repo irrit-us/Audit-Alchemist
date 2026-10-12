@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "dataset": "pymonocypher-argon2i-overflow-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 95854
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "argon2i32-small-block-count",
+        "outcome": "success",
+        "elapsed_ms": 95854,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-122",
+            "path": "c_monocypher.pyx",
+            "line": 347,
+            "severity": "high",
+            "title": "argon2i_32 accepts nb_blocks below the required minimum, causing heap buffer overflow in crypto_argon2",
+            "evidence": "argon2i_32 passes the caller-supplied nb_blocks unvalidated into crypto_argon2_config.nb_blocks (c_monocypher.pyx:328) and sizes the work area as malloc(nb_blocks * 1024) (c_monocypher.pyx:345). Every other length field is bounds-checked with _validate_u32 (lines 334-342), but nb_blocks is not, even though monocypher.h:160 requires nb_blocks >= 8 * nb_lanes and the binding hard-codes nb_lanes = 1 (line 330). In monocypher.c:752-754 a small nb_blocks makes segment_size = nb_blocks/4/1 and lane_size = segment_size*4 both zero for nb_blocks in [0,3], yet the unconditional first-fill loop at monocypher.c:776-782 still writes blocks[0].a and blocks[1].a, i.e. 2 * 1024 bytes, regardless of lane_size. Therefore argon2i_32(1, ...) allocates only 1024 bytes but 2048 bytes are written -> 1024-byte heap overflow; nb_blocks=0 calls malloc(0) and still writes 2048 bytes -> heap overflow (or immediate NULL dereference if malloc(0) returns NULL). The same lane_size == 0 also makes last_block = blocks + lane_size - 1 = blocks - 1 (monocypher.c:902), so store64_le_buf reads 1024 bytes before the allocation (out-of-bounds read) and feeds that heap memory into the returned key via extended_hash for nb_blocks 0-3. Any application that lets an untrusted party influence the Argon2 cost parameters (e.g. a password-hashing service exposing tuning options) reaches this with a single call such as argon2i_32(1, 1, b'pw', b'saltsalt'), corrupting the CPython heap and enabling memory-disclosure/code-execution attacks."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 347
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

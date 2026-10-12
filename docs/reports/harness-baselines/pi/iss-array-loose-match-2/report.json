@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 1,
+    "elapsed_ms": 173106
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 173105,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-290",
+            "path": "src/verifier.js",
+            "line": 159,
+            "severity": "high",
+            "title": "Array-valued iss bypasses allowedIss via loose .some() match",
+            "evidence": "The decoder (src/decoder.js) parses the JWT payload with JSON.parse, so an attacker can supply the iss claim as an array of strings. In verifyToken (src/verifier.js:209-227) the claim value is wrapped as `arrayValue = Array.isArray(value)` and `values = arrayValue ? value : [value]`. For the allowedIss validator (created at src/verifier.js:474-476) the `array` flag is unset, but validateClaimType (src/verifier.js:144-151) only checks that each element's typeof is 'string'; it never rejects an array when arrays are not permitted. Execution then reaches the sink at src/verifier.js:159: `if (!values.some(v => allowed.some(a => a.test(v))))`. Because it uses `.some()` over the claim values, a token whose payload is `{\"iss\":[\"trusted-issuer\",\"evil-issuer\"]}` is accepted by a verifier configured with `allowedIss: 'trusted-issuer'` even though `iss` must be a single StringOrURI (RFC 7519 section 4.1.1) and contains the attacker-controlled issuer 'evil-issuer'. A valid signature is required, so the flaw is an authentication/spoofing bypass of the issuer pin (CWE-290): any token signed by the shared key that carries the trusted issuer anywhere in an array-valued iss is accepted, and downstream code that selects a different array element (e.g. the first) sees an untrusted issuer. The invariant enforced by the reference fix is that scalar claims must satisfy every value, not just one; i.e. non-array validators should use `values.every(...)` and only the array-enabled aud validator should use `.some()`."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "unexpected": [],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

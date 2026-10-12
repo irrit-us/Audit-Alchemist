@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "dataset": "ajna-protocol-compromise-2-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "codex",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 4,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 551875
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "unsettled-bad-debt-liquidation",
+        "outcome": "success",
+        "elapsed_ms": 551875,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 145,
+            "severity": "high",
+            "title": "Liquidation bad debt is settled from pool reserves with no cap, letting an attacker drain reserves",
+            "evidence": "settlePoolDebt() step 2 (reached whenever step 1 leaves borrower.t0Debt != 0 && borrower.collateral == 0, i.e. exactly the bad-debt leftover of a liquidation) computes assets = pool debt + poolBalance and liabilities = DEPOSIT_BUFFER*Deposits.treeSum + auctions.totalBondEscrowed + reserveAuction.unclaimed, then at line 145 pays off 100% of the borrower's remaining debt out of the reserves with no upper bound and no relation to the auction's remaining term: `borrower.t0Debt -= Maths.min(borrower.t0Debt, Maths.floorWdiv(assets - liabilities, poolState_.inflator))`. settle() is external, unauthenticated and needs no bond (ERC20Pool.sol:363-384), so anyone can drive the chain: (a) with one controlled account borrow a small amount against collateral and use addQuoteToken in a high bucket plus removeCollateral (BorrowerActions.sol:378-383 only checks LUP/HTP, which the same attacker can inflate) to strip nearly all collateral, (b) kick the now-undercollateralized position (liquidation debt is moved to t0DebtInAuction) and take/bucketTake the dust collateral so the borrower ends with t0Debt != 0 and collateral == 0, (c) call settle(borrower, maxDepth) so the leftover debt, which is artificial bad debt created by the attacker, is repaid from the pool's reserves and the attacker keeps the withdrawn collateral. Reserves are the protocol's only cushion for genuine bad debt (they are later burned via reserve auctions), so draining them by repeating this loop converts pool reserves/lender protection into attacker profit. The later release added a t0ReserveSettleAmount cap stored at kick time and limited reserve settlement during the first 144 hours (KickerActions/SettlerActions in v0.10.0-rc9, commit 2d6bbcb) precisely because this unbounded settlement was exploitable."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+            "line": 486,
+            "severity": "medium",
+            "title": "Bad-debt forgiveness bankrupts buckets using an unscaled deposit, zeroing LP of otherwise solvent depositors",
+            "evidence": "_forgiveBadDebt() is the step-3 sink of settlePoolDebt() reached whenever a liquidation's remaining debt is not covered by HPB deposits (borrower.t0Debt != 0 && borrower.collateral == 0 after reserve settlement). Its local depositRemaining is in unscaled units (`unscaledDeposit - depositUsed`, where depositUsed = Maths.wdiv(debt, scale)), but line 486 mixes it with scaled quantities: `if (depositRemaining * Maths.WAD + hpbBucket.collateral * _priceAt(index) <= bucketLP)` instead of multiplying by the bucket's `scale`. Because the bucket's scale (returned by Deposits.findIndexAndSumOfSum and used to convert unscaled->value everywhere else, e.g. `depositToRemove = Maths.wmul(scale, unscaledDeposit)` at line 457) is not 1e18 for pools whose quote token has a different precision, the exchange-rate-rounds-to-zero test is off by a factor `scale`. When the test wrongly evaluates true the bucket is marked bankrupt (hpbBucket.lps = 0, bankruptcyTime = block.timestamp), permanently erasing the LP/claim of every depositor in that bucket (event BucketBankruptcy). Anyone can trigger it: settle() is permissionless, and maxDepth_ is caller-chosen so any bad-debt auction with debt greater than the HPB deposit reaches this line. The unscaled operand was fixed to `depositRemaining * scale` in the audited follow-up release (Sherlock issue M-3, fix commit 2d6bbcb), confirming the root cause."
+          },
+          {
+            "cwe": "CWE-670",
+            "path": "ajna-v2/src/libraries/external/KickerActions.sol",
+            "line": 235,
+            "severity": "medium",
+            "title": "kickReserveAuction can lock reserves that a not-yet-settled liquidation needs to cover its bad debt",
+            "evidence": "kickReserveAuction() (KickerActions.sol:205-249) is permissionless and its only guards are the timing check on the *previous* reserve auction (line 215, two weeks since the last burn event / 72h since the last kick) plus NoReserves(); it never checks auctions_.noOfAuctions or whether a kicked loan still has unsettled debt. At line 235 it moves the entire computed claimable amount into reserveAuction_.unclaimed (`reserveAuction_.unclaimed = curUnclaimedAuctionReserve`) even while an auction is mid-liquidation. settlePoolDebt() then treats that value as a hard liability when computing the reserves available for bad debt (line 137-141: `Maths.wmul(DEPOSIT_BUFFER, Deposits.treeSum(deposits_)) + auctions_.totalBondEscrowed + reserveAuction_.unclaimed`), so assets - liabilities shrinks and step 2 (line 145) can no longer clear the liquidation's remaining debt. The leftover debt is then written off against HPB deposits in _forgiveBadDebt(), which can bankrupt the HPB bucket (line 486-495) and force its depositors to socialize up to the take penalty plus the kick bond that was escrowed instead of covering the debt. Reachability: after the last take on a liquidation and before settle() is called (a window of up to 72 hours, since take requires >=1h cooldown and settle of a collateral-less loan is allowed at any time), anyone - including an attacker who also controls the kicker - can front-run the settler with kickReserveAuction(). The audited follow-up recommends reverting kickReserveAuction while auctions.noOfAuctions > 0 for exactly this reason (Kirill M-07)."
+          },
+          {
+            "cwe": "CWE-682",
+            "path": "ajna-v2/src/libraries/external/BorrowerActions.sol",
+            "line": 381,
+            "severity": "high",
+            "title": "Collateral withdrawal is guarded only by the manipulable LUP, creating bad debt that is then settled from reserves",
+            "evidence": "In the pull-collateral branch of repayDebt/drawDebt (BorrowerActions.sol:368-391) the only solvency guard is `encumberedCollateral = Maths.wdiv(vars.borrowerDebt, result_.newLup)` compared against the borrower's collateral (lines 378-383). LUP is a pool-wide, in-block-manipulable value derived from the deposit Fenwick tree (Deposits.getLup) and it is compared to the *current* debt, so a borrower (or an attacker holding both the lending and the borrowing account) can push the LUP far above market with a large addQuoteToken at a high-priced bucket, then pull almost all of the loan's collateral while leaving only dust. Because no buffer for the auction's take penalty / kicker bond is retained, the resulting position is undercollateralized by construction; it is then kicked (KickerActions.kick moves t0KickedDebt into auctions.t0DebtInAuction), the dust collateral is taken via take/bucketTake, and the residual debt - now genuine-looking bad debt - is settled from pool reserves in SettlerActions.settlePoolDebt (line 145) or written off against HPB depositors in _forgiveBadDebt (line 486). The whole sequence is attacker-controlled and permissionless, which is the root cause that enables the reserve-drain/bucket-bankruptcy sinks above; the audited fix for this class (Sherlock H-1 / Certora H-01) added a collateralization factor plus a kick-time reserve-settlement cap rather than leaving the LUP as the only barrier."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-670",
+          "path": "ajna-v2/src/libraries/external/KickerActions.sol",
+          "line": 235
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/BorrowerActions.sol",
+          "line": 381
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 145
+        },
+        {
+          "cwe": "CWE-682",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 486
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

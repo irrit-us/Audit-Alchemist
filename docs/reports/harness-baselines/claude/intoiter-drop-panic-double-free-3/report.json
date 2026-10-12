@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset": "thin-vec-uaf-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "claude",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 1,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 495448
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "intoiter-drop-panic-double-free",
+        "outcome": "success",
+        "elapsed_ms": 495448,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 2547,
+            "severity": "high",
+            "title": "IntoIter::drop double-frees remaining elements when an element's Drop panics",
+            "evidence": "Reachable from entirely safe code: `ThinVec::into_iter()` (line 2175) followed by dropping the returned `IntoIter<T>` enters `drop_non_singleton` (line 2544). At line 2547 `ptr::drop_in_place(&mut vec[this.start..])` is called BEFORE `vec.set_len_non_singleton(0)` at line 2548. If any element's destructor panics (a safe, user-supplied `impl Drop for T`), the slice drop-glue drops the remaining elements and then unwinds, so line 2548 never runs. The local `vec` (from `mem::replace` at line 2546) is still live and is dropped during unwinding via `Drop for ThinVec` (line 1917), which calls `ptr::drop_in_place(&mut this[..])` over the unchanged length: every element is dropped a second time, a classic double free (heap UAF/corruption for any T owning heap memory), and elements `[0..start]` already yielded to the caller via `next()` (line 2510) are dropped again while still owned by the caller. Demonstrated empirically: a 3-element ThinVec whose middle element's Drop panics produces 6 Drop invocations under catch_unwind (should be 3), and with Box payloads the process aborts on the double free. Upstream thin-vec 0.2.21 fixed this exact site by adding a DropGuard that runs `vec.set_len_non_singleton(0)` on unwind (test `test_panic_into_iter`), confirming the missing panic guard is the root cause."
+          },
+          {
+            "cwe": "CWE-415",
+            "path": "src/lib.rs",
+            "line": 1084,
+            "severity": "high",
+            "title": "ThinVec::clear double-frees elements when an element's Drop panics",
+            "evidence": "`ThinVec::clear` (line 1082) calls `ptr::drop_in_place(&mut self[..])` at line 1084 and only zeroes the length afterwards at line 1085. If a `T::drop` panics (safe code, e.g. `v.clear()` on a vector of user types whose destructor can panic), the slice drop-glue destroys the remaining elements and unwinds, leaving `self.len()` unchanged while all elements are already destroyed. Unwinding then drops the still-live `ThinVec` through `Drop for ThinVec` (line 1917), which re-drops `[0..len]` — a double free of every element; if the panic is instead caught with catch_unwind, the same double free occurs at any later drop/use of the vector. Demonstrated empirically: clear() over 3 elements with one panicking Drop yields 6 Drop invocations instead of 3. Upstream thin-vec 0.2.21 fixed this site with a DropGuard that decrements len even on panic (test `test_panic_clear`), confirming the missing guard is the root cause."
+          }
+        ]
+      },
+      "matched": [],
+      "unexpected": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "missed": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "duplicate_findings": 0
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "dataset": "fast-jwt-iss-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "dsh",
+    "--model",
+    "deepseek-flash",
+    "--profile",
+    "headless",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 1,
+    "false_negatives": 0,
+    "precision": 0.5,
+    "recall": 1.0,
+    "f1": 0.6666666666666666,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 0,
+    "elapsed_ms": 129193
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "iss-array-loose-match",
+        "outcome": "success",
+        "elapsed_ms": 129192,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-290",
+            "path": "src/verifier.js",
+            "line": 159,
+            "severity": "medium",
+            "title": "Array-valued iss claim bypasses allowedIss allowlist via loose any-match",
+            "evidence": "validateClaimValues() accepts a claim when ANY element matches: line 159 `if (!values.some(v => allowed.some(a => a.test(v))))` only throws if no element matches. verifyToken() (lines 209-227) derives `values = arrayValue ? value : [value]` from the attacker-controlled payload and routes every non-date validator, including the `iss` validator registered at lines 474-476, into this loose matcher at line 226. RFC 7519 section 4.1.1 defines `iss` as a single StringOrURI, and upstream fixed exactly this in 5.0.6 (CVE-2025-30144 / GHSA-gm45-q3v2-6cf8) by making non-array-enabled validators require `values.every(...)`. Reachability: an attacker who can present a JWT whose signature verifies against a key the verifier trusts (e.g. a shared HMAC secret) sets `iss` to `[\"https://attacker.example\", \"https://trusted.example\"]`; the trusted element satisfies the bound exactStringClaimMatcher (lines 13-15, 39-53), `allowedIss` passes, and the verifier returns success while the token actually names an untrusted issuer, i.e. authentication bypass by spoofing. The same loose any-match is used for jti, sub and nonce (lines 466-484)."
+          },
+          {
+            "cwe": "CWE-1287",
+            "path": "src/decoder.js",
+            "line": 38,
+            "severity": "high",
+            "title": "JSON-array JWT payload silently skips every claim validator",
+            "evidence": "decode() validates the payload with `if (!payload || typeof payload !== 'object')` (line 38); because `typeof [] === 'object'`, a JWT whose payload segment decodes to a JSON array is accepted. In verifyToken() each configured validator is gated on `if (!(claim in payload)) continue` (line 216) and requiredClaims uses the same membership test (line 200), and `'iss' in []` is false, so iss/aud/sub/jti/nonce/exp/nbf validation is silently skipped while the signature is still checked (line 139). Upstream fixed this in 6.3.0 (CVE-2026-107723) by adding `Array.isArray(payload)`; the array header case is already rejected, showing the omission is a bug, not intended behavior. Reachability: an attacker able to obtain a token signed by a key the verifier trusts (shared secret / same signing service) submits an array payload such as `[\"attacker\",\"role:admin\"]` to bypass the allowedIss/allowedAud/expiry guarantees."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "unexpected": [
+        {
+          "cwe": "CWE-1287",
+          "path": "src/decoder.js",
+          "line": 38
+        }
+      ],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "dataset": "zk-email-sha256-constraint-v1",
+  "executable": "\\\\?\\C:\\Python314\\python.exe",
+  "args": [
+    "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+    "--harness",
+    "pi",
+    "--model",
+    "deepseek-flash",
+    "--timeout-seconds",
+    "1560",
+    "--deadline-minutes",
+    "15",
+    "--hide-labels"
+  ],
+  "jobs": 1,
+  "timeout_ms": 1800000,
+  "max_output_bytes": 4194304,
+  "metrics": {
+    "true_positives": 1,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "successful_cases": 1,
+    "failed_cases": 0,
+    "exact_match_cases": 1,
+    "elapsed_ms": 186956
+  },
+  "cases": [
+    {
+      "run": {
+        "case_id": "sha256-length-comparator-unconstrained",
+        "outcome": "success",
+        "elapsed_ms": 186955,
+        "exit_code": 0,
+        "error": null,
+        "findings": [
+          {
+            "cwe": "CWE-1284",
+            "path": "sha.circom",
+            "line": 126,
+            "severity": "high",
+            "title": "SHA-256 padded length is compared without range-checking the field element",
+            "evidence": "In Sha256General, line 126 wires the untrusted input `paddedInLength` directly into `bitLengthVerifier.in[0]` of `LessEqThan(maxBitsPaddedBits)` (line 125) as the sole bound on the message length (expected `paddedInLength <= maxBitLength`). `paddedInLength` is a free field-element signal: the only other constraint on it is `paddedInLength === inBlockIndex * 512` (line 111), where `inBlockIndex` is itself an unconstrained witness (`<--` at line 110). It is never range-checked to `maxBitsPaddedBits` bits. circomlib's `LessThan`/`LessEqThan` do not range-check their operands; they constrain `Num2Bits(n+1)` of `in[0] + 2^n - in[1] - 1` and test the MSB, so the comparison is performed modulo the BN254 prime. Because `paddedInLength` is unconstrained, a malicious prover can supply a value near the field modulus (e.g. `paddedInLength = p - 512*d` for small `d`) so that `2^n - maxBitLength - 1 - 512*d` is non-negative and the wrapped expression is < 2^n, making `bitLengthVerifier.out === 1` (line 128) satisfiable while `paddedInLength > maxBitLength`. The very same missing range check applies to `inBlockIndex` at the `ItemAtIndex` selection (line 195: `arraySelectors[k].index <== inBlockIndex - 1`), which is derived from the unvalidated `paddedInLength` and drives which SHA256 compression block output is selected. Thus the intended length bound is not enforced and the block index used to select the hash output is attacker-controlled, breaking the length binding of the SHA256 gadget."
+          }
+        ]
+      },
+      "matched": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "unexpected": [],
+      "missed": [],
+      "duplicate_findings": 0
+    }
+  ]
+}

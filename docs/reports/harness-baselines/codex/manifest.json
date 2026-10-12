@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "started_utc": "2026-10-11T16:32:42.065247+00:00",
+  "harness_revision": "764e1bab6e963069d85914fd3563410a1e22c7d8",
+  "working_diff_sha256": "babc78b4e7f294cc0c2dc938fd4dbf393134dd49b620b01b4fefce75e7d6403c",
+  "binary": "F:\\Audit-Alchemist-Agent\\target\\debug\\alchemist.exe",
+  "binary_sha256": "eb11b39264f5bdd06ec4e75b330c9036b2f5b91a4a631ca15a98b6f947fd0e7c",
+  "adapter": "F:\\Audit-Alchemist-Agent\\scripts\\external_agent.py",
+  "adapter_sha256": "731133a7d3011df3bce8a837732079e65960c8b6e8dfee522463e73902a66f85",
+  "dataset_revision": "251c8fee05df57ec1f7c777d72a4c8ec1f1b9045",
+  "harness": "codex",
+  "model": "deepseek-flash",
+  "profile": null,
+  "trials": 3,
+  "blind": true,
+  "timeout_ms": 1800000,
+  "adapter_timeout": 1560,
+  "deadline_minutes": 15,
+  "selection": "all trials, including failures; no best-of selection",
+  "cases": [
+    "unsettled-bad-debt-liquidation",
+    "lock-symlink-truncation",
+    "iss-array-loose-match",
+    "intoiter-drop-panic-double-free",
+    "argon2i32-small-block-count",
+    "chunked-trailer-not-validated",
+    "sha256-length-comparator-unconstrained"
+  ]
+}

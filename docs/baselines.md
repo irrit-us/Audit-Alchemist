@@ -132,6 +132,9 @@ reached exact F1 .408 and 5/7 distinct, exceeding clean Pi; see
   built-in agent, so wire-level differences remain.
 - Exact CWE keys are deliberate tuning choices; line F1 and reviewed findings are
   reported alongside, never folded into exact F1.
-- The Rust `--isolate` change was parse- and format-checked with `rustfmt` but
-  could not be compiled in this environment (no MSVC/Windows SDK and an
-  incomplete GNU toolchain).
+- The Rust `--isolate` change is covered by
+  `benchmark_isolate_stages_each_case_away_from_the_source_tree`; with the
+  local MSVC/Windows SDK environment loaded, `cargo fmt --check`,
+  `cargo clippy --locked --all-targets -- -D warnings`, and
+  `cargo test --locked --all-targets` all pass (54 unit tests plus integration
+  suites).

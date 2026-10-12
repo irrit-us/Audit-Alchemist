@@ -62,8 +62,9 @@ Constraints implemented from this comparison:
 
 - `benchmark --isolate` now stages each case from the existing `evaluate`
   staging path, so an external agent cannot read the label manifest or mutate
-  the source tree. Parse- and format-checked with `rustfmt`; not compiled in
-  this environment (no MSVC/Windows SDK, incomplete GNU toolchain).
+  the source tree. Verified: `cargo fmt --check`, `cargo clippy --locked
+  --all-targets -- -D warnings`, and `cargo test --locked --all-targets` pass,
+  including `benchmark_isolate_stages_each_case_away_from_the_source_tree`.
 - The adapter writes a per-case side file, removing cross-case contamination
   under `benchmark --jobs > 1`.
 - `scripts/run_harness_baseline.py` defaults to three trials and records

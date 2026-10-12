@@ -212,50 +212,41 @@ distinct metrics are reported alongside it and never folded into exact F1:
 
 ## Recommended next directions
 
-### Proposed round 32: reserve one citation-verification read
+### Proposed round 32: measure representative harness work first
 
-**Observed failure.** The [Ajna trace review](validation.md#practical-checks-of-earlier-ambiguities-2026-10-12)
-shows a failed high-thinking run that spent both settlement reads before two
-unsupported-citation repairs. Three empty completions preceded those repairs;
-the last response then consumed the full 32,768-token output allowance. The
-request context remained far below its cap. This supports a targeted recovery
-policy experiment, not a context or model-setting change.
+The [Ajna trace](validation.md#practical-checks-of-earlier-ambiguities-2026-10-12)
+shows one citation and output-limit failure chain. It does not establish that
+reserving a settlement read is useful across real audits. The earlier proposal
+to test that change directly against Ajna and the known Harbor labels is
+withdrawn. Missing an anticipated issue within a deadline is an ordinary
+audit outcome, not a harness failure by itself.
 
-**Single change.** Keep the same maximum of two read-only settlement calls, but
-reserve the second until final validation rejects an unobserved source-line
-citation. At that point, expose only `read_file` for one call, require the model
-to inspect the line, and validate the final finding against the usual source
-fingerprint. Never execute a read automatically, accept a citation merely
-because it was requested, replay a mutation, or alter JSON stdout. A typed
-validation reason should select this path rather than matching error text.
-If no citation error occurs, the reserved call is unused.
+**Measurement.** Preselect a varied set of repositories and task instructions,
+including safe controls, without selecting for known vulnerable lines. Pin
+source revisions, provider, model, explicit `reasoning_effort = "high"`, prompt,
+tool and output limits, and deadline. Run repeated independent trials and keep
+every outcome. Summarize model wait time, local tool time, tool errors, output
+projection, context pressure, budget exhaustion, validation repairs, citation
+rejections, provider stop reasons, completed-run latency, and token usage.
+Separate provider behavior from local harness work; inspect only the debug
+payloads needed to classify an otherwise ambiguous failure.
 
-**Pre-run gate.** CLI mock-provider fixtures must show that the baseline can
-spend two settlement reads, the candidate can spend one before and one after a
-citation failure, the total never exceeds two, other repair errors do not unlock
-the reserve, and expired deadlines or repeated invalid citations still fail.
-All three provider wires must preserve call/result IDs and continuation; source
-fingerprints and mutation order must remain intact. Run formatting, strict
-Clippy, all-target tests, and the Harbor export/agent/verifier smoke path.
+**Choose one change after measurement.** Prioritize a harness behavior only if
+it recurs across unrelated tasks and has a material reliability or local-cost
+effect. A citation-recovery policy is merely one possible candidate if that
+failure class is common. State the candidate and success threshold before
+editing code. Keep default instructions and model settings fixed, preserve
+provider continuation, mutation order, evidence checks, budgets, cleanup, and
+JSON stdout, and add CLI contract coverage for the changed boundary.
 
-**Live comparison.** Run baseline and candidate on the same pinned Harbor
-submodule revision with explicit `reasoning_effort = "high"`, the same model,
-prompt, 32 ordinary calls, two settlement calls, 32,768 output tokens, 2 MiB
-request cap, and 900-second deadline. Start with eight independent Ajna trials
-per arm, alternating arm order. If the candidate reduces citation-related
-failures without introducing a new failure class, run three named jobs per arm
-over the seven primary tasks plus the suite's safe controls. Keep all failed
-trials, task checksums, binary/config fingerprints, and trace counters.
-
-**Decision.** Adopt only if the targeted trials show fewer unsupported-citation
-failures, the full-suite candidate does not lose completion, exact reward,
-line recall, or safe-control precision, and median completed-run latency and
-provider-reported tokens stay within 10% of baseline. Report exact and line
-metrics, distinct cases, output repairs, empty retries, `finish_reason length`,
-settlement reads, and unobserved-citation failures separately. If the targeted
-signal is absent or the full-suite tradeoff is unclear, keep the baseline and
-repeat before claiming a quality gain. The public Harbor cases are tuning and
-regression material; a held-out suite remains necessary for general claims.
+**Evaluate the candidate.** Compare baseline and candidate on the same varied
+workload and a separate held-out set, with unchanged instructions and settings.
+Assess execution reliability, latency, tool and token use, and whether accepted
+findings remain supported. A valid empty report is an acceptable outcome.
+Known Harbor cases may serve as regression checks, but anticipated findings,
+exact CWE keys, and prompt variants must not determine adoption. If profiling
+finds no material recurring harness bottleneck, report that result and defer
+optimization instead of manufacturing a test-specific improvement.
 
 1. **Investigate the remaining execution failures.** Completion is 36/36 on the
    promoted set but lower on the blind budget rounds; the observed classes are
@@ -264,19 +255,17 @@ regression material; a held-out suite remains necessary for general claims.
    detection gain, so treat larger caps as reliability only and accept on
    measured completion, not quality.
 2. **Reduce turn count without a tighter context cap.** The 12-call result shows
-   fewer turns are cheaper; test an earlier "finalize now" prompt or a tighter
-   per-turn tool-result budget against line recall, not a context cap.
+   fewer turns are cheaper; investigate tool-result size and unnecessary tool
+   calls across varied tasks while keeping audit instructions fixed.
 3. **Broaden held-out validation.** The promoted set is now a regression suite;
    add cross-file, injected-instruction, and safe-control cases that do not map
    to the already-reviewed sinks, then re-measure exact, line, and reviewed
    metrics at 2-3 trials.
-4. **Target the three never-found primary issues directly.** Rounds 18-22 show
-   that effort, stream budget, prompt strategy, tool budget, and sampling do not
-   recover `unsettled-bad-debt-liquidation`, `lock-symlink-truncation`, or
-   `intoiter-drop-panic-double-free`. Pre-register per-issue experiments
-   (evidence chosen, hypotheses formed, verification step) and score them by the
-   seven-label exact/line rate, not by reviewed `unexpected_valid` counts or the
-   mixed 18-case F1.
+4. **Use missed labels as diagnostics.** Rounds 18-22 show that effort, stream
+   budget, prompt strategy, tool budget, and sampling did not reliably recover
+   three anticipated primary issues. Inspect such misses for harness failures,
+   but do not tailor prompts or workflows to those cases or make timely
+   detection of their labels an adoption gate.
 5. **Build a separate PoC benchmark.** Do not fold PoC success into the audit
    loop; requiring it there rewards long build/run persistence over audit
    reasoning. Give the PoC benchmark its own fixtures and oracles, a bounded

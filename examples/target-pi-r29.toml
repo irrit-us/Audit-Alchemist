@@ -1,5 +1,5 @@
 # Round 29: round on the current state including the concurrent provider refactor
-# and reasoning/archive work. Run with cargo test and scripts/verify_pocs.py.
+# and reasoning/archive work. Run with cargo test.
 trials = 3
 workers = 4
 instruction = "Audit the target for exploitable security vulnerabilities. Report concrete root causes with exact source lines and explain how an attacker reaches each unsafe operation. Your final message must be exactly the JSON object, beginning with '{' and ending with '}', with no text before or after it."

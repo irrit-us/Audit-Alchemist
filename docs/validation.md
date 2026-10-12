@@ -60,32 +60,6 @@ includes a concurrent provider refactor and reasoning/archive work): exact F1
 .361, line F1 .426, exact and line distinct 6/7. Both rounds keep the same
 distinct coverage; exact F1 remains the noisier, label-bound metric.
 
-### PoC verification (round 28)
-
-Detection scoring is exact/line keys only. A separate, fixture-level oracle
-pass now verifies that a labeled root cause is *demonstrable*, independent of
-the agent: `scripts/verify_pocs.py` stages a fresh copy of a fixture's `audit/`
-tree (excluding the manifest and `reference/`), runs a fixed bounded
-reproduction, and records `defined`/`verified`. The oracle lives in
-`scripts/poc_oracles.json`; the h11 oracle (`scripts/pocs/h11_disagreement.py`)
-shows the two-parser disagreement and verifies. The other six fixtures have no
-deterministic oracle yet (Foundry, Unix-only `fcntl`, Node install, Cython +
-sanitizer, Rust double-free detector, circom witness) and are `defined: false`,
-which is recorded as a gap rather than a pass.
-
-| Case | Agent exact (of 3, round 29) | PoC defined | PoC verified |
-| --- | ---: | :---: | :---: |
-| ajna | 1 | no | - |
-| filelock | 1 | no | - |
-| fast-jwt | 3 | no | - |
-| thin-vec | 0 | no | - |
-| pymonocypher | 1 | no | - |
-| h11 | 2 | yes | yes |
-| zk-email | 3 | no | - |
-
-The pass is small but real: it is the first end-to-end reproduction check and
-is never folded into exact/line. Report: `docs/reports/poc-verification.json`.
-
 Reports: [round 25](reports/tiny-round25.json),
 [round 26](reports/tiny-round26.json), [round 27](reports/tiny-round27.json);
 plans `examples/target-pi-r25.toml`, `target-pi-r26.toml`, and

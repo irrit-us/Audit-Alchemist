@@ -21,7 +21,6 @@ Start with the [README](../README.md) for installation and a first run.
 | [Reports](reports/deepseek-evaluation.json) | Committed evaluation artifact |
 | [Harness baselines](reports/harness-baselines.json) | Leak-free three-trial blind baselines for Codex, Claude Code, DSH, and Pi (all `deepseek-flash`), with the label-leak correction |
 | [Target-Pi rounds 25](reports/tiny-round25.json), [26](reports/tiny-round26.json), [27](reports/tiny-round27.json), [28](reports/tiny-round28.json), [29](reports/tiny-round29.json) | Built-in agent A/B against the leak-free Pi baseline; rounds 28-29 reach exact/line distinct 6/7 |
-| [PoC verification](reports/poc-verification.json) | Fixture-level reproduction oracle pass (h11 verified; six fixtures still lack a deterministic oracle) |
 | [Tiny baseline round 1](reports/tiny-baseline-round1.json) | Blind live evaluation over the seven submodule fixtures |
 | [Tiny baseline round 2](reports/tiny-baseline-round2.json) | Same blind run after the JSON-mode and reasoning-effort fixes |
 | [Tiny baseline round 3](reports/tiny-baseline-round3.json) | Same blind run after the configurable stream cap |

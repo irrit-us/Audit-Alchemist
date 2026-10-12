@@ -19,9 +19,6 @@ SPEC.loader.exec_module(PROBE)
 ADAPTER_SPEC = importlib.util.spec_from_file_location("external_agent", ROOT / "scripts/external_agent.py")
 ADAPTER = importlib.util.module_from_spec(ADAPTER_SPEC)
 ADAPTER_SPEC.loader.exec_module(ADAPTER)
-POC_SPEC = importlib.util.spec_from_file_location("verify_pocs", ROOT / "scripts/verify_pocs.py")
-POC = importlib.util.module_from_spec(POC_SPEC)
-POC_SPEC.loader.exec_module(POC)
 
 
 class Tube:
@@ -218,61 +215,6 @@ class HarnessAdapterTests(unittest.TestCase):
         self.assertTrue((root / "a.py").exists())
         ADAPTER.restore_labels(hidden)
         self.assertTrue((root / "dataset.json").exists())
-
-
-class PocVerifierTests(unittest.TestCase):
-    """Fixture-level PoC oracle execution and expectation handling."""
-
-    def _repo(self, script: str):
-        repo = Path(tempfile.mkdtemp())
-        (repo / "fixtures" / "x").mkdir(parents=True)
-        (repo / "fixtures" / "x" / "a.py").write_text("pass\n", encoding="utf-8")
-        (repo / "poc.py").write_text(script, encoding="utf-8")
-        return repo
-
-    def test_passing_oracle_is_verified(self):
-        repo = self._repo("print('POC_VERIFIED')\n")
-        result = POC.run_oracle(repo, {
-            "fixture": "fixtures/x", "script": "poc.py",
-            "argv": [sys.executable, "poc.py"],
-            "expect_exit": 0, "expect_stdout_contains": "POC_VERIFIED",
-        })
-        self.assertTrue(result["verified"], result)
-        self.assertEqual(result["exit_code"], 0)
-
-    def test_wrong_marker_is_not_verified(self):
-        repo = self._repo("print('nope')\n")
-        result = POC.run_oracle(repo, {
-            "fixture": "fixtures/x", "script": "poc.py",
-            "argv": [sys.executable, "poc.py"],
-            "expect_exit": 0, "expect_stdout_contains": "POC_VERIFIED",
-        })
-        self.assertFalse(result["verified"], result)
-
-    def test_timeout_is_a_failure_not_a_pass(self):
-        repo = self._repo("import time; time.sleep(5)\n")
-        result = POC.run_oracle(repo, {
-            "fixture": "fixtures/x", "script": "poc.py",
-            "argv": [sys.executable, "poc.py"], "expect_exit": 0, "timeout_ms": 200,
-        })
-        self.assertFalse(result["verified"])
-        self.assertEqual(result["error"], "timeout")
-
-    def test_staging_excludes_the_label_manifest(self):
-        repo = self._repo(
-            "import pathlib\n"
-            "assert not pathlib.Path('dataset.json').exists()\n"
-            "assert not pathlib.Path('reference').exists()\n"
-            "print('POC_VERIFIED')\n"
-        )
-        (repo / "fixtures" / "x" / "dataset.json").write_text("labels", encoding="utf-8")
-        (repo / "fixtures" / "x" / "reference").mkdir()
-        (repo / "fixtures" / "x" / "reference" / "FIX.md").write_text("fix", encoding="utf-8")
-        result = POC.run_oracle(repo, {
-            "fixture": "fixtures/x", "script": "poc.py", "argv": [sys.executable, "poc.py"],
-            "expect_stdout_contains": "POC_VERIFIED",
-        })
-        self.assertTrue(result["verified"], result)
 
 
 if __name__ == "__main__":

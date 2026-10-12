@@ -24,13 +24,16 @@ The library separates provider protocols, tool execution, and evidence validatio
 | Prompt | `src/provider/prompt.rs`, `prompts/audit.txt` | JSON-escaped instructions/numbered source and evidence-driven audit guidance |
 | Agent tools | `src/tools.rs` | Bash, paged reads, writes, exact edits, listing, batched search, read-only settlement classification, observed-line and content-fingerprint citation validation |
 | Conversation | `src/provider/conversation.rs` | Streamed tool calls and provider-native history replay, including reasoning state |
+| Provider settings | `src/provider/options.rs` | CLI provider options and endpoint/header validation |
 | Skills | `src/skills.rs`, `skills/` | Compiled metadata catalog, on-demand guidance, and exact script resources |
 | Monitoring | `src/monitor.rs` | Bounded local run journals, operational events, debug capture, and trace inspection |
 | Credentials | `src/provider/auth.rs`, `src/provider/auth/token.rs` | API keys and Sign In With ChatGPT/Codex login and refresh |
 | Transport policy | `src/provider/retry.rs` | Transient-failure classification and jittered backoff |
 | Wire formats | `src/provider/wire.rs` | Request bodies and stream decoders for chat-completions, Responses, and Anthropic |
 | Streaming | `src/provider/sse.rs`, `src/provider/events.rs` | Incremental SSE reader and normalized events/usage |
-| Adapters | `src/provider/mod.rs` | Credentialed clients for every wire format, with deadline and retry |
+| Audit session | `src/provider/session.rs` | Bounded conversation, ordered tool dispatch, settlement, and final evidence validation |
+| Transport | `src/provider/transport.rs` | Credentialed clients for every wire format, with deadline and retry |
+| Audit entry point | `src/provider/mod.rs` | Run monitoring, deadline supervision, and the public audit API |
 | Supervision | `src/runner.rs` | External agent process execution, deadlines, and cleanup |
 | Evaluation | `src/dataset.rs`, `src/evaluate.rs`, `src/progress.rs` | Dataset loading, exact scoring, batch progress |
 | Console | `src/output.rs` | `text`, `markdown`, `cot`, `body`, and `jsonl` renderers |

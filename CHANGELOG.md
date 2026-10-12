@@ -26,6 +26,13 @@ All notable changes to this project are documented here. The format follows
   5/7 distinct on the seven primary labels, exceeding the leak-free Pi baseline
   (.333, 4/7) at ~4.6x tokens. Recorded as the recommended evaluation
   configuration, not a new global default. See [Validation](docs/validation.md).
+- A documented per-round validation procedure (`cargo test --locked
+  --all-targets` plus the seven-label blind plan at three trials) that compares
+  line F1 and distinct coverage to the leak-free Pi baseline (.417 / 4-of-7).
+  Round 27 re-validated the concise default after the prompt and tool changes:
+  exact distinct 5/7, line distinct 6/7, with exact F1 .205 because genuine but
+  unlabeled wrapper findings count as false positives under single-label
+  scoring. Recorded in [Validation](docs/validation.md).
 - `benchmark --isolate`, exposing the per-case staging path already used by
   `evaluate` so an external agent cannot read the label manifest or mutate the
   source tree. Covered by

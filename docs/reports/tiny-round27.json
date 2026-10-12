@@ -1,0 +1,1283 @@
+{
+  "schema_version": 1,
+  "groups": {
+    "pi_like": {
+      "trials": 21,
+      "success": 17,
+      "failed": 4,
+      "tp": 9,
+      "fp": 58,
+      "fn": 12,
+      "line_tp": 13,
+      "line_fp": 54,
+      "line_fn": 8,
+      "latencies_ms": [
+        150938,
+        213819,
+        73681,
+        296057,
+        383222,
+        41633,
+        275794,
+        163261,
+        334093,
+        227004,
+        373088,
+        101658,
+        184321,
+        255843,
+        118153,
+        104104,
+        442584,
+        261591,
+        158091,
+        191509,
+        552932
+      ],
+      "completed_latencies_ms": [
+        150938,
+        213819,
+        73681,
+        296057,
+        41633,
+        275794,
+        163261,
+        227004,
+        373088,
+        101658,
+        255843,
+        118153,
+        104104,
+        261591,
+        158091,
+        191509,
+        552932
+      ],
+      "timeouts": 0,
+      "operational_totals": {
+        "turns": 516,
+        "tools": 671,
+        "tool_errors": 68,
+        "retries": 0,
+        "output_repairs": 3,
+        "empty_completions": 1,
+        "tool_budget_rejections": 0,
+        "settlements": 4,
+        "settlement_calls": 2,
+        "completion_tokens": 595439,
+        "prompt_tokens": 28846659,
+        "reasoning_tokens": 504343,
+        "total_tokens": 29442098
+      },
+      "runs_with_usage": 21,
+      "unexpected_total": 58,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 58,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0,
+      "precision": 0.13432835820895522,
+      "recall": 0.42857142857142855,
+      "f1": 0.20454545454545456,
+      "line_precision": 0.19402985074626866,
+      "line_recall": 0.6190476190476191,
+      "line_f1": 0.29545454545454547,
+      "latencies_ms_mean": 233494.09523809524,
+      "latencies_ms_stdev": 129729.97668692643,
+      "completed_latencies_ms_mean": 209362.11764705883,
+      "completed_latencies_ms_stdev": 124504.56330235569
+    }
+  },
+  "case_metrics": [
+    {
+      "run": "lock-symlink-truncation-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 3,
+      "line_fn": 1,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 14,
+      "line_fn": 0,
+      "unexpected_total": 15,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 15,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 2,
+      "line_fn": 1,
+      "unexpected_total": 2,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 2,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 13,
+      "line_fn": 0,
+      "unexpected_total": 14,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 14,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "lock-symlink-truncation-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 1,
+      "line_fn": 0,
+      "unexpected_total": 1,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 1,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 8,
+      "line_fn": 0,
+      "unexpected_total": 9,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 9,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "unsettled-bad-debt-liquidation-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 0,
+      "line_fn": 1,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 0,
+      "line_fp": 3,
+      "line_fn": 1,
+      "unexpected_total": 3,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 3,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "chunked-trailer-not-validated-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 0,
+      "line_fn": 0,
+      "unexpected_total": 0,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 0,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "line_tp": 1,
+      "line_fp": 8,
+      "line_fn": 0,
+      "unexpected_total": 9,
+      "unexpected_valid": 0,
+      "unexpected_invalid": 0,
+      "unexpected_unreviewed": 9,
+      "unexpected_out_of_scope": 0,
+      "unexpected_low_impact": 0,
+      "alternate_matches": 0,
+      "valid_distinct": 0
+    }
+  ],
+  "review_queue": [
+    {
+      "run": "lock-symlink-truncation-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "8be1f6a198ab9fe54b688ed50f5e2efcf6e47b3fb9053ea370f05152e3e76be3:lock-symlink-truncation:e920caeed4097a94ccd0ef658f5cfcd47c1d2ae5ae44bbe9e802900b53bb57d1",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_unix.py",
+        "line": 44,
+        "severity": "high",
+        "title": "UnixFileLock opens the lock path with O_TRUNC and follows symlinks, truncating arbitrary files",
+        "evidence": "_acquire() builds open_flags = os.O_RDWR | os.O_TRUNC (line 41) and only decides on O_CREAT from the Path(self.lock_file).exists() test (line 42), which is itself a symlink-following stat; the actual os.open (line 44) passes no os.O_NOFOLLOW, so the kernel resolves the final path component and applies O_TRUNC to the resolved target. An attacker who can write into the directory containing a predictable lock path (e.g. a shared /tmp path used by virtualenv/tox/PyTorch) plants a symlink lock_file -> /home/victim/.ssh/config (before acquire, or in the gap after the exists() check); the victim process then opens the link, truncates the victim file to 0 bytes, additionally fchmod()s it to self._context.mode (line 46) and flocks it. No privilege beyond write access to the lock directory is needed and no race is required in the planted-before-acquire case. Upstream fixed exactly this line by adding os.O_NOFOLLOW in 3.20.1 (CVE-2025-68146), confirming the missing flag is the root cause rather than intended behaviour."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "lock-symlink-truncation-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "8be1f6a198ab9fe54b688ed50f5e2efcf6e47b3fb9053ea370f05152e3e76be3:lock-symlink-truncation:10d44160d3f39fb7b661f7156313f8c0fb67d9fde6e11bbd4e32c4ffaa154849",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_windows.py",
+        "line": 28,
+        "severity": "high",
+        "title": "WindowsFileLock opens the lock path with O_CREAT|O_TRUNC without rejecting reparse points/aliases",
+        "evidence": "_acquire() calls raise_on_not_writable_file (line 20) and then os.open(self.lock_file, flags, ...) at line 28 with flags = os.O_RDWR | os.O_CREAT | os.O_TRUNC (lines 22-26); there is no GetFileAttributesW/FILE_ATTRIBUTE_REPARSE_POINT or O_NOFOLLOW check, so Windows resolves a symlink/junction (or any other path alias) at the lock path and truncates the resolved file. Reproduced locally on this Windows host with the default FileLock: an unprivileged path alias of a 3400-byte file at the lock path was passed to FileLock(...).acquire(), and after the open at line 28 the victim file was 0 bytes (lock acquired, then the path was unlinked at line 49) - no race was involved. Upstream 3.20.1 added precisely the reparse-point rejection for CVE-2025-68146, so the omitted check is the root cause; any attacker able to create a symlink/junction (Windows 10+ Developer Mode) or alias inside a lock directory writable by them can destroy a file writable by the victim."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "lock-symlink-truncation-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "8be1f6a198ab9fe54b688ed50f5e2efcf6e47b3fb9053ea370f05152e3e76be3:lock-symlink-truncation:b640f61b70602abd5c33d7d192c86c258a974241d47406c0ddcb8adbe646f041",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_soft.py",
+        "line": 27,
+        "severity": "medium",
+        "title": "SoftFileLock checks the lock path with stat then opens it without O_NOFOLLOW (TOCTOU)",
+        "evidence": "_acquire() first calls raise_on_not_writable_file(self.lock_file) (line 17), which os.stat()s the path and follows links, and later calls os.open(self.lock_file, flags, self._context.mode) (line 27) with flags = O_WRONLY | O_CREAT | O_EXCL | O_TRUNC (lines 20-25) and no os.O_NOFOLLOW, so the file object checked is not the file object used. An attacker with write access to the lock directory can win the window between the check and the open with a symlink at the lock path; on platforms where the O_EXCL symlink rejection is not enforced (e.g. the Windows CRT opening a dangling reparse point with CREATE_NEW) the link target is created/opened instead of failing with EEXIST, and otherwise the create fails with EEXIST so the caller treats an attacker-maintained link as a held lock (silent lock bypass/DoS, locks no longer serializing processes). Upstream added the same O_NOFOLLOW guard here in 3.20.3 (CVE-2026-22701, commit 255ed068), the reference fix for this exact defect."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:6d1f1458b41d7955dc7f8e0a3cade2d2b482eb1523bff2ec4a90d430aaa879c3",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 328,
+        "severity": "high",
+        "title": "argon2i_32 nb_blocks not validated before sizing work_area (heap overflow)",
+        "evidence": "`nb_blocks` is attacker/caller-controlled and is copied straight into `config.nb_blocks` (line 328) with no validation, then used at line 345 to allocate `malloc(nb_blocks * 1024)`. Monocypher requires `nb_blocks >= nb_lanes * 8` (it fills blocks[l*lane_size+i] for i=0,1 and reads blocks[lane_size-1]), so any `nb_blocks < 8` makes `crypto_argon2` (line 347) write/read 1024-byte blocks beyond the allocation. Confirmed live: `pymonocypher 4.0.2.6 argon2i_32(1, 1, b'password', b'salt')` segfaults (heap buffer overflow, CVE-2026-53720). The only guard is `_validate_u32`, which is applied to the buffer lengths, never to nb_blocks."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:5f68044db548519a482459f0ef30c79670bd210954edebc141da0f2ed36b37ef",
+      "finding": {
+        "cwe": "CWE-476",
+        "path": "c_monocypher.pyx",
+        "line": 345,
+        "severity": "high",
+        "title": "argon2i_32 dereferences NULL when malloc fails",
+        "evidence": "`work_area = malloc(nb_blocks * 1024)` is used without a NULL check. `nb_blocks` is unvalidated (line 328) and bounded only by uint32, so `nb_blocks = 0xffffffff` requests ~4 TB; on failure malloc returns NULL and `crypto_argon2(hash, ..., work_area, ...)` at line 347 immediately writes `blocks[...]` through the NULL pointer. Confirmed live: `argon2i_32(0xffffffff, 1, b'password', b'salt')` segfaults in the 4.0.2.6 build."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:5aad98f24787ea84b66f502b431677c608a8ffac71c8b18d4054dd41827daa79",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "blake2b() key length unchecked causes stack buffer overflow",
+        "evidence": "`key` is passed to `crypto_blake2b_keyed(hash, len(hash), key, len(key), msg, len(msg))` with no length validation. Monocypher's `crypto_blake2b_keyed_init` copies the key with `COPY(key_block, key, key_size)` into a fixed `u8 key_block[128]` (monocypher.c:530-549), so any key longer than 128 bytes writes past the stack buffer; keys > 64 are also invalid for BLAKE2b. Confirmed live: `blake2b(b'msg', key=b'A'*300)` kills the interpreter. Fixed upstream by limiting keys to 64 bytes; this version only defaults `key` to b'' when None."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:52cac1a980146530f1614a6898513dc4ab353750909f8b76aadbf0038b7ac480",
+      "finding": {
+        "cwe": "CWE-121",
+        "path": "c_monocypher.pyx",
+        "line": 297,
+        "severity": "high",
+        "title": "Blake2b() constructor does not bound key (or hash_size) length",
+        "evidence": "`crypto_blake2b_keyed_init(&self._ctx, self._hash_size, key, len(key))` receives an unchecked key object; keys longer than 128 bytes overflow Monocypher's `key_block[128]` stack copy exactly as in `blake2b()`. `self._hash_size` (line 296) is likewise unvalidated (accepted outside 1..64), so the caller fully controls both fixed-size parameters that Monocypher assumes are validated."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:3dcea57b874842a364b1ff31c52ab6e1a6f06d0fab22fb5c103c4e024518e31f",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 163,
+        "severity": "high",
+        "title": "wipe() trusts len(data) instead of the real buffer length (out-of-bounds write)",
+        "evidence": "`crypto_wipe(data, len(data))` derives the destination pointer from the passed object's buffer but the byte count from `len(data)`. A `bytes` subclass that overrides `__len__` (e.g. `class E(bytes): def __len__(self): return 4096` wrapping 8 bytes) makes Cython use the 8-byte PyBytes buffer while 4096 bytes are zeroed -> confirmed segfault/heap corruption in the 4.0.2.6 build. Even for plain bytes, `crypto_wipe` writes into an object the function does not own: `wipe(b'x')` zeroes CPython's interpreter-wide single-byte singleton so that every later `b'x'` evaluates to `b'\\x00'` (confirmed live). No type or size check exists."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:6aa4aae95cccc53894c6bba5e098ff78c471d2445da445f26cfd8d9981458f38",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 351,
+        "severity": "medium",
+        "title": "argon2i_32 wipes caller-owned immutable bytes password by default",
+        "evidence": "With the default `_wipe=True`, `crypto_wipe(password, len(password))` zeroes the caller's object. When `password` is `bytes` this mutates an immutable object; for a 1-byte password it zeroes an interpreter-wide singleton and for a module/string literal it corrupts a shared constant, so unrelated code silently sees altered data. The password object is never duplicated into a writable buffer."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:6247a2265b2c07de0bcff334eddfcc3b506051458d79ffaa5dad0f5bfad39f0c",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 390,
+        "severity": "high",
+        "title": "compute_signing_public_key passes caller's bytes as Monocypher's wiped seed",
+        "evidence": "`crypto_eddsa_key_pair(secret, public, bytes(secret_key))` is called on the 32-byte compatibility path; `bytes(bytes_obj)` returns the same object, and Monocypher's `crypto_eddsa_key_pair` deliberately calls `crypto_wipe(seed, 32)` (monocypher.c:2216-2224). Confirmed live: the caller's 32-byte key is zeroed in place, so every later use derives keys/signatures from the publicly known all-zero seed. No private copy is made."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:93ff726049a1aa21a040f9e2d0d6e29a5f411e15574fe036c1104fcbe1deb449",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 410,
+        "severity": "high",
+        "title": "signature_sign zeroes the caller's 32-byte secret key",
+        "evidence": "Same root cause as line 390: `crypto_eddsa_key_pair(secret, public, bytes(secret_key))` hands the caller's own immutable bytes object to a C function that wipes its seed argument, so the caller's key becomes all zeros after signing. Confirmed live: `k=bytes(range(32)); signature_sign(k, b'hello')` leaves `k` == 0x00*32, after which repeated signing uses the attacker-reproducible zero seed."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:1c3321857f5c8ed4ce007ede4918838fb37a67e27b3f4c42c1ce48cec1908863",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 545,
+        "severity": "medium",
+        "title": "elligator_key_pair lets Monocypher wipe the caller's seed bytes",
+        "evidence": "A caller-supplied 32-byte `seed` (validated only for length at line 543) is passed unchanged to `crypto_elligator_key_pair(hidden, secret_key, seed)`, which ends with `crypto_wipe(seed, 32)` (monocypher.c:2714-2735). Confirmed live: the caller's seed object is zeroed, so reusing it produces the same publicly predictable key pair instead of raising or preserving the input."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:566e6c48400eedb6c62d3599db2078da5945a17c1fc16a1ca8335199dbee3d22",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 181,
+        "severity": "medium",
+        "title": "lock() does not validate key/nonce lengths (out-of-bounds read)",
+        "evidence": "`crypto_aead_lock(crypto_text, mac, key, nonce, ...)` takes a `const uint8_t key[32]` and `const uint8_t nonce[24]`, but neither `key` nor `nonce` length is checked (only the class `IncrementalAuthenticatedEncryption.__init__` validates them). `lock(b'k', b'n', b'msg')` therefore makes the C code read 31 and 23 bytes past the end of the supplied buffers, i.e. unrelated heap memory used as key material / nonce, with a potential access-violation at a page boundary."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:46b9aa0569f06018a29680ed7f0ce2ec4bd4c82269bfad760b3e62579d7fe742",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 199,
+        "severity": "medium",
+        "title": "unlock() does not validate key, nonce or mac lengths",
+        "evidence": "`crypto_aead_unlock(plain_text, mac, key, nonce, associated_data, len(associated_data), message, len(message))` reads a 32-byte key, 24-byte nonce and 16-byte MAC from whatever objects the caller passed; no length checks are performed in this function (unlike `IncrementalAuthenticatedEncryption.unlock`, which checks `len(mac) == 16`). Short arguments cause out-of-bounds reads of adjacent heap memory (authentication decisions based on unrelated memory / crash)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:bf4300836d5327bebbc3abfccec93eac5feb4040a2970bd7ecb2dd1d31413697",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 267,
+        "severity": "medium",
+        "title": "chacha20() validates the nonce but not the key length",
+        "evidence": "`crypto_chacha20_x(result, message, len(message), key, nonce, 0)` treats `key` as `const uint8_t key[32]`. Lines 266-269 only branch on `len(nonce)` (24 or 8) and never check `len(key)`, so a short key (e.g. `chacha20(b'short', nonce, data)`) is read 32 bytes from a smaller allocation - out-of-bounds read of heap memory used as the cipher key."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:2ae138b34d61d26fe29f7e02071a68f888ef7d207a02401d3825890aec9a2aca",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 429,
+        "severity": "medium",
+        "title": "signature_check() does not validate signature/public_key lengths",
+        "evidence": "`crypto_eddsa_check(signature, public_key, message, len(message))` reads a `const uint8_t signature[64]` and `const uint8_t public_key[32]`; neither object's length is verified anywhere in the function, so undersized signature/public_key arguments produce out-of-bounds reads of adjacent memory during verification."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:d6de4b17b04c7b8d3bd19851ade522fb4abe0206b78f9d5c776d34beb063acf2",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 375,
+        "severity": "medium",
+        "title": "key_exchange() reads 32 bytes from unvalidated key arguments",
+        "evidence": "`crypto_x25519(p, your_secret_key, their_public_key)` requires both arguments to be 32 bytes but the function performs no length checks, so passing shorter key material (e.g. an 8-byte key) causes a 32-byte out-of-bounds read of heap memory that is then used as the X25519 secret/public key."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "9bb624e353400a57166f800e4d09e8304b84e0cfe224e0538a0c37d23d55fd57:argon2i32-small-block-count:859ccbcf4176e76bf026d261dc930766b00aa4c6ac3c8551ad99adaf4dbd225b",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 362,
+        "severity": "medium",
+        "title": "compute_key_exchange_public_key() reads past undersized secret_key",
+        "evidence": "`crypto_x25519_public_key(public_key, secret_key)` reads a fixed 32-byte secret key, yet `secret_key` is never length-checked before the call, so a caller-supplied shorter object leads to an out-of-bounds read and produces a public key derived from unrelated memory (also a correctness/security failure of the derived key pair)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "1c5bb2fc219a243cdcef09fb7ec674306d820000a10bf71de3fce61fcc50583a:intoiter-drop-panic-double-free:3f74de344e6937094c84482045c3d64b7b105a723aa98612616b793e72754ac9",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "IntoIter::drop double-frees elements when an element's Drop panics",
+        "evidence": "`IntoIter::drop` -> `drop_non_singleton` moves the buffer out of the iterator with `mem::replace(&mut this.vec, ThinVec::new())` (line 2546), drops the remaining elements through the unsafe `ptr::drop_in_place(&mut vec[this.start..])` (line 2547) and only afterwards resets the length with `vec.set_len_non_singleton(0)` (line 2548). If any element's `Drop` panics, line 2548 never runs and the local `vec` is dropped during unwinding while its length still covers the elements that were already dropped, so `Drop for ThinVec` (line 1917) calls `ptr::drop_in_place(&mut this[..])` on them a second time -> double free / use-after-free of everything the elements own (String, Vec, Box, Box<dyn Trait> fat pointer/vtable slot). No unsafe code is required of the caller: `let mut v = ThinVec::new(); v.push(Box::new(1)); v.push(PanicOnDrop); v.push(Box::new(3)); let mut it = v.into_iter(); it.next(); drop(it);` is enough. A local PoC linking this file reproduced it: `DROP id=0 (occurrence 1) payload=Some(0x1fb3ffc1370)` then, during unwinding, `DROP id=0 (occurrence 2) payload=Some(0x1fb3ffc1370)` for the same freed Box, and the process aborted with STATUS_HEAP_CORRUPTION (exit 0xc0000374). There is no guard (std uses a DropGuard to reset the length before the drops can panic) protecting the length reset, which is the precondition the unsafe drop relies on."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "1c5bb2fc219a243cdcef09fb7ec674306d820000a10bf71de3fce61fcc50583a:intoiter-drop-panic-double-free:c10bc1afcc4921c45ede42f38fb24ba5bb891cd07904850c3a9237113b7619f5",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "ThinVec::clear double-frees elements when an element's Drop panics",
+        "evidence": "`clear` drops every element with the unsafe `ptr::drop_in_place(&mut self[..])` (line 1084) and only then resets the container with `self.set_len(0)` (line 1085). If an element's `Drop` implementation panics, line 1085 is skipped, so the ThinVec keeps reporting the old length while the element memory has already been dropped/released; when the container itself is dropped during that unwinding (or later), `Drop for ThinVec` (line 1917) runs `ptr::drop_in_place(&mut this[..])` again over the same range and re-drops (re-frees) the already released elements -> double free / use-after-free. Reachable from safe code: build `ThinVec<Box<_>>`-like elements whose Drop panics once, then call `v.clear()` inside `catch_unwind(AssertUnwindSafe(...))`. A local PoC linking this file showed every element dropped twice (`DROP id=0 (occurrence 1)`, `DROP id=1`, `DROP id=2`, then `DROP id=0 (occurrence 2)`, `DROP id=1 (occurrence 2)`, `DROP id=2 (occurrence 2)`; `element 0 dropped 2 time(s) <-- DOUBLE DROP`), i.e. attacker-reachable memory corruption (heap-spray / vtable-hijack potential) from a panicking element Drop."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "ef96b1f60e194dc0cc3d85bf1958367b2165b90a25aae9b5edbf84d04bf9f8d2:sha256-length-comparator-unconstrained:3b0a76752ff6053ebf85cd368e50432f36918e0aaa932bfc5d0f19537beee821",
+      "finding": {
+        "cwe": "CWE-20",
+        "path": "sha.circom",
+        "line": 110,
+        "severity": "high",
+        "title": "Unconstrained paddedInLength/inBlockIndex lets the prover force an all-zero SHA-256 output",
+        "evidence": "paddedInLength is a prover-supplied input signal (line 97) and is never constrained to fit in maxBitsPaddedBits bits. Line 110 computes inBlockIndex <-- (paddedInLength >> 9) as an unconstrained witness whose only relation to the input is paddedInLength === inBlockIndex * 512 (line 111), and line 126 feeds the same unconstrained value into LessEqThan (lines 125-128), which is sound only if its inputs are already range-checked. Because nothing forces paddedInLength into [0, maxBitLength], 0 and small negative field values p-k pass: e.g. in Sha256Bytes(64) (= Sha256General(512), maxBitsPaddedBits = 10) the byte length paddedInLength = 0 gives sha.paddedInLength = 0, LessEqThan reduces to Num2Bits of (0 + 1024 - 513) = 511 with top bit 0 so out === 1 holds, inBlockIndex = 0 satisfies line 111, and line 195 then sets the selector index to inBlockIndex - 1 = -1 = p-1, which is far outside [0, maxBlocks-1]. ItemAtIndex has no range check that catches this (array.circom lines 25-28 suffer the same problem), so every IsEqual output is 0, calcTotal.sum = 0 and all 256 output bits are 0: a valid proof that SHA256(message) = 0 for an arbitrary message. The same unconstrained length/index derivation is duplicated in Sha256Partial at lines 233-234 and 292 (reachable through Sha256BytesPartial), and the check that would have tied the length to the floor, the floorVerifier constraints, are only present as comments (lines 113-122)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "sha256-length-comparator-unconstrained-1-pi_like",
+      "variant": "pi_like",
+      "review_id": "ef96b1f60e194dc0cc3d85bf1958367b2165b90a25aae9b5edbf84d04bf9f8d2:sha256-length-comparator-unconstrained:daa1caf8e5a125f9fc50243dc07634435bd8b17f662ea05065512d6bbf372db1",
+      "finding": {
+        "cwe": "CWE-20",
+        "path": "array.circom",
+        "line": 26,
+        "severity": "high",
+        "title": "ItemAtIndex range check is unsound because index is not bit-constrained",
+        "evidence": "ItemAtIndex is used as the block selector in sha.circom (line 195: arraySelectors[k].index <== inBlockIndex - 1), and index is therefore attacker-controlled. The template validates index only with LessThan(bitLength) (lines 25-28): lessThan.in[0] <== index; lessThan.in[1] <== maxArrayLen; lessThan.out === 1. circomlib's LessThan(n) only constrains in[0] + 2^n - in[1] to be a small non-negative integer; it does not constrain index itself to bitLength bits. Consequently index = p-1 (equivalently -1), or any other p-c value, makes the LessThan input reduce mod p to 2^bitLength - maxArrayLen - c, which is < 2^bitLength, so lessThan.out === 1 is satisfied. No eqs[i] then matches, so calcTotal.sum evaluates to 0 and out is 0 for every array; upstream removed this LessThan call and replaced it with the assertion sum(eqs[i].out) === 1, which is absent here. Combined with the unconstrained inBlockIndex in sha.circom (line 110) this makes the SHA-256 templates provably output the all-zero digest."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:c3ec09fe465fe37bc8db8266d27a05c4f64f1a2866cf952a904ce0354f33ced6",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "blake2b() passes an unbounded key length to Monocypher, overflowing a 128-byte stack buffer",
+        "evidence": "blake2b() accepts any bytes-like key and forwards len(key) straight to crypto_blake2b_keyed(hash, 64, key, len(key), msg, len(msg)); no bound is applied. Monocypher's crypto_blake2b_keyed_init (monocypher.c:530) executes `u8 key_block[128] = {0}; COPY(key_block, key, key_size);` where COPY is a byte loop over key_size, so any key longer than 128 bytes writes past the stack array (the declared key[32] parameter in the extern block is only a pointer and Cython emits __Pyx_PyObject_AsUString with no length check). Verified: monolithicypher 4.0.2.6 blake2b(b'msg', key=b'A'*200) crashes the interpreter; upstream 4.0.3.4 added _check_blake2b_key() limiting keys to 64 bytes ('keys longer than 128 bytes overflowed a stack buffer and crashed the interpreter')."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:28b8a866b07c7a9580ee79b5a94a9172eddfac26db07e292d466a5317408a960",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 297,
+        "severity": "high",
+        "title": "Blake2b(key=...) forwards an unbounded key length into Monocypher's 128-byte key block",
+        "evidence": "Blake2b.__init__ takes key from Python, only substituting b'' for None, and calls crypto_blake2b_keyed_init(&self._ctx, self._hash_size, key, len(key)). len(key) is attacker-controlled and is used by Monocypher as key_size in `u8 key_block[128] = {0}; COPY(key_block, key, key_size);` (monocypher.c:530-548), so a key longer than 128 bytes is copied past the end of the stack buffer -> stack memory corruption. hash_size is likewise unvalidated. Fixed upstream in 4.0.3.4 by _check_blake2b_key() (limit 64) and a 1..64 hash_size check."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:8270ea1a4014ce29d62e18433cc6c269af918de8ec8f435cb5011bc0a3aa5dff",
+      "finding": {
+        "cwe": "CWE-476",
+        "path": "c_monocypher.pyx",
+        "line": 345,
+        "severity": "medium",
+        "title": "argon2i_32 dereferences an unchecked malloc result for attacker-sized nb_blocks",
+        "evidence": "work_area = malloc((<size_t> nb_blocks) * 1024) is never checked for NULL, and nb_blocks is not range-limited (only the struct field assignment to uint32_t bounds it, i.e. up to 2**32-1 blocks = ~4 TiB). crypto_argon2(hash, 32, work_area, ...) then writes the first blocks through that NULL pointer. Verified: monocypher 4.0.2.6 argon2i_32(0xFFFFFFFF, 1, b'password', b'salt') crashes the process on the Windows heap; 4.0.3.4 fixes this ('potential NULL pointer dereferencing ... nb_blocks intentionally too big to create out of memory malloc')."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:ef6e90006c50d5fddfff144d67e8f61d125847e9690377787dffd4487691b019",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 351,
+        "severity": "medium",
+        "title": "argon2i_32 zeroes the caller's immutable bytes password via crypto_wipe",
+        "evidence": "With the default _wipe=True the binding calls crypto_wipe(password, len(password)) on whatever object the caller passed. When password is a bytes object (immutable, frequently an interned code constant or a shared/aliased object) this memsets the object's backing store in place, violating Python's immutability guarantees and corrupting every alias of that object, including interpreter-wide single-byte bytes singletons. Upstream classifies this as a security vulnerability and 4.0.3.4 changed the code to `if _wipe and isinstance(password, bytearray)` so immutable bytes are never written."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:c5855438882ffb03bda46f3ff2c5bf6310a186719245f251138b21cf79434ed2",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 163,
+        "severity": "medium",
+        "title": "wipe() memsets arbitrary Python bytes, including shared single-byte singletons",
+        "evidence": "wipe(data) calls crypto_wipe(data, len(data)) with no type or aliasing check; because the extern declaration is a bare uint8_t* pointer, Cython passes bytes objects' internal buffer directly (__Pyx_PyObject_AsWritableUString is just a cast of __Pyx_PyObject_AsString), so the C code zeroes memory owned by an immutable, potentially interpreter-wide shared object. CPython shares single-byte bytes objects globally and interns some constants, so wiping e.g. b'\\x00'-style singletons corrupts unrelated objects that other code still references - heap state corruption rather than simply clearing the caller's secret. 4.0.3.4 added an explicit rejection of single-byte bytes objects."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:200d6812d717b98103032f4e20c01e902b3a21d6686e0bd428fc7683e71107ae",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 390,
+        "severity": "high",
+        "title": "compute_signing_public_key passes the caller's immutable bytes as the seed Monocypher wipes",
+        "evidence": "In the 32-byte compatibility path the code does crypto_eddsa_key_pair(secret, public, bytes(secret_key)). bytes(x) returns the very same object when x is already an exact bytes instance (verified: bytes(b'abc') is b'abc' -> True), and Monocypher's crypto_eddsa_key_pair ends with crypto_wipe(seed, 32) (monocypher.c:2224), so the caller's key object and all its aliases are silently zeroed. Verified on the 4.0.2.6 wheel: after compute_signing_public_key(b'A'*32) the caller's object reads 0000.... Subsequent reuse derives keys from the publicly known all-zero seed. Fixed in 4.0.3.1 by passing bytes(bytearray(secret_key)) (a private copy)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:3e72c933294360ebbb67bf016b6f6c9a0bba6c86f594d2c90b206974117c3255",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 410,
+        "severity": "high",
+        "title": "signature_sign passes the caller's immutable bytes as the seed Monocypher wipes",
+        "evidence": "The 32-byte secret-key compatibility path calls crypto_eddsa_key_pair(secret, public, bytes(secret_key)); since bytes() of an exact bytes object is a no-op, the caller's object is handed to Monocypher as the mutable seed, which is destroyed by crypto_wipe(seed, 32) inside crypto_eddsa_key_pair (monocypher.c:2224). The caller's secret key object and its aliases become all zeros (key material silently destroyed / signings later performed under a reproducible seed). Fixed in 4.0.3.1 with an explicit private copy."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:8858b700766921a066c3e49fa8dfb0bac84276aca8251a2c4c1c303cdb3b2051",
+      "finding": {
+        "cwe": "CWE-471",
+        "path": "c_monocypher.pyx",
+        "line": 545,
+        "severity": "medium",
+        "title": "elligator_key_pair lets Monocypher wipe the caller-supplied immutable seed",
+        "evidence": "When a seed is supplied it is passed unchanged to crypto_elligator_key_pair(hidden, secret_key, seed); Monocypher wipes that buffer via crypto_wipe(seed, 32) (monocypher.c:2729). Because a Python bytes seed is immutable and may be shared/interned, the call mutates the caller's object behind Python's back and destroys aliases. Verified on the 4.0.2.6 wheel: seed = bytes(bytearray(b'B'*32)) reads 4242... before and 0000... after the call. Fixed in 4.0.3.1 by passing a private copy of the seed."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:cc4ff1eb36639e81ad59a1b6fb7459a463d1bc107863ec969589ee3a948131a5",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 181,
+        "severity": "medium",
+        "title": "lock() forwards unvalidated key/nonce lengths to fixed-size AEAD buffers",
+        "evidence": "lock() performs no length checks and calls crypto_aead_lock(crypto_text, mac, key, nonce, ad, len(ad), message, len(message)); the extern signature declares key[32] and nonce[24] as bare pointers, so Cython passes whatever the caller supplied and Monocypher reads 32 and 24 bytes unconditionally. An undersized key/nonce (e.g. lock(b'k', b'n'*4, ...)) causes an out-of-bounds heap read of attacker-adjacent memory that is then consumed as key/nonce material. 4.0.3.4 added _check_len('key', key, 32)/_check_len('nonce', nonce, 24) precisely for this binding."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:69c5c6552ce18cc7f30a192f6df023f87e803c0492ed318890b0382fcf371abc",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 199,
+        "severity": "medium",
+        "title": "unlock() forwards unvalidated key/nonce/mac lengths to fixed-size AEAD buffers",
+        "evidence": "unlock() only normalizes associated_data; it passes key, nonce and mac to crypto_aead_unlock(plain_text, mac, key, nonce, ad, len(ad), message, len(message)) without checking that they are 32, 24 and 16 bytes. The extern block declares those as bare const uint8_t pointers, so Monocypher performs constant-time comparisons and stream setup over 16/32/24 bytes past the end of undersized objects (verified: unlock(b'k', b'n'*24, b'm'*16, b'c'*10) returns normally while reading 32 bytes from a 1-byte key). IncrementalAuthenticatedEncryption.unlock validates mac only because a check was duplicated there; the module-level function has none. Fixed in 4.0.3.4 with explicit _check_len calls."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:faa310a9620f8912cfcb5d69c1a33bd32ed9a69ab328903c180fdb704b1c70ab",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 267,
+        "severity": "medium",
+        "title": "chacha20() validates the nonce but not the 32-byte key",
+        "evidence": "chacha20() branches on len(nonce) and raises for an invalid nonce length, but never checks len(key) before crypto_chacha20_x(result, message, len(message), key, nonce, 0) / crypto_chacha20_djb(...). With a short key Monocypher's key loading reads 32 bytes from a smaller Python buffer (out-of-bounds read of heap memory that becomes part of the keystream). 4.0.3.4 added _check_len('key', key, 32)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:6e4bb009e5943a4c5ab0b01fc9d324edb54400be76d089254e02d5d38b320734",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 362,
+        "severity": "medium",
+        "title": "compute_key_exchange_public_key reads past undersized secret_key buffers",
+        "evidence": "compute_key_exchange_public_key(secret_key) calls crypto_x25519_public_key(public_key, secret_key) with no len(secret_key) == 32 check; the extern declaration is a bare pointer so Monocypher's scalar clamping loads 32 bytes regardless of the actual object size, producing an out-of-bounds heap read (and a public key derived from adjacent memory). 4.0.3.4 added an explicit length check for this function."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:d11f5539aa324870c630e609ec8b518f47037419277298e50c722ee8c52d9664",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 375,
+        "severity": "medium",
+        "title": "key_exchange reads past undersized secret/public key buffers",
+        "evidence": "key_exchange() passes your_secret_key and their_public_key directly to crypto_x25519(p, your_secret_key, their_public_key) without verifying that both are 32 bytes. Cython converts the arguments with __Pyx_PyObject_AsUString (no length validation), so Monocypher clamps/reads 32 bytes from each buffer; undersized inputs cause an out-of-bounds read. 4.0.3.4 added _check_len checks for both arguments."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-2-pi_like",
+      "variant": "pi_like",
+      "review_id": "821065e0a8016af8fb3a8ba06d03e5bda7cae5379857e7056db0e8bc706118d6:argon2i32-small-block-count:7719a0d77aea6c9148ea1b4829563a35a5ce22faff3306233635a04f605c5b45",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 429,
+        "severity": "medium",
+        "title": "signature_check reads past undersized signature/public_key buffers",
+        "evidence": "signature_check() calls crypto_eddsa_check(signature, public_key, message, len(message)) with no validation of signature (64 bytes) or public_key (32 bytes); the extern declaration uses bare pointers, so Cython does not enforce the declared sizes and Monocypher decompresses/reads the full fixed-size buffers from whatever object the caller passed. Undersized attacker-controlled inputs (e.g. a truncated signature or public key) therefore trigger out-of-bounds reads instead of a clean ValueError; the docstring documents no such restriction. Fixed in 4.0.3.4 by adding length checks to signature_check()."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "lock-symlink-truncation-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "484dc95c6f57bed291283d755c0b7417116843ae3b2d5a532e20b2dcd642a3e8:lock-symlink-truncation:48eaf2aea51ee28db4018d1d4a96e1f47805298deb2a3aa9627d2651a543cfce",
+      "finding": {
+        "cwe": "CWE-59",
+        "path": "filelock/_windows.py",
+        "line": 28,
+        "severity": "medium",
+        "title": "WindowsFileLock follows symlinks and junctions when creating the lock file and truncates the target (CVE-2025-68146)",
+        "evidence": "WindowsFileLock._acquire performs only raise_on_not_writable_file (line 20) and ensure_directory_exists (line 21), both of which resolve links, then calls os.open(self.lock_file, flags, self._context.mode) at line 28 with flags os.O_RDWR | os.O_CREAT | os.O_TRUNC (lines 22 to 26) and no FILE_ATTRIBUTE_REPARSE_POINT check. A local attacker able to create a symlink or junction (Developer Mode on Windows 10+) at the caller-controlled predictable lock path makes os.open open the link target and truncate it through O_TRUNC; msvcrt.locking is then applied to that target fd at line 34 and _release unlinks the path at line 49. Upstream fixed this in 3.20.1 by rejecting reparse points before the open."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "9dc8a859fa97501eba3c62cf65ab5834d92f5090d75d45f58d1304d38a65b00d:argon2i32-small-block-count:0fc18a75e6c99b15ab070fdfd24d07f9af4b8930191f25ecd34a6fa81a37a249",
+      "finding": {
+        "cwe": "CWE-122",
+        "path": "c_monocypher.pyx",
+        "line": 281,
+        "severity": "high",
+        "title": "blake2b() passes unbounded key length into crypto_blake2b_keyed stack buffer",
+        "evidence": "blake2b(msg, key) forwards the caller-supplied key straight to crypto_blake2b_keyed(hash, 64, key, len(key), msg, len(msg)) with no bound on len(key). monocypher.c:544-546 copies the key into a fixed stack buffer (u8 key_block[128]; COPY(key_block, key, key_size)), so any key longer than 128 bytes (e.g. blake2b(b'x', b'A'*1000)) writes past key_block and smashes the stack. The binding performs no validation of key length (BLAKE2 allows at most 64), and the only length check in the function is absent, so attacker/caller-controlled key length reaches the unsafe copy intact."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "9dc8a859fa97501eba3c62cf65ab5834d92f5090d75d45f58d1304d38a65b00d:argon2i32-small-block-count:a4e78ef477ef8bc7aa90cd73a22b0028faafe7cbb1e1620bfe6ce1cea4cc2f15",
+      "finding": {
+        "cwe": "CWE-122",
+        "path": "c_monocypher.pyx",
+        "line": 297,
+        "severity": "high",
+        "title": "Blake2b.__init__ forwards unbounded key length to crypto_blake2b_keyed_init",
+        "evidence": "Blake2b.__init__ assigns self._hash_size and calls crypto_blake2b_keyed_init(&self._ctx, self._hash_size, key, len(key)) without validating len(key). monocypher.c:544-546 writes key_size bytes into the 128-byte stack array key_block, so instantiating Blake2b(key=b'A'*129...) overflows the stack; the docstring even states the key is 32 bytes but nothing enforces it. This is a distinct entry point from blake2b() and requires its own bound check."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "9dc8a859fa97501eba3c62cf65ab5834d92f5090d75d45f58d1304d38a65b00d:argon2i32-small-block-count:e149174dc9b44dadc3760dd68bd0cc0b535377d469c5f753c147333852247147",
+      "finding": {
+        "cwe": "CWE-787",
+        "path": "c_monocypher.pyx",
+        "line": 345,
+        "severity": "high",
+        "title": "argon2i_32 allocates work_area from unvalidated nb_blocks, causing heap overflow / NULL deref",
+        "evidence": "nb_blocks is taken from the caller with no minimum check (config.nb_blocks = nb_blocks at line 328), then work_area = malloc(nb_blocks * 1024) and the result is never tested for NULL before crypto_argon2() at line 347. In monocypher.c:752-754 segment_size = nb_blocks/nb_lanes/4 and lane_size = segment_size*4, and lines 776-783 unconditionally write two 1024-byte blocks per lane (blocks[l*lane_size + i] for i in {0,1}); for nb_blocks of 0 or 1 (len(key)=32, nb_lanes=1) lane_size is 0, so 2048 bytes are written into a 0- or 1024-byte allocation - a heap buffer overflow. A huge nb_blocks (e.g. 0xFFFFFFFF) instead makes malloc return NULL and crypto_argon2 dereferences it. Note the binding carefully calls _validate_u32 on password/salt/key/ad lengths but applies no bound or NULL check to nb_blocks."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "9dc8a859fa97501eba3c62cf65ab5834d92f5090d75d45f58d1304d38a65b00d:argon2i32-small-block-count:ee8e7df424a6b5d7297409f78f11360956fe7a70b32fbcb889bee08d41ef49d0",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 181,
+        "severity": "high",
+        "title": "lock() lacks key/nonce length validation before crypto_aead_lock",
+        "evidence": "lock(key, nonce, message, associated_data) passes caller-controlled key and nonce directly to crypto_aead_lock(crypto_text, mac, key, nonce, ...) with no check that len(key)==32 and len(nonce)==24. monocypher.c:2875-2881 (crypto_aead_init_x) reads key[0..32] and nonce[0..24], so short arguments (e.g. lock(b'k', b'n', b'msg')) cause an out-of-bounds read of adjacent heap memory, up to 31 bytes of key material and 23 bytes of nonce. The same file does enforce these exact checks in IncrementalAuthenticatedEncryption.__init__ (lines 214-218), showing the validation is intended but was omitted here."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "9dc8a859fa97501eba3c62cf65ab5834d92f5090d75d45f58d1304d38a65b00d:argon2i32-small-block-count:8c3e9ef1d4bee0790847b0e6b77efd1470468d64c72b0dee144d7dfb3b0491a5",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 199,
+        "severity": "high",
+        "title": "unlock() accepts attacker-sized mac and unchecked key/nonce before crypto_aead_unlock",
+        "evidence": "unlock(key, nonce, mac, message, ...) performs no length validation for mac, key or nonce and calls crypto_aead_unlock(plain_text, mac, key, nonce, ...). crypto_aead_unlock (monocypher.c:2942-2952) reads a full 16-byte mac and 32/24-byte key/nonce, so an attacker-supplied truncated mac (mac and ciphertext are normally the peer-controlled inputs of an AEAD decryption path) or a short key/nonce results in an out-of-bounds read. The incremental class validates mac at line 246 yet the module-level unlock does not, so the missing check is an omission rather than an intended contract."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "9dc8a859fa97501eba3c62cf65ab5834d92f5090d75d45f58d1304d38a65b00d:argon2i32-small-block-count:fc6a924d7fe0a40db7b286dc78bebb66f2ba3a34e171a1c8846f244ff8c9d7f9",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 429,
+        "severity": "high",
+        "title": "signature_check verifies attacker-supplied signature/public_key without length checks",
+        "evidence": "signature_check(signature, public_key, message) evaluates 0 == crypto_eddsa_check(signature, public_key, message, len(message)) while only message length is passed explicitly. monocypher.c:2331-2336 (hash_reduce/crypto_eddsa_check_equation) reads signature[0..64] and public_key[0..32], so an attacker who supplies a truncated signature or public key (typical in a signature-verification API fed by network data) triggers an out-of-bounds read of up to 63/31 bytes past the supplied bytes objects, unlike compute_signing_public_key/signature_sign which do enforce 64-byte keys."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "9dc8a859fa97501eba3c62cf65ab5834d92f5090d75d45f58d1304d38a65b00d:argon2i32-small-block-count:ac4213b414803686287de16237362efd9a3cc0184ca3bc2060309c5f6145bf3a",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 375,
+        "severity": "medium",
+        "title": "key_exchange passes peer-controlled public key length unchecked to crypto_x25519",
+        "evidence": "key_exchange(your_secret_key, their_public_key) calls crypto_x25519(p, your_secret_key, their_public_key) without verifying that both arguments are 32 bytes. crypto_x25519 (monocypher.c:1546-1555) reads your_secret_key[0..32] and their_public_key[0..32] via crypto_eddsa_trim_scalar and scalarmult, so a short peer public key (the remote/attacker-controlled value in a key-agreement protocol) causes an out-of-bounds read of heap memory beyond the supplied bytes object. The companion elligator helpers (lines 501, 519, 543) do validate lengths, confirming the omission here."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "9dc8a859fa97501eba3c62cf65ab5834d92f5090d75d45f58d1304d38a65b00d:argon2i32-small-block-count:c76baaca1eaedc3e3f279eccc90c41d3a78b6d299d33f297ebe73ac374ffaacf",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 362,
+        "severity": "medium",
+        "title": "compute_key_exchange_public_key uses unchecked secret_key length",
+        "evidence": "compute_key_exchange_public_key(secret_key) calls crypto_x25519_public_key(public_key, secret_key) with no check on len(secret_key). crypto_x25519_public_key -> crypto_x25519 (monocypher.c:1557-1562) reads 32 bytes of secret_key, so a shorter secret key (e.g. compute_key_exchange_public_key(b'k')) reads past the end of the bytes buffer instead of raising; the function has no length precondition enforced in the binding."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "argon2i32-small-block-count-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "9dc8a859fa97501eba3c62cf65ab5834d92f5090d75d45f58d1304d38a65b00d:argon2i32-small-block-count:ffa0bd92f0ce15fdfe6b07fa9224d84adb3ce7b6d961c6baca58756ae7520752",
+      "finding": {
+        "cwe": "CWE-125",
+        "path": "c_monocypher.pyx",
+        "line": 267,
+        "severity": "medium",
+        "title": "chacha20 validates nonce length but not key length",
+        "evidence": "chacha20(key, nonce, message) checks len(nonce) == 24/8 before dispatch but never checks len(key) == 32. crypto_chacha20_x (monocypher.c:287-295) and crypto_chacha20_djb (monocypher.c:219-228) load 32 bytes of key via load32_le_buf, so a short key argument produces an out-of-bounds read of up to 31 bytes of adjacent memory that is then used as key material, with no error raised."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "88f0577f899919ba938d355c3092394545fcdf95081ebdbbf6bf0121cc7c8868:intoiter-drop-panic-double-free:5f5df356a4a4dac7caa2577cdac6fcdf8c8426cc71d787243fe61067549b1a45",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 1084,
+        "severity": "high",
+        "title": "Double drop in ThinVec::clear() when an element's Drop panics",
+        "evidence": "clear() (line 1082) drops the whole live slice with ptr::drop_in_place(&mut self[..]) at line 1084 and only zeroes the length afterwards at line 1085. If any element's Drop panics (destructor of T, e.g. ThinVec<Box<_>>/ThinVec<File>, or a user type driven by attacker-influenced data), unwinding out of drop_in_place skips line 1085, so len() still counts the already-destroyed elements. When the ThinVec is dropped later, Drop for ThinVec (line 1927 -> line 1917) runs ptr::drop_in_place over the same range again, and any other operation (clear/truncate/drop) re-drops the freed elements -> double free / use-after-free (memory corruption for ownership-carrying T). Nothing guards this path: there is no unwind guard and no length invalidation before the destructor runs. Verified locally with a PoC: 3 elements whose middle destructor panics, catch_unwind(|| v.clear()) followed by dropping v yields 6 destructor invocations instead of 3. Fixed upstream in 0.2.16 by resetting the length in a DropGuard before dropping."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "88f0577f899919ba938d355c3092394545fcdf95081ebdbbf6bf0121cc7c8868:intoiter-drop-panic-double-free:38f4cb69268a575e97393c35ee7d779ad8054c1e1dc8f572010a0ef6e2fcc913",
+      "finding": {
+        "cwe": "CWE-415",
+        "path": "src/lib.rs",
+        "line": 2547,
+        "severity": "high",
+        "title": "Double drop in IntoIter::drop when an element's Drop panics",
+        "evidence": "IntoIter::drop -> drop_non_singleton (line 2544) moves the vector into the local `vec` at line 2546 and then drops the remaining range with ptr::drop_in_place(&mut vec[this.start..]) at line 2547; the length is cleared only afterwards at line 2548. If a T::drop panics, the local `vec` is itself dropped while unwinding with a non-zero length, so ThinVec::drop (line 1927 -> line 1917) drops the whole buffer a second time: elements in start.. are destroyed twice, and elements in ..start that were already moved out by IntoIter::next (line 2510, ptr::read) are dropped while the caller still owns them (use-after-free/double free). No unwind guard exists on this path. Verified locally: a 3-element ThinVec where one element was consumed by next() and a destructor panics produces 6 destructor invocations (3 expected, and each moved-out element is dropped again). Fixed upstream in 0.2.16 with a DropGuard that zeroes the length before dropping."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "intoiter-drop-panic-double-free-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "88f0577f899919ba938d355c3092394545fcdf95081ebdbbf6bf0121cc7c8868:intoiter-drop-panic-double-free:5aa3ebff42601295fee714bb1d2ae4f3484283b9a69f8db2218ea1c849833946",
+      "finding": {
+        "cwe": "CWE-401",
+        "path": "src/lib.rs",
+        "line": 1769,
+        "severity": "medium",
+        "title": "ThinVec::reserve() on a gecko-ffi auto array silently loses the length",
+        "evidence": "reallocate() is the sink reached from the public safe APIs reserve()/push()/resize()/splice() (e.g. gecko reserve at lines 1158-1208 for an auto array that needs to grow). In the no-heap-allocation branch the live elements of the stack/auto buffer are copied into the freshly allocated header's buffer (lines 1764-1768), the old header's length is then zeroed at line 1769, but the new header's length is never established (header_with_capacity() writes _len = 0 at line 462) and that zero-length header is installed at line 1772. Consequence: len() reports 0 while the copied elements are still live, so the following push_unchecked (line 867) overwrites element 0 without dropping it, the remaining elements become unreachable and are never dropped (permanent leak of whatever T owns), and every later operation works on a length that does not match the buffer contents. Reproduced with the crate's own shipped test: `cargo test --features gecko-ffi --lib auto_t_array_basic` fails with 'assertion left == right failed  left: 20  right: 30' (10 elements silently lost after the auto array grew). Fixed upstream in 0.2.16 by calling new_header.set_len(len)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "e4bd7fe772e424ed0cf4a88a60325c29cf98aabce52c769c8ccb7bd109518acc:iss-array-loose-match:a8af54f5cb5b62c261709bbc2783efa2b97377b307e50cf4c235a39611b9aaf7",
+      "finding": {
+        "cwe": "CWE-347",
+        "path": "src/verifier.js",
+        "line": 399,
+        "severity": "high",
+        "title": "Verifier created with an empty/null key plus an explicit algorithms allowlist accepts unsigned, attacker-forged JWTs",
+        "evidence": "createVerifier accepts a falsy key: key:'' is typeof 'string' and key:null is typeof 'object', so the type guard at line 392 passes both, and the guard at line 399 (if (key && keyType !== 'function')) never builds, converts or checks any key. Because key is falsy the auto-detection block at lines 401-409 is skipped too, so the caller allowlist from the algorithms option (destructured at line 366, normalised at lines 387-389) stays active. At verification time verifyToken computes hasKey = !!key = false (line 180), the missing-signature branch at line 182 therefore does not fire, and validateAlgorithmAndSignature only calls verifySignature when signature is truthy (line 139). A token of the form base64url({alg:'HS256',typ:'JWT'}).base64url({sub:'attacker',role:'admin'}). (empty signature segment) is decoded, matches the allowlist at line 134, skips both crypto checks and is returned as a valid payload. Fixed upstream by throwing unless the key is non-empty or the only allowed algorithm is 'none'."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "e4bd7fe772e424ed0cf4a88a60325c29cf98aabce52c769c8ccb7bd109518acc:iss-array-loose-match:a52bdbc5b5de6731a69d58e1a1ef8def85f62c117581c93956ac0ede7cd63dbc",
+      "finding": {
+        "cwe": "CWE-287",
+        "path": "src/verifier.js",
+        "line": 36,
+        "severity": "critical",
+        "title": "Zero-length HMAC secret returned by an async key resolver is accepted, allowing signature forgery with an empty key",
+        "evidence": "prepareKeyOrSecret passes the resolved key to createSecretKey without any length check (line 36: return isSecret ? createSecretKey(key) : createPublicKey(key); only a string is converted to a Buffer first). In the async path the value returned by the application key resolver is accepted as long as it is a string or Buffer (lines 326-338) and is handed directly to prepareKeyOrSecret at line 350, so a resolver that yields '' or Buffer.alloc(0) - e.g. the common keys[decoded.header.kid] || '' JWKS fallback - produces a secret key of length 0. verifySignature then computes HMAC over the signing input with that empty key, so any unauthenticated attacker can present header.payload plus HMAC-SHA256(key='', header.payload) and the verifier returns the attacker-chosen claims. Upstream adds ensureSecretIsNotEmpty before createSecretKey."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "e4bd7fe772e424ed0cf4a88a60325c29cf98aabce52c769c8ccb7bd109518acc:iss-array-loose-match:5f17610df40b51d217acfd085260020db59c2f8f6d929da3cca951e5193fc858",
+      "finding": {
+        "cwe": "CWE-345",
+        "path": "src/verifier.js",
+        "line": 188,
+        "severity": "high",
+        "title": "JOSE crit header is never validated, so tokens requiring unsupported critical extensions are accepted",
+        "evidence": "verifyToken performs the algorithm/signature check at line 188 and then only inspects header.typ and claims (lines 190-228); header.crit is never examined anywhere in the module. A token whose protected header contains crit:['x-custom-policy'] (an extension fast-jwt neither understands nor enforces) is accepted and its payload returned, violating RFC 7515 section 4.1.11, which requires the recipient to reject a JWS listing an unsupported critical extension. This produces split-brain verification against libraries that do reject it and lets policy-bearing crit extensions be ignored by the verifier while other components honour them. Upstream inserts validateCrit(header, allowedCritHeaders) immediately after line 188 and adds the allowedCritHeaders option."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "e4bd7fe772e424ed0cf4a88a60325c29cf98aabce52c769c8ccb7bd109518acc:iss-array-loose-match:e53ad49066c3c2bbfe52f91a00b6214c3ec7d42cf575962bc66cf1dc66ce0785",
+      "finding": {
+        "cwe": "CWE-290",
+        "path": "src/verifier.js",
+        "line": 475,
+        "severity": "high",
+        "title": "Array-valued iss claim satisfies allowedIss because only one element must match",
+        "evidence": "The iss validator is registered unconditionally as a scalar string claim (line 475: validators.push({ type: 'string', claim: 'iss', allowed: ensureStringClaimMatcher(allowedIss) })). validateClaimType only checks the element types (line 149: values.map(v => typeof v).some(...)), so an array of strings for a claim that is not declared as an array claim is accepted, and validateClaimValues then requires only that some element match (line 159: if (!values.some(v => allowed.some(a => a.test(v))))). With allowedIss 'https://valid-iss' a token carrying iss ['https://attacker-domain/','https://valid-iss'] passes validation; paired with the documented pattern where the key resolver selects the JWKS via payload.iss, the attacker's own key then validates a fully forged token. Upstream requires the claim value to be a plain string unless the validator is declared as an array claim (CVE-2025-30144)."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "e4bd7fe772e424ed0cf4a88a60325c29cf98aabce52c769c8ccb7bd109518acc:iss-array-loose-match:c0045ec230451b88dc5db06d43973fc17528170ff4f5115a4041bef60703c487",
+      "finding": {
+        "cwe": "CWE-613",
+        "path": "src/verifier.js",
+        "line": 89,
+        "severity": "medium",
+        "title": "Verifier cache derives the exp deadline only when iat is present, so expired JWTs without iat stay accepted",
+        "evidence": "cacheSet gates the whole time-range computation on hasIat (line 89: const hasIat = payload && typeof payload.iat === 'number'; line 92: if (hasIat) {), and only inside that block is cacheValue[2] derived from exp (line 97). For a valid token that has exp but no optional iat claim, cacheValue[2] stays 0 and the fallback at line 106 sets the entry deadline to clockTimestamp + clockTolerance + cacheTTL (10 minutes by default). The lookup path returns the stored value at lines 258-271 before decoding and before verifyToken runs the exp validator, so after the token expires the identical token is still served from cache until the cache deadline, extending a session up to cacheTTL. The same block also ignores maxAge whenever exp is present (line 98), so a token replayed after maxAge is served from cache for its full exp window. Upstream derives each cache bound independently of iat."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "e4bd7fe772e424ed0cf4a88a60325c29cf98aabce52c769c8ccb7bd109518acc:iss-array-loose-match:e08228c4444cac9cba8bbd163a23266b4cd31f0ba6f1c69e89fbe26879aa1d1c",
+      "finding": {
+        "cwe": "CWE-613",
+        "path": "src/verifier.js",
+        "line": 416,
+        "severity": "medium",
+        "title": "clockTolerance: Infinity passes option validation and disables both exp and nbf checks",
+        "evidence": "The option check at line 416 only rejects values that are not numbers or are negative (if (clockTolerance && (typeof clockTolerance !== 'number' || clockTolerance < 0))), and Infinity is a truthy number, so it is accepted. The value is then baked into the date validators as -Infinity for nbf (line 448: modifier: -clockTolerance) and +Infinity for exp (line 458: modifier: +clockTolerance). validateClaimDateValue computes adjusted = value * 1000 + (modifier || 0) (line 165), which becomes +/-Infinity, so the comparison greater ? now >= adjusted : now <= adjusted (line 166) is always true: expired tokens and not-yet-active (nbf) tokens are accepted as valid. The same Infinity also flows into the cache bounds (lines 93, 97, 105) so cached entries become practically permanent. Upstream requires Number.isFinite(), as the signer already does for expiresIn/notBefore."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "e4bd7fe772e424ed0cf4a88a60325c29cf98aabce52c769c8ccb7bd109518acc:iss-array-loose-match:d0cf7746e0186e995bb6c3bc1c4aa0d80c09f3d21d6416b1336dbc3fe5c94af3",
+      "finding": {
+        "cwe": "CWE-345",
+        "path": "src/verifier.js",
+        "line": 258,
+        "severity": "medium",
+        "title": "Cached verification results are keyed only by a caller-supplied cacheKeyBuilder, so key collisions return another token's claims",
+        "evidence": "The cache is populated with cache.set(cacheKeyBuilder(token), cacheValue) (line 108) and read back with cache.get(cacheKeyBuilder(token)) at line 258, and the cached payload - not a fresh verification bound to the presented token - is returned via handleCachedResult at line 271. When caching is enabled (cache: true or a size) together with a custom builder that can collide (for example keying on aud, iss, or a constant), any token whose builder output equals an existing entry returns the previously stored payload: verifying token B yields payload.sub of token A. No collision or uniqueness check exists and the decoded payload is never compared with the presented token, breaking the identity/authorization binding between token, cache key and returned claims. Upstream only emits a warning for custom builders."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "e4bd7fe772e424ed0cf4a88a60325c29cf98aabce52c769c8ccb7bd109518acc:iss-array-loose-match:87705e441f0d3e46362c4b91da4f314cef4b14a4bd30c3c4930bbe73d7d48b13",
+      "finding": {
+        "cwe": "CWE-440",
+        "path": "src/verifier.js",
+        "line": 48,
+        "severity": "medium",
+        "title": "Caller-provided RegExp objects are reused without resetting lastIndex, making allowed-claim validation non-deterministic",
+        "evidence": "ensureStringClaimMatcher returns the object supplied by the caller unchanged whenever it exposes a test() method (lines 47-48: if (r && typeof r.test === 'function') { return r }), and validateClaimValues then calls that same object repeatedly (line 159: values.some(v => allowed.some(a => a.test(v)))). RegExp.prototype.test is stateful for the g and y flags, advancing lastIndex on a successful match, so with allowedIss/allowedAud/... configured as /^trusted$/g or /^trusted$/y the identical valid token is accepted on one call and rejected on the next (roughly half of verifications fail), producing authentication flapping and retry storms; claim validation is decided by residual matcher state rather than by the claim value. Upstream wraps RegExp matchers and resets lastIndex before each test."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    },
+    {
+      "run": "iss-array-loose-match-3-pi_like",
+      "variant": "pi_like",
+      "review_id": "e4bd7fe772e424ed0cf4a88a60325c29cf98aabce52c769c8ccb7bd109518acc:iss-array-loose-match:95befd110f34972f4f09eb902c86664d58a0773458948bdd46ea223ea6744ace",
+      "finding": {
+        "cwe": "CWE-1333",
+        "path": "src/verifier.js",
+        "line": 159,
+        "severity": "medium",
+        "title": "Unvalidated caller RegExp is executed against attacker-controlled claim values, enabling ReDoS during token verification",
+        "evidence": "allowedAud, allowedIss, allowedSub, allowedJti and allowedNonce accept arbitrary RegExp objects (lines 466-484 pass them through ensureStringClaimMatcher, which returns them as-is at line 48), and those patterns are executed directly on the token's claim values at line 159 (if (!values.some(v => allowed.some(a => a.test(v))))). The claim value is fully attacker-controlled (a signed token is sufficient), so a pattern with nested quantifiers such as /(a+)+X$/ plus a crafted aud/iss value such as 'a'.repeat(30) triggers catastrophic backtracking in the JavaScript regex engine and blocks the Node.js event loop for seconds per request (CPU exhaustion / denial of service). Neither createVerifier nor ensureStringClaimMatcher performs any safe-regex analysis of the supplied pattern; upstream adds a safe-regex2 based warning for unsafe RegExp options."
+      },
+      "verdict": "unreviewed",
+      "evidence": ""
+    }
+  ],
+  "usage_note": "Provider-reported totals; zero/missing usage is unknown, not free. No cost claim."
+}

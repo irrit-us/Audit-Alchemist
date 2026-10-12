@@ -51,6 +51,7 @@ distinct metrics are reported alongside it and never folded into exact F1:
 | 24 | Soft in-band deadline (Pi, off vs 15 min) | 19/21 vs 21/21 | - | unreviewed | Deadline removed both adapter timeouts and halved total wall-clock (91 vs 43 min). Detection numbers predate the leak correction; the timeout effect is leak-independent. |
 | 25 | Target Pi: default vs minimal prompt vs 48-call/high (7 primary, 2 trials) | 14/14, 13/14, 13/14 | .167 / .176 / .333 | unreviewed | Minimal prompt alone raised line F1 .278 -> .364; adding 48 calls and high effort reached Pi's clean exact F1 .333. |
 | 26 | Confirm the Pi-level configuration (7 primary, 3 trials) | 19/21 | .408 | unreviewed | Exceeds clean Pi (.333 exact, 4/7 distinct) with 5/7 distinct; costs ~4.6x tokens. |
+| 27 | Per-round revalidation after the prompt/tool changes | 17/21 | .205 | unreviewed | Exact F1 fell on genuine but unlabeled wrapper findings (mostly pymonocypher); distinct 5/7, line distinct 6/7. Exact is label-bound and noisy. |
 
 ## Accumulated experience
 
@@ -152,6 +153,16 @@ distinct metrics are reported alongside it and never folded into exact F1:
     the exact gain. Cost rose to ~4.6x tokens (26.7M vs 5.9M), so this is an
     evaluation configuration, not a free default. The gain is a three-variable
     bundle; isolating prompt, budget, and effort is the next round.
+17. **Per-round validation should judge by line F1 and distinct coverage, not
+    exact F1 alone (round 27).** Round 26 reached .408 exact / .449 line /
+    5-of-7; round 27, re-validated after the concise prompt and tool
+    descriptions became the default, had exact F1 .205 because the agent
+    enumerated many genuine but unlabeled wrapper issues (mostly
+    `pymonocypher`), which strict single-label scoring counts as false
+    positives. Line distinct rose to 6/7. Exact F1 swings with how exhaustive a
+    run is, so the round procedure runs `cargo test --all-targets` plus the
+    seven-label blind plan and compares line F1 and distinct coverage to the
+    leak-free Pi baseline (.417 / 4-of-7). See [Validation](validation.md).
 
 ## Decision policy for future rounds
 

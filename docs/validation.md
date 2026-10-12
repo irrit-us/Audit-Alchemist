@@ -1,6 +1,6 @@
 # Validation
 
-## Target-Pi optimization rounds 25-26: 2026-10-11
+## Target-Pi optimization rounds 25-27: 2026-10-11
 
 Goal: raise the built-in `deepseek-flash` agent to the leak-free Pi baseline on
 the seven primary labels. Model, blind instruction, dataset revision, and
@@ -14,16 +14,33 @@ three trials.
 | 25 | minimal | `audit.txt` (then `audit-minimal.txt`), 16 calls, low | 14 | 13 | 3/17/11 | .176 | .364 | 2/7 |
 | 25 | pi_like | `audit.txt` (then `audit-minimal.txt`), 48 calls, high | 14 | 13 | 6/16/8 | .333 | .389 | 4/7 |
 | 26 | pi_like | `audit.txt` (then `audit-minimal.txt`), 48 calls, high | 21 | 19 | 10/18/11 | **.408** | **.449** | **5/7** |
+| 27 | pi_like | `audit.txt`, 48 calls, high | 21 | 17 | 9/58/12 | .205 | .295 | 5/7 (line 6/7) |
 
 Round 26 exceeds the clean Pi baseline (exact F1 .333, line F1 .417, 4/7
 distinct) with the same model. Per-case exact hits (of 3): filelock 2, fast-jwt
 3, pymonocypher 2, h11 1, zk-email 2; `ajna` and `thin-vec` remain unfound. The
 configuration costs ~4.6x tokens (26.7M versus 5.9M for the default variant), so
 it is recorded as the recommended evaluation configuration rather than a new
-global default. The three-variable change (prompt, budget, effort) is not yet
-isolated. Reports: [round 25](reports/tiny-round25.json),
-[round 26](reports/tiny-round26.json); plans `examples/target-pi-r25.toml` and
-`examples/target-pi-r26.toml`; prompt `prompts/audit.txt` (the concise default,
+global default. Round 27 (after the concise prompt and tool descriptions became
+the default) had a lower exact F1 .205 because the agent enumerated many genuine
+but unlabeled wrapper issues, mostly on `pymonocypher`, which the strict
+single-label scoring counts as false positives; exact distinct coverage was
+still 5/7 and line distinct 6/7, matching or beating Pi. Exact F1 is label-bound
+and high-variance; line F1 and distinct coverage are the stable comparison. The
+three-variable change (prompt, budget, effort) is not yet isolated.
+
+**Per-round procedure.** Run `cargo test --locked --all-targets`, then the
+seven-label blind plan at three trials, and compare exact F1, line F1, and
+distinct coverage against the leak-free Pi baseline (.333 / .417 / 4-of-7):
+`python -B scripts/evaluate_round.py --plan examples/target-pi-r27.toml
+--binary target/debug/alchemist.exe --output reports/rNN`, then summarize with
+`--output reports/rNN --summarize docs/reports/tiny-roundNN.json --log
+docs/reports/tiny-metrics-log.jsonl --round NN`.
+
+Reports: [round 25](reports/tiny-round25.json),
+[round 26](reports/tiny-round26.json), [round 27](reports/tiny-round27.json);
+plans `examples/target-pi-r25.toml`, `target-pi-r26.toml`, and
+`target-pi-r27.toml`; prompt `prompts/audit.txt` (the concise default,
 introduced as `audit-minimal.txt` and promoted in this round; the former verbose
 prompt is `prompts/audit-verbose.txt`).
 

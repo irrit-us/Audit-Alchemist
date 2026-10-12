@@ -1,5 +1,50 @@
 # Validation
 
+## Context component evaluation and trace review: 2026-10-12
+
+A provider-free [component evaluation](../examples/context_eval.rs) fixes
+`reasoning_effort = "high"` and exercises ordinary history, repeated-output
+pressure, and a cap that cannot fit two protected recent turns. At 2 MiB, 16
+moderate result turns stayed at 260,171 request bytes with no pruning. A
+160-turn repeated-output case fell from 11,239,571 to 1,652,046 bytes after
+139 prunes, with one 70,027-byte archive file reused 138 times. At 128 KiB,
+four large turns still occupied 143,293 bytes after two eligible results were
+pruned. The last case demonstrates how a hard cap can fail even when pruning
+works; it does not reconstruct the four individual round-15 failures.
+
+The first performance candidate, selective deserialization of large tool
+results, was slower in the pilot and was discarded. The adopted change counts
+fixed projection metadata once while searching for a bounded preview. In a
+pinned Linux release build, 128 projections of escaped Unicode JSON to 1,024
+bytes took 124,687–125,656 microseconds across four candidate samples versus
+126,940–130,643 across three fresh baseline samples. Two earlier baselines
+were 127,080 and 128,078 microseconds. Each sample is the median of seven
+inner rounds. This is a small synthetic component speedup, not an observed
+live latency or vulnerability-discovery gain. The exact sample records and
+fixture outputs are in the [machine-readable report](reports/context-management-eval.json).
+
+The [trace summary script](../scripts/context_trace_summary.py) inspected two
+existing Harbor primary jobs, 14 trials and 212 model turns, at the provider's
+default high thinking setting. Median request size was 107,566 bytes, maximum
+466,748 bytes, or 22.3% of the 2 MiB cap. No trial reached the 90% pruning
+threshold; there were zero prune events or archive reuses and four per-result
+projections. One Ajna run failed with `finish_reason length` while its largest
+request was 466,748 bytes, so that failure was not a context-cap failure. These
+traces predate this optimization and cannot measure its live speed or quality.
+
+The earlier filelock adjacent-line ambiguity was checked in a read-only Linux
+container with temporary files. `UnixFileLock` on a symlink reduced its target
+to zero bytes; adding the reference fix's `O_NOFOLLOW` flag caused `ELOOP` and
+left the target intact. The reported `os.open` sink at line 44 and the labeled
+flag assignment at line 41 describe the same defect. This practical check does
+not alter Harbor's exact `(CWE, path, line)` reward. Thin-vec's neighboring
+lines were reviewed against the upstream fix, but no new runtime reproduction
+was performed for that case.
+
+Formatting, strict Clippy, and all Rust targets passed in the pinned Linux
+container. The debug-script suite ran 16 tests with four skips;
+the trace summary assertions and new local links also passed.
+
 ## Harbor primary audit round 30: 2026-10-12
 
 This was the first live validation of the standard Harbor path, not an A/B

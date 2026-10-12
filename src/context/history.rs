@@ -181,13 +181,15 @@ pub fn project_result(original: &str, limit: usize, archive: Option<&str>) -> Re
             }
         }
     }
-    // Binary-search on bytes because JSON escaping can expand even ASCII 6x.
+    // Only preview changes during the search. Count fixed metadata once, then
+    // measure the escaped preview string for each candidate width.
+    let fixed_bytes = serialized_bytes(&projection)? - 2; // empty preview is `""`
     let mut low = 0;
     let mut high = limit;
     while low < high {
         let middle = (low + high).div_ceil(2);
-        projection["preview"] = json!(preview(original, middle));
-        if serialized_bytes(&projection)? <= limit {
+        let candidate = preview(original, middle);
+        if fixed_bytes + serialized_bytes(&candidate)? <= limit {
             low = middle;
         } else {
             high = middle - 1;

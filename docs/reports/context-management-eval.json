@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-12",
+  "scope": "context component; no live quality A/B",
+  "fixed_reasoning_effort": "high",
+  "component_command": "cargo run --locked --release --example context_eval",
+  "component_environment": "Linux Docker rust@sha256:59037199c44290f2befcdd58dcc540164763fc296950255aaefeef096a1866b0",
+  "component_cases": {
+    "default_like": {"turns": 16, "result_payload_bytes": 16000, "cap_bytes": 2097152, "before_bytes": 260171, "after_bytes": 260171, "pruned_results": 0},
+    "repeated_pressure": {"turns": 160, "result_payload_bytes": 70000, "cap_bytes": 2097152, "before_bytes": 11239571, "after_bytes": 1652046, "pruned_results": 139, "archive_distinct_files": 1, "archive_reused_outputs": 138, "archive_stored_bytes": 70027},
+    "protected_recent_turns": {"turns": 4, "result_payload_bytes": 70000, "cap_bytes": 131072, "before_bytes": 281243, "after_bytes": 143293, "pruned_results": 2, "still_over_cap": true}
+  },
+  "projection_pilot": {
+    "workload": "128 projections per sample of large escaped Unicode JSON to 1024 bytes; seven inner rounds, median reported",
+    "metric": "microseconds per 128 projections, lower is better",
+    "baseline_samples": [128078, 127080, 126940, 127276, 130643],
+    "discarded_selective_deserialization_candidate": [149178],
+    "fixed_metadata_candidate_samples": [125143, 125069, 125656, 124687],
+    "change": "Count fixed projection metadata once and only serialize the changing escaped preview at each binary-search step",
+    "interpretation": "Small repeatable local speedup on this synthetic workload; no production latency or task-quality claim"
+  },
+  "archive_reuse_pilot": {
+    "workload": "128 exact saves of an already archived 491520-byte result per sample; seven inner rounds, median reported",
+    "metric": "microseconds per 128 reuses",
+    "baseline_samples": [9971, 10003, 9885, 9854, 9809],
+    "candidate_samples": [9832, 9821, 9789, 9802],
+    "interpretation": "No archive code changed; timing is a control for run-to-run variation"
+  },
+  "existing_harbor_trace_review": {
+    "jobs": ["round31-primary-high32-one", "round31-primary-high32-two"],
+    "command": "python -B scripts/context_trace_summary.py --job datasets/tiny/harbor-jobs/round31-primary-high32-one --job datasets/tiny/harbor-jobs/round31-primary-high32-two",
+    "model": "deepseek-flash with provider-default high thinking",
+    "trials": 14,
+    "turns": 212,
+    "median_request_bytes": 107566,
+    "max_request_bytes": 466748,
+    "context_limit_bytes": 2097152,
+    "trials_above_90_percent": 0,
+    "prune_events": 0,
+    "pruned_results": 0,
+    "projected_results": 4,
+    "archive_reuses": 0,
+    "outcomes": {"success": 13, "provider_error": 1},
+    "provider_error_detail": "Ajna stopped with finish_reason length at max request 466748 bytes; no context pruning",
+    "limitations": "Existing jobs predate this optimization; they characterize pressure but do not measure its live speed or discovery effect"
+  },
+  "practical_filelock_reproduction": {
+    "environment": "Linux Docker python:3.12-bookworm, temporary files, repository mounted read-only",
+    "vulnerable_api": "UnixFileLock over a symlink truncated the target to zero bytes",
+    "patched_flag_probe": "os.open with O_NOFOLLOW raised ELOOP (errno 40) and left target intact",
+    "interpretation": "The reported os.open sink at line 44 and labeled flag construction at line 41 are the same defect; exact scoring remains unchanged"
+  }
+}

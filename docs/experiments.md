@@ -11,6 +11,11 @@ Method and commands are in [Evaluation](evaluation.md); the primary-source
 rationale is in [Harness design research](harness-design.md); per-round evidence
 is in [Validation](validation.md).
 
+The [2026-10-12 context component evaluation](validation.md#context-component-evaluation-and-trace-review-2026-10-12)
+is a deterministic performance and contract check, not another live quality
+round. Its Harbor trace review characterizes existing runs without attributing
+their outcomes to the new optimization.
+
 ## Capability levels
 
 Exact scoring is `(CWE, path, line)`. Because the model frequently finds the

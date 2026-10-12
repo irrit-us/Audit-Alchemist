@@ -102,6 +102,19 @@ mutation replay, JSON stdout, telemetry, and cleanup. These are contract checks;
 they do not establish better vulnerability discovery or lower production cost.
 Quality comparisons still require the [evaluation procedure](harness-design.md#how-to-assess-an-optimization).
 
+For a quick component check, run
+`cargo run --locked --release --example context_eval`. It holds reasoning effort
+at `high`, reports request bytes and
+archive reuse for three deterministic histories, and times bounded projection
+and exact archive reuse. The [trace summary script](../scripts/context_trace_summary.py)
+reads existing Harbor operational traces with repeated `--job PATH` arguments
+to show whether real requests approached the cap or invoked pruning. It emits
+counts and sizes, not model or tool payloads. The [2026-10-12 evaluation](validation.md#context-component-evaluation-and-trace-review-2026-10-12)
+found no history pruning in 14 existing Harbor trials; the largest request was
+22.3% of the configured cap. Thus archive reuse remains a pressure-path
+contract rather than a measured live benefit on those tasks. A small projection
+serialization change improved a synthetic pilot, with no live quality claim.
+
 ## Assessment of model-reviewed work logs
 
 The proposed fresh-session method avoids recursive LLM summaries and lets the

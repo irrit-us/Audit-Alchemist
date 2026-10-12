@@ -551,6 +551,7 @@ max_attempts = 1
 max_context_bytes = 22000
 context_policy = {policy:?}
 context_keep_turns = 2
+reasoning_effort = "high"
 trace_dir = "traces"
 [prompts]
 system = "Return schema_version 1 and findings as JSON."
@@ -575,6 +576,7 @@ enabled = []
         assert!(requests
             .iter()
             .all(|r| serde_json::to_vec(r).unwrap().len() <= 22000));
+        assert!(requests.iter().all(|r| r["reasoning_effort"] == "high"));
         if policy == "prune" {
             let recovered: Value = serde_json::from_str(
                 requests[4]["messages"].as_array().unwrap().last().unwrap()["content"]

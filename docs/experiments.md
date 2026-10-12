@@ -217,3 +217,9 @@ distinct metrics are reported alongside it and never folded into exact F1:
    (evidence chosen, hypotheses formed, verification step) and score them by the
    seven-label exact/line rate, not by reviewed `unexpected_valid` counts or the
    mixed 18-case F1.
+5. **Build a separate PoC benchmark.** Do not fold PoC success into the audit
+   loop; requiring it there rewards long build/run persistence over audit
+   reasoning. Give the PoC benchmark its own fixtures and oracles, a bounded
+   verifier behind an OS boundary, and independent `verified` /
+   `not-reproduced` / `not-attempted` metrics, reported separately from
+   exact/line detection.

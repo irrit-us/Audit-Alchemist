@@ -78,6 +78,13 @@ that reviewed `unexpected_valid` / mixed-set exact F1 must not replace them.
   to keep the per-turn tool surface concise without changing execution
   semantics; `tool_definitions_stay_concise` caps growth at 3200 bytes.
 
+### Removed
+
+- Fixture-level PoC verification (added and removed within this unreleased
+  cycle). PoC execution stays optional in the audit loop, but PoC validation is
+  planned as a separate benchmark so the score reflects audit reasoning rather
+  than long build/run loops. Recorded as constraint H17.
+
 ### Fixed
 
 - The external-harness runner wrote the per-case dataset manifest, including

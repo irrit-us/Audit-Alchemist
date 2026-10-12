@@ -43,6 +43,16 @@ cases retain expected findings as misses and therefore can lower recall;
 precision still depends on reported predictions. Failures do not change a
 completed evaluation's exit status.
 
+### PoC validation is a separate benchmark
+
+This evaluation scores root-cause identification only; it does not require,
+collect, or score a proof-of-concept. Requiring a PoC inside the audit loop
+rewards long build/run persistence rather than audit reasoning, so the agent may
+run local checks when they help but a PoC is never a scoring condition. PoC
+validation is a separate deliverable: its own fixtures and oracles, a bounded
+verifier behind an OS boundary, and independent `verified` / `not-reproduced` /
+`not-attempted` metrics. See constraint H17 in [Constraints](constraints.md).
+
 ## Smoke set
 
 The six handcrafted samples cover CWE-78, CWE-89, and CWE-95 with paired

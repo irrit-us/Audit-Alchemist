@@ -550,6 +550,76 @@ mod tests {
     }
 
     #[test]
+    fn repeated_old_results_remain_recoverable_under_archive_quota() {
+        use crate::context::history::ResultArchive;
+        use std::collections::HashSet;
+
+        let mut conversation = Conversation::with_tools(
+            WireApi::ChatCompletions,
+            "fixture",
+            "system",
+            "source",
+            100,
+            vec![],
+        );
+        let result = json!({"stdout":"x".repeat(70_000),"exit_code":0}).to_string();
+        for number in 0..160 {
+            let id = format!("call-{number}");
+            conversation
+                .append(
+                    &Turn {
+                        text: String::new(),
+                        usage: Default::default(),
+                        calls: vec![ToolCall {
+                            id: id.clone(),
+                            name: "bash".into(),
+                            arguments: "{}".into(),
+                        }],
+                        assistant: vec![json!({"role":"assistant","tool_calls":[{"id":id,"type":"function","function":{"name":"bash","arguments":"{}"}}]})],
+                    },
+                    std::slice::from_ref(&result),
+                )
+                .unwrap();
+        }
+
+        let mut archive = ResultArchive::default();
+        let reduction = conversation
+            .reduce_context(2 * 1024 * 1024, 2, &mut archive)
+            .unwrap();
+        assert!(reduction.pruned_results > 120);
+        assert!(reduction.pruned_results * result.len() > 8 * 1024 * 1024);
+        assert!(reduction.after_bytes <= 2 * 1024 * 1024);
+        let paths: HashSet<_> = conversation
+            .result_slots
+            .iter()
+            .filter(|slot| slot.pruned)
+            .map(|slot| {
+                let replacement: Value = serde_json::from_str(
+                    conversation
+                        .body
+                        .pointer(&slot.pointer)
+                        .unwrap()
+                        .as_str()
+                        .unwrap(),
+                )
+                .unwrap();
+                replacement["context_archive"]["path"]
+                    .as_str()
+                    .unwrap()
+                    .to_owned()
+            })
+            .collect();
+        assert_eq!(paths.len(), 1);
+        assert_eq!(
+            std::fs::read_to_string(paths.iter().next().unwrap()).unwrap(),
+            result
+        );
+        assert!(conversation.result_slots[158..]
+            .iter()
+            .all(|slot| !slot.pruned));
+    }
+
+    #[test]
     fn responses_use_final_phase_text_without_losing_commentary_history() {
         let mut decoder = TurnDecoder::new(WireApi::Responses);
         let answer = r#"{"schema_version":1,"findings":[]}"#;

@@ -117,10 +117,9 @@ pub(super) async fn audit_session(
                 &mut archive,
             )?;
             if reduction.pruned_results > 0 {
-                sink.on_event(&crate::monitor::operation(
-                    "context_pruned",
-                    serde_json::to_value(&reduction)?,
-                ));
+                let mut details = serde_json::to_value(&reduction)?;
+                details["archive"] = serde_json::to_value(archive.stats())?;
+                sink.on_event(&crate::monitor::operation("context_pruned", details));
             }
             reduction.after_bytes
         } else {
@@ -369,7 +368,7 @@ async fn run_tool_call(
         saved.as_deref(),
     )?;
     if projected.len() != original.len() {
-        sink.on_event(&crate::monitor::operation("tool_output_projected", serde_json::json!({"call_id":call.id,"original_bytes":original.len(),"projected_bytes":projected.len(),"archived":saved.is_some()})));
+        sink.on_event(&crate::monitor::operation("tool_output_projected", serde_json::json!({"call_id":call.id,"original_bytes":original.len(),"projected_bytes":projected.len(),"archived":saved.is_some(),"archive":archive.stats()})));
     }
     Ok(projected)
 }

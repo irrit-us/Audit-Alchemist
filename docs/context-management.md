@@ -55,6 +55,10 @@ Archives are created lazily, limited to **8 MiB and 256 files per run**, and
 owned by a temporary directory. Files use exclusive creation and mode 0600 on
 Unix; Windows inherits temporary-directory permissions. They contain plaintext
 tool output and are removed on ordinary completion, errors, or cancellation.
+Byte-identical outputs within one run share one archive file, so repeated reads
+do not consume another file or byte quota. A hash only finds candidates; the
+saved bytes are compared before reusing a path, including after host changes.
+Each model-visible tool call and result stays separate and in order.
 Forced process termination or host interference can prevent cleanup. They are
 not persistent checkpoints, immutable storage against host tools, or shared
 state for another workflow node.
@@ -80,19 +84,50 @@ allocating a second full request. The hard byte cap includes schemas and history
 `estimated_request_tokens` (`ceil(request_bytes / 4)`, a heuristic).
 `context_pruned` reports before/after bytes and the number of replaced results;
 `tool_output_projected` reports original/projected bytes and archive availability.
+Both events include archive stored bytes, distinct files, and reuse count so
+real runs can show whether deduplication actually fired.
 Ordinary journals contain these measurements, not archived payloads.
 
 Byte limits do not discover a model's tokenizer or context window. Callers must
 choose input limits that leave room for the configured response. No automatic
 provider-overflow retry, LLM summary, prefix cache, or durable resume is added.
 
-Unit fixtures verify Unicode/escaping bounds, archive quotas/cleanup, and exact
+Unit fixtures verify Unicode/escaping bounds, archive quotas/cleanup, exact
+deduplication, and a repeated-output pressure case that exceeds 8 MiB of
+logical archived output while retaining one exact file. They also verify
 preservation of all provider request fields except selected outputs on Chat
 Completions, Responses, and Anthropic. Real CLI fixtures exercise TOML settings,
 fail/prune behavior, status preservation, archive recovery through Bash, no
 mutation replay, JSON stdout, telemetry, and cleanup. These are contract checks;
 they do not establish better vulnerability discovery or lower production cost.
 Quality comparisons still require the [evaluation procedure](harness-design.md#how-to-assess-an-optimization).
+
+## Assessment of model-reviewed work logs
+
+The proposed fresh-session method avoids recursive LLM summaries and lets the
+model inspect original work logs. The useful part already exists here: pruned
+tool results point to exact, temporary output, and Bash can inspect only the
+relevant bytes. Sharing identical archive files makes that review path more
+reliable under quota. It does not require another model call or change provider
+continuation.
+
+Replacing the complete conversation with a log pointer is a different policy.
+It would discard provider-native reasoning and tool-call context, add review
+turns, and require a new boundary for evidence and mutation recovery. No
+comparable run has shown that tradeoff helps this bounded audit task. The
+closest existing experiment, [round 15](validation.md#confirmation-and-stable-reporting-rounds-14-17-2026-10-10),
+compared a 2 MiB cap with 128 KiB over 14 trials per variant: the smaller cap
+saved about 49% of tokens but failed four runs and reduced exact true positives
+from two to zero. That result tests aggressive pruning, not a fresh-session
+restart; it is evidence against making stronger compression the default.
+
+[Anthropic's context editing guidance](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context)
+identifies old tool results as a source of context pressure, while
+[OpenAI's compaction account](https://openai.com/index/equip-responses-api-computer-environment/)
+describes a model-native alternative. Neither establishes a general advantage
+for rereading full logs in this harness. A fresh-session variant needs a
+predeclared quality and efficiency threshold and a repeated, same-budget
+evaluation before adoption.
 
 ## Implementation references
 

@@ -2,7 +2,12 @@
 use anyhow::{ensure, Result};
 use serde::Serialize;
 use serde_json::{json, Value};
-use std::io::Write;
+use std::{
+    collections::HashMap,
+    hash::{DefaultHasher, Hash, Hasher},
+    io::Write,
+    path::PathBuf,
+};
 
 #[derive(Debug, Clone, Copy, Default, clap::ValueEnum)]
 pub enum ContextPolicy {
@@ -45,10 +50,42 @@ pub struct ResultArchive {
     directory: Option<tempfile::TempDir>,
     bytes: usize,
     files: usize,
+    reused_outputs: usize,
+    saved: HashMap<u64, Vec<SavedResult>>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize)]
+pub struct ArchiveStats {
+    pub stored_bytes: usize,
+    pub distinct_files: usize,
+    pub reused_outputs: usize,
+}
+
+struct SavedResult {
+    path: PathBuf,
+    model_path: String,
 }
 impl ResultArchive {
     /// Archive only observed result bytes, never regenerate or replay a tool.
     pub fn save(&mut self, content: &str) -> Result<Option<String>> {
+        let mut hasher = DefaultHasher::new();
+        content.hash(&mut hasher);
+        let key = hasher.finish();
+        if let Some(entries) = self.saved.get(&key) {
+            for entry in entries {
+                // The hash is only an index. Compare actual bytes so a collision
+                // or a host-modified archive cannot substitute different output.
+                match std::fs::read(&entry.path) {
+                    Ok(bytes) if bytes == content.as_bytes() => {
+                        self.reused_outputs += 1;
+                        return Ok(Some(entry.model_path.clone()));
+                    }
+                    Ok(_) => {}
+                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+                    Err(error) => return Err(error.into()),
+                }
+            }
+        }
         if content.len() > ARCHIVE_BYTES.saturating_sub(self.bytes) || self.files >= 256 {
             return Ok(None);
         }
@@ -76,12 +113,25 @@ impl ResultArchive {
         self.bytes += content.len();
         self.files += 1;
         // Git Bash accepts drive:/path on Windows. No shell command is generated.
-        let path = path.to_string_lossy().into_owned();
-        Ok(Some(if cfg!(windows) {
-            path.replace('\\', "/")
+        let model_path = path.to_string_lossy().into_owned();
+        let model_path = if cfg!(windows) {
+            model_path.replace('\\', "/")
         } else {
-            path
-        }))
+            model_path
+        };
+        self.saved.entry(key).or_default().push(SavedResult {
+            path,
+            model_path: model_path.clone(),
+        });
+        Ok(Some(model_path))
+    }
+
+    pub fn stats(&self) -> ArchiveStats {
+        ArchiveStats {
+            stored_bytes: self.bytes,
+            distinct_files: self.files,
+            reused_outputs: self.reused_outputs,
+        }
     }
 }
 
@@ -218,11 +268,31 @@ mod tests {
         let path = archive.save(original).unwrap().unwrap();
         assert_eq!(std::fs::read_to_string(&path).unwrap(), original);
         assert!(archive.save(&"x".repeat(ARCHIVE_BYTES)).unwrap().is_none());
-        for _ in 1..256 {
-            assert!(archive.save("{}").unwrap().is_some());
+        for index in 1..256 {
+            assert!(archive
+                .save(&format!("{{\"index\":{index}}}"))
+                .unwrap()
+                .is_some());
         }
         assert!(archive.save("{}").unwrap().is_none());
         drop(archive);
         assert!(!std::path::Path::new(&path).exists());
+    }
+
+    #[test]
+    fn duplicate_outputs_reuse_exact_archive_without_spending_quota() {
+        let mut archive = ResultArchive::default();
+        let output = "repeated observed output".repeat(4096);
+        let first = archive.save(&output).unwrap().unwrap();
+        for _ in 0..300 {
+            assert_eq!(archive.save(&output).unwrap().unwrap(), first);
+        }
+        assert_eq!(archive.files, 1);
+        assert_eq!(archive.bytes, output.len());
+        assert_eq!(archive.stats().reused_outputs, 300);
+        std::fs::write(&first, "modified outside the archive").unwrap();
+        let second = archive.save(&output).unwrap().unwrap();
+        assert_ne!(second, first);
+        assert_eq!(std::fs::read_to_string(second).unwrap(), output);
     }
 }

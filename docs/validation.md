@@ -1,5 +1,64 @@
 # Validation
 
+## Harbor primary audit round 30: 2026-10-12
+
+This was the first live validation of the standard Harbor path, not an A/B
+quality claim. The pre-run gate was that exported tasks, the custom agent, and
+the delayed verifier run end to end without environment or grading errors.
+Seven primary cases used their versioned, case-specific instructions, one trial
+per case in each of three independent named jobs (`--n-attempts 1`),
+`deepseek-flash` through its chat-completions API, 32 tool calls, a 32,768-token
+output cap, and a 900-second CLI deadline. Harbor ran at concurrency 3 with a
+5x agent-timeout multiplier. The pinned Linux binary SHA-256 begins `eeb39312`;
+the node TOML SHA-256 begins `630b0067`. All 21 trial manifests and all seven
+task checksums matched across jobs. Full fingerprints, keys, and per-trial
+outcomes are in [the machine-readable report](reports/harbor-round30.json).
+The parent Rust source was `f8f3583`; the recorded submodule suite revision is
+`0164a8f`. The agent adapter was fixed before the three jobs started.
+The task format follows [Harbor's task specification](https://docs.harborframework.com/tasks/overview),
+and `deepseek-flash` is the model ID in the [provider's chat API](https://api-docs.deepseek.com/api/create-chat-completion/).
+
+| Measure | Job 1 | Job 2 | Job 3 | Combined |
+| --- | ---: | ---: | ---: | ---: |
+| Completed | 6/7 | 7/7 | 6/7 | 19/21 |
+| Harbor exact reward | 1/7 | 2/7 | 3/7 | 6/21 (.286) |
+| Exact F1 | .143 | .235 | .400 | .261 |
+| Line F1 | .429 | .353 | .400 | .391 |
+| Distinct primary cases hit | | | | 3/7 exact, 4/7 by line |
+
+Combined exact TP/FP/FN were 6/19/15; line TP/FP/FN were 9/16/12. Median
+completed CLI time was 83.3 seconds. The two failed trials were both Ajna
+provider errors: after bounded attempts the model returned no output text or
+tool calls. They count as misses. No task setup or verifier exception occurred.
+The local Harbor job records and the committed report were scanned for the
+configured API token (268 files); no occurrence was found.
+
+The exact reward hides several candidate near misses without changing the
+score. Filelock reported `CWE-59` at the `os.open` call on line 44 in all three
+runs; the label is the `O_TRUNC` flag assignment on line 41. Thin-vec reported
+`CWE-415` at the drop call on line 2547 in all three runs; the label is the
+preceding ownership move on line 2546. Fast-JWT and pymonocypher sometimes
+reported the labeled line under a different CWE; one zk-email run did the same.
+These are source-location and taxonomy observations, not automatic credit or
+proof that every extra finding is valid. The verifier remains exact on
+`(CWE, path, line)`; nonmatching claims need independent review.
+
+A single h11 probe at the 4,096-token default stopped with `finish_reason
+length` and failed after 29.9 seconds. Changing only the output cap to 32,768
+tokens produced a completed, exact hit after 168.7 seconds. This pair supports
+the output-cap failure diagnosis for that case, but one stochastic pair cannot
+establish a general quality gain. The seven-case jobs also used a longer
+deadline; they are not compared causally with the probe. Earlier built-in
+rounds 25-29 used different instructions, budgets, and reasoning settings, so
+their F1 values are not comparable to this Harbor round. This public suite is
+regression/tuning material, not held-out discovery evidence.
+
+The next focused reliability question is why Ajna still produced empty
+completions in two of three trials despite the larger output cap. A separate
+same-budget run with operational traces should isolate that provider behavior
+before any retry or prompt change. The line/CWE near misses warrant a reviewed
+rubric alongside, never in place of, the exact Harbor reward.
+
 ## Exact archive reuse: 2026-10-12
 
 The non-summarizing context path now reuses a saved file for byte-identical

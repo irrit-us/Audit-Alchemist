@@ -10,6 +10,11 @@ environments, delayed verifier labels, per-trial logs, and exact binary rewards.
 The built-in `evaluate`/`benchmark` commands and `datasets/smoke` remain for
 CLI contract checks and historical report reproduction. Harbor reward is a
 task pass rate; do not compare it numerically with the built-in micro F1.
+Use separate named Harbor jobs for independent repeats; `--n-attempts` retries
+a trial. The submodule's `alchemist_harbor.summarize` reports exact and line
+metrics from completed job artifacts and checks task and agent fingerprints
+before combining jobs. [Round 30](validation.md#harbor-primary-audit-round-30-2026-10-12)
+records the first live Harbor run and its limits.
 
 ## What the model sees
 

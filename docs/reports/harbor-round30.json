@@ -1,0 +1,1122 @@
+{
+  "schema_version": 1,
+  "jobs": [
+    "round30-primary-one",
+    "round30-primary-two",
+    "round30-primary-three"
+  ],
+  "agent_manifest": {
+    "binary_sha256": "eeb3931214aa52698af61897e2634bb15404f5150fd72f57a1f5707f66e4abe8",
+    "config_sha256": "630b0067533d1ddb0402e3765152e0ad970204c0011d4eea0d8300e3abbe1e73",
+    "model": "deepseek-flash",
+    "wire_api": "chat-completions",
+    "auth": "api-key",
+    "timeout_ms": 900000
+  },
+  "missing_manifests": 0,
+  "task_checksums": {
+    "audit-alchemist/ajna-protocol-compromise-2--unsettled-bad-debt-liquidation": "4c7f1149653facd0f10d4f6b953c18497ef8b2ffd3b721c958a26649c61a0e7c",
+    "audit-alchemist/fast-jwt-iss--iss-array-loose-match": "1c39e61aad51028bf203c8edb9aca0f54af09371a86780688e59a95a75f7a150",
+    "audit-alchemist/filelock-toctou--lock-symlink-truncation": "f625163e855a9204f71a71b67064f11842488d150fe765980dcd9ae7cd9499c7",
+    "audit-alchemist/h11-chunked-framing--chunked-trailer-not-validated": "854c6e9d54a2134904ba8ecb76c9b132a8e21dd0f61b675bc7d94a42ac94d2df",
+    "audit-alchemist/pymonocypher-overflow--argon2i32-small-block-count": "9e761a684405e60c74be28c7144a22b65c04b7ad4bdb7a738ed01470ec3a9643",
+    "audit-alchemist/thin-vec-uaf--intoiter-drop-panic-double-free": "284967f025c9f8bb024f2afa955f6c40f89e1b694bc5991e19a5d0149537c69b",
+    "audit-alchemist/zk-email-sha256--sha256-length-comparator-unconstrained": "e7d6e5d2e98c5b7f8bf202cd476a5a19198af4cffbdf6209a83af48b3bf6d548"
+  },
+  "totals": {
+    "trials": 21,
+    "completed": 19,
+    "errored": 2,
+    "reward_sum": 6.0,
+    "reward_mean": 0.2857142857142857,
+    "outcomes": {
+      "provider_error": 2,
+      "success": 19
+    },
+    "failure_classes": {
+      "empty_model_completion": 2
+    },
+    "median_completed_elapsed_ms": 83294,
+    "exact": {
+      "tp": 6,
+      "fp": 19,
+      "fn": 15,
+      "precision": 0.24,
+      "recall": 0.2857142857142857,
+      "f1": 0.2608695652173913
+    },
+    "line": {
+      "tp": 9,
+      "fp": 16,
+      "fn": 12,
+      "precision": 0.36,
+      "recall": 0.42857142857142855,
+      "f1": 0.391304347826087
+    }
+  },
+  "distinct": {
+    "exact": 3,
+    "line": 4
+  },
+  "cases": {
+    "audit-alchemist/ajna-protocol-compromise-2--unsettled-bad-debt-liquidation": {
+      "trials": 3,
+      "completed": 1,
+      "errored": 2,
+      "reward_sum": 0.0,
+      "reward_mean": 0.0,
+      "outcomes": {
+        "provider_error": 2,
+        "success": 1
+      },
+      "failure_classes": {
+        "empty_model_completion": 2
+      },
+      "median_completed_elapsed_ms": 297281,
+      "exact": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "audit-alchemist/fast-jwt-iss--iss-array-loose-match": {
+      "trials": 3,
+      "completed": 3,
+      "errored": 0,
+      "reward_sum": 1.0,
+      "reward_mean": 0.3333333333333333,
+      "outcomes": {
+        "success": 3
+      },
+      "failure_classes": {},
+      "median_completed_elapsed_ms": 128280,
+      "exact": {
+        "tp": 1,
+        "fp": 2,
+        "fn": 2,
+        "precision": 0.3333333333333333,
+        "recall": 0.3333333333333333,
+        "f1": 0.3333333333333333
+      },
+      "line": {
+        "tp": 2,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.6666666666666666,
+        "recall": 0.6666666666666666,
+        "f1": 0.6666666666666666
+      }
+    },
+    "audit-alchemist/filelock-toctou--lock-symlink-truncation": {
+      "trials": 3,
+      "completed": 3,
+      "errored": 0,
+      "reward_sum": 0.0,
+      "reward_mean": 0.0,
+      "outcomes": {
+        "success": 3
+      },
+      "failure_classes": {},
+      "median_completed_elapsed_ms": 30435,
+      "exact": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "audit-alchemist/h11-chunked-framing--chunked-trailer-not-validated": {
+      "trials": 3,
+      "completed": 3,
+      "errored": 0,
+      "reward_sum": 3.0,
+      "reward_mean": 1.0,
+      "outcomes": {
+        "success": 3
+      },
+      "failure_classes": {},
+      "median_completed_elapsed_ms": 69883,
+      "exact": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "line": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "audit-alchemist/pymonocypher-overflow--argon2i32-small-block-count": {
+      "trials": 3,
+      "completed": 3,
+      "errored": 0,
+      "reward_sum": 2.0,
+      "reward_mean": 0.6666666666666666,
+      "outcomes": {
+        "success": 3
+      },
+      "failure_classes": {},
+      "median_completed_elapsed_ms": 83294,
+      "exact": {
+        "tp": 2,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.6666666666666666,
+        "recall": 0.6666666666666666,
+        "f1": 0.6666666666666666
+      },
+      "line": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "audit-alchemist/thin-vec-uaf--intoiter-drop-panic-double-free": {
+      "trials": 3,
+      "completed": 3,
+      "errored": 0,
+      "reward_sum": 0.0,
+      "reward_mean": 0.0,
+      "outcomes": {
+        "success": 3
+      },
+      "failure_classes": {},
+      "median_completed_elapsed_ms": 76246,
+      "exact": {
+        "tp": 0,
+        "fp": 4,
+        "fn": 3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 4,
+        "fn": 3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "audit-alchemist/zk-email-sha256--sha256-length-comparator-unconstrained": {
+      "trials": 3,
+      "completed": 3,
+      "errored": 0,
+      "reward_sum": 0.0,
+      "reward_mean": 0.0,
+      "outcomes": {
+        "success": 3
+      },
+      "failure_classes": {},
+      "median_completed_elapsed_ms": 136117,
+      "exact": {
+        "tp": 0,
+        "fp": 7,
+        "fn": 3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 6,
+        "fn": 2,
+        "precision": 0.14285714285714285,
+        "recall": 0.3333333333333333,
+        "f1": 0.2
+      }
+    }
+  },
+  "trials": [
+    {
+      "job": "round30-primary-one",
+      "task": "audit-alchemist/ajna-protocol-compromise-2--unsettled-bad-debt-liquidation",
+      "completed": false,
+      "errored": true,
+      "reward": 0.0,
+      "outcome": "provider_error",
+      "failure_class": "empty_model_completion",
+      "elapsed_ms": 106731,
+      "expected_keys": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "reported_keys": [],
+      "exact": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-one",
+      "task": "audit-alchemist/fast-jwt-iss--iss-array-loose-match",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 51262,
+      "expected_keys": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-863",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    {
+      "job": "round30-primary-one",
+      "task": "audit-alchemist/filelock-toctou--lock-symlink-truncation",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 32969,
+      "expected_keys": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-one",
+      "task": "audit-alchemist/h11-chunked-framing--chunked-trailer-not-validated",
+      "completed": true,
+      "errored": false,
+      "reward": 1.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 69883,
+      "expected_keys": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "exact": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    {
+      "job": "round30-primary-one",
+      "task": "audit-alchemist/pymonocypher-overflow--argon2i32-small-block-count",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 83294,
+      "expected_keys": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-787",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    {
+      "job": "round30-primary-one",
+      "task": "audit-alchemist/thin-vec-uaf--intoiter-drop-panic-double-free",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 76246,
+      "expected_keys": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-one",
+      "task": "audit-alchemist/zk-email-sha256--sha256-length-comparator-unconstrained",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 127397,
+      "expected_keys": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-1285",
+          "path": "sha.circom",
+          "line": 195
+        },
+        {
+          "cwe": "CWE-1285",
+          "path": "sha.circom",
+          "line": 292
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-two",
+      "task": "audit-alchemist/ajna-protocol-compromise-2--unsettled-bad-debt-liquidation",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 297281,
+      "expected_keys": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-754",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 144
+        },
+        {
+          "cwe": "CWE-754",
+          "path": "ajna-v2/src/libraries/external/SettlerActions.sol",
+          "line": 351
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-two",
+      "task": "audit-alchemist/fast-jwt-iss--iss-array-loose-match",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 128280,
+      "expected_keys": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 475
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-two",
+      "task": "audit-alchemist/filelock-toctou--lock-symlink-truncation",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 16274,
+      "expected_keys": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-two",
+      "task": "audit-alchemist/h11-chunked-framing--chunked-trailer-not-validated",
+      "completed": true,
+      "errored": false,
+      "reward": 1.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 129203,
+      "expected_keys": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "exact": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    {
+      "job": "round30-primary-two",
+      "task": "audit-alchemist/pymonocypher-overflow--argon2i32-small-block-count",
+      "completed": true,
+      "errored": false,
+      "reward": 1.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 118618,
+      "expected_keys": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "exact": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    {
+      "job": "round30-primary-two",
+      "task": "audit-alchemist/thin-vec-uaf--intoiter-drop-panic-double-free",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 49244,
+      "expected_keys": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-two",
+      "task": "audit-alchemist/zk-email-sha256--sha256-length-comparator-unconstrained",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 251541,
+      "expected_keys": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-129",
+          "path": "array.circom",
+          "line": 26
+        },
+        {
+          "cwe": "CWE-129",
+          "path": "sha.circom",
+          "line": 126
+        },
+        {
+          "cwe": "CWE-129",
+          "path": "sha.circom",
+          "line": 195
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 2,
+        "fn": 0,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5
+      }
+    },
+    {
+      "job": "round30-primary-three",
+      "task": "audit-alchemist/ajna-protocol-compromise-2--unsettled-bad-debt-liquidation",
+      "completed": false,
+      "errored": true,
+      "reward": 0.0,
+      "outcome": "provider_error",
+      "failure_class": "empty_model_completion",
+      "elapsed_ms": 230830,
+      "expected_keys": [
+        {
+          "cwe": "CWE-841",
+          "path": "ajna-v2/src/libraries/external/TakerActions.sol",
+          "line": 168
+        }
+      ],
+      "reported_keys": [],
+      "exact": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-three",
+      "task": "audit-alchemist/fast-jwt-iss--iss-array-loose-match",
+      "completed": true,
+      "errored": false,
+      "reward": 1.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 194021,
+      "expected_keys": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-290",
+          "path": "src/verifier.js",
+          "line": 159
+        }
+      ],
+      "exact": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    {
+      "job": "round30-primary-three",
+      "task": "audit-alchemist/filelock-toctou--lock-symlink-truncation",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 30435,
+      "expected_keys": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 41
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-59",
+          "path": "filelock/_unix.py",
+          "line": 44
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-three",
+      "task": "audit-alchemist/h11-chunked-framing--chunked-trailer-not-validated",
+      "completed": true,
+      "errored": false,
+      "reward": 1.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 69324,
+      "expected_keys": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-444",
+          "path": "h11/_readers.py",
+          "line": 197
+        }
+      ],
+      "exact": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    {
+      "job": "round30-primary-three",
+      "task": "audit-alchemist/pymonocypher-overflow--argon2i32-small-block-count",
+      "completed": true,
+      "errored": false,
+      "reward": 1.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 63762,
+      "expected_keys": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-122",
+          "path": "c_monocypher.pyx",
+          "line": 345
+        }
+      ],
+      "exact": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "line": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    {
+      "job": "round30-primary-three",
+      "task": "audit-alchemist/thin-vec-uaf--intoiter-drop-panic-double-free",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 88539,
+      "expected_keys": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2546
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 1084
+        },
+        {
+          "cwe": "CWE-415",
+          "path": "src/lib.rs",
+          "line": 2547
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    {
+      "job": "round30-primary-three",
+      "task": "audit-alchemist/zk-email-sha256--sha256-length-comparator-unconstrained",
+      "completed": true,
+      "errored": false,
+      "reward": 0.0,
+      "outcome": "success",
+      "failure_class": null,
+      "elapsed_ms": 136117,
+      "expected_keys": [
+        {
+          "cwe": "CWE-1284",
+          "path": "sha.circom",
+          "line": 126
+        }
+      ],
+      "reported_keys": [
+        {
+          "cwe": "CWE-129",
+          "path": "sha.circom",
+          "line": 195
+        },
+        {
+          "cwe": "CWE-129",
+          "path": "sha.circom",
+          "line": 292
+        }
+      ],
+      "exact": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "line": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    }
+  ]
+}

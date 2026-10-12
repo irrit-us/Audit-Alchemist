@@ -1,9 +1,11 @@
 # Experiment log and accumulated experience
 
-A durable record of the live optimization rounds for the tiny audit benchmark.
-Each entry states a hypothesis, the single variable changed, the comparable
+A durable record of live optimization and validation rounds for the real-world
+audit benchmark. Rounds 1-29 used the built-in evaluator; round 30 uses Harbor.
+Optimization entries state a hypothesis, the variable changed, comparable
 budgets, all trials retained, and a post-hoc review of non-matching findings.
-Negative results are kept so later rounds do not repeat them.
+Validation entries record their workload and limits separately. Negative
+results are kept so later rounds do not repeat them.
 
 Method and commands are in [Evaluation](evaluation.md); the primary-source
 rationale is in [Harness design research](harness-design.md); per-round evidence
@@ -54,6 +56,7 @@ distinct metrics are reported alongside it and never folded into exact F1:
 | 27 | Per-round revalidation after the prompt/tool changes | 17/21 | .205 | unreviewed | Exact F1 fell on genuine but unlabeled wrapper findings (mostly pymonocypher); distinct 5/7, line distinct 6/7. Exact is label-bound and noisy. |
 | 28 | Current-state revalidation (7 primary) | 20/21 | .412 | unreviewed | Best coverage so far: exact and line distinct 6/7, only thin-vec unfound. |
 | 29 | Round on the concurrent provider/reasoning working tree | 19/21 | .361 | unreviewed | Exact/line distinct still 6/7 (F1 .426); the provider refactor did not regress coverage. Exact F1 remains noisy. |
+| 30 | First Harbor primary-case validation, three independent jobs | 19/21 | .261 | unreviewed | Harbor reward 6/21; line F1 .391. Two Ajna empty completions; exact labels miss adjacent lines and alternate CWEs. Different instructions/budgets prevent comparison with round 29. |
 
 ## Accumulated experience
 
@@ -165,6 +168,13 @@ distinct metrics are reported alongside it and never folded into exact F1:
     run is, so the round procedure runs `cargo test --all-targets` plus the
     seven-label blind plan and compares line F1 and distinct coverage to the
     leak-free Pi baseline (.417 / 4-of-7). See [Validation](validation.md).
+18. **Harbor makes task execution reproducible, but its exact reward needs
+    diagnostic context (round 30).** Three named jobs preserved the same seven
+    task checksums, agent binary, and config. Reward was 6/21, with 19/21
+    completion, exact F1 .261, and line F1 .391. Filelock and thin-vec repeatedly
+    cited adjacent lines; other runs used alternate CWEs at labeled lines. The
+    reward is retained, while a separate post-run summary exposes line metrics
+    and trial keys. The two Ajna empty completions are a reliability target.
 
 ## Decision policy for future rounds
 

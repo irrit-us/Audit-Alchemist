@@ -41,6 +41,29 @@ only metadata enters initial model context. `load_skill` retrieves the requested
 body/resource. `skills` listing, reading, and exporting honor the same config.
 Resource export preserves the existing new-file-only behavior.
 
+For an audit that may consult published advisories, select the built-in skills
+explicitly; add any other skills needed for the task to the same allowlist:
+
+```toml
+schema_version = 1
+[tools]
+enabled = ["bash", "read_file", "list_files", "search", "load_skill"]
+[skills]
+enabled = ["audit-context-building", "code-audit", "cvss", "nvd-cve", "gh-advisory"]
+```
+
+The catalog initially contains only names and short descriptions. The agent can
+call `load_skill` for `cvss`, `nvd-cve`, or `gh-advisory` and then request its
+listed reference resource. Use `alchemist skills cvss` (or another listed name)
+to inspect guidance without a model or network request. Omit `nvd-cve` and
+`gh-advisory` when published-advisory lookup is outside the audit's scope.
+
+`audit-context-building` is likewise optional. Its entrypoint loads only when
+requested, with `references/analysis-format.md` and
+`references/domain-notes.md` available separately. The example allowlist keeps
+it available for unfamiliar targets; leave it out for a short, already scoped
+review. No upstream workflow runner or subagent is started.
+
 Paths owned by the file (`root`, `dataset`, `output`, `trace_dir`,
 `codex_auth_file`, prompt/skill files, Bash executable, MCP cwd, and MCP commands
 containing path components) resolve relative to its directory. A bare MCP command

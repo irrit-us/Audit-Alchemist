@@ -92,7 +92,7 @@ enables existing component diagnostics; tracing is written to stderr.
 
 ## Built-in skills
 
-Ten skills are compiled into the executable:
+Fourteen skills are compiled into the executable:
 
 | Skill | Use |
 | --- | --- |
@@ -106,6 +106,10 @@ Ten skills are compiled into the executable:
 | `gdb-debugging` | A standalone GDB crash/breakpoint capture script |
 | `node-inspector` | A separate Node Inspector controller with breakpoints and expression evaluation |
 | `pwntools-debugging` | Byte-exact local process I/O with prompt checks and bounded receives |
+| `cvss` | CVSS v4.0/v3.1 assessment and published-vector interpretation |
+| `nvd-cve` | Lookup of supplied CVEs in NVD API v2.0 |
+| `gh-advisory` | Lookup of supplied GHSAs, CVEs, and packages in GitHub global advisories |
+| `audit-context-building` | Bounded mapping of unfamiliar code, function contracts, and open questions before focused auditing |
 
 Only names and descriptions enter the initial prompt. The agent consults a
 skill when guidance is needed through `load_skill {"name":"native-debugging"}` and can fetch
@@ -113,6 +117,19 @@ its focused reference with `{"name":"native-debugging","resource":"references/pw
 Skill loads count toward `--max-tool-calls`, like other tools. Bash, writes,
 edits, searches, and source reads remain fully available. Loading a skill does
 not install a debugger or change tool permissions.
+
+The CVSS, NVD, and GHSA skills likewise load guidance only. Their detailed
+references are requested separately (`references/scoring.md` or
+`references/api.md`); live advisory queries need network access and an HTTP
+client, while `gh api` additionally needs an authenticated GitHub CLI session.
+They do not fetch advisory data when loaded. See [Configuration](configuration.md)
+for a selective TOML allowlist. External scores and advisory descriptions do
+not replace local source evidence or add fields to the audit JSON contract.
+
+`audit-context-building` adapts Trail of Bits' pre-audit context method to this
+single-agent harness. Its format and domain cues load on demand; the upstream
+workflow runner and subagents are not bundled. It has no extra dependencies and
+does not produce a vulnerability verdict or change the required final report.
 
 For human inspection, use `alchemist skills` or
 `alchemist skills native-debugging --resource references/pwndbg.md`.

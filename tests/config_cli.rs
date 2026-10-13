@@ -226,6 +226,59 @@ file = "guide.md"
 }
 
 #[test]
+fn optional_security_skills_are_selectable_and_lazy_through_cli_config() {
+    let dir = tempfile::tempdir().unwrap();
+    let root = dir.path();
+    config(
+        root,
+        "[tools]\nenabled = ['load_skill']\n[skills]\nenabled = ['cvss', 'nvd-cve', 'gh-advisory', 'audit-context-building']\n",
+    );
+    let checked = success(cli(root, "check-config").output().unwrap());
+    let catalog = checked["skills"].as_array().unwrap();
+    assert_eq!(catalog.len(), 4);
+    assert!(catalog.iter().all(|entry| entry.get("content").is_none()));
+    for (name, resource) in [
+        ("cvss", "references/scoring.md"),
+        ("nvd-cve", "references/api.md"),
+        ("gh-advisory", "references/api.md"),
+        ("audit-context-building", "references/analysis-format.md"),
+    ] {
+        assert!(catalog.iter().any(|entry| entry["name"] == name));
+        let body = success(cli(root, "skills").arg(name).output().unwrap());
+        assert_eq!(body["name"], name);
+        assert!(body["available_resources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|available| available == resource));
+        let reference = success(
+            cli(root, "skills")
+                .args([name, "--resource", resource])
+                .output()
+                .unwrap(),
+        );
+        assert_eq!(reference["resource"], resource);
+    }
+    let domain = success(
+        cli(root, "skills")
+            .args([
+                "audit-context-building",
+                "--resource",
+                "references/domain-notes.md",
+            ])
+            .output()
+            .unwrap(),
+    );
+    assert_eq!(domain["resource"], "references/domain-notes.md");
+    assert!(!cli(root, "skills")
+        .arg("poc-validation")
+        .output()
+        .unwrap()
+        .status
+        .success());
+}
+
+#[test]
 fn invalid_configs_fail_before_execution_even_with_overrides() {
     let dir = tempfile::tempdir().unwrap();
     for body in [

@@ -7,6 +7,14 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- Built-in, lazily loaded `cvss`, `nvd-cve`, and `gh-advisory` skills with
+  separate reference resources. Explicit `[skills].enabled` configuration can
+  expose them only where published-advisory lookup is in scope; loading them
+  does not make network requests or change the audit JSON contract.
+- An optional `audit-context-building` skill adapted from Trail of Bits for
+  bounded single-agent mapping of unfamiliar code before focused auditing.
+  Its analysis format and domain notes load separately; no upstream workflow
+  runner or subagent is required.
 - Cross-harness evaluation baselines for Codex, Claude Code, DSH, and Pi on
   the seven primary `alchemist-dataset-tiny` labels, with a Version 1 protocol
   adapter (`scripts/external_agent.py`) and a staged, multi-trial runner

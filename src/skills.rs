@@ -98,6 +98,40 @@ const SKILLS: &[Skill] = &[
         body: include_str!("../skills/finding-review/SKILL.md"),
         resources: &[],
     },
+    Skill {
+        body: include_str!("../skills/cvss/SKILL.md"),
+        resources: &[(
+            "references/scoring.md",
+            include_str!("../skills/cvss/references/scoring.md"),
+        )],
+    },
+    Skill {
+        body: include_str!("../skills/nvd-cve/SKILL.md"),
+        resources: &[(
+            "references/api.md",
+            include_str!("../skills/nvd-cve/references/api.md"),
+        )],
+    },
+    Skill {
+        body: include_str!("../skills/gh-advisory/SKILL.md"),
+        resources: &[(
+            "references/api.md",
+            include_str!("../skills/gh-advisory/references/api.md"),
+        )],
+    },
+    Skill {
+        body: include_str!("../skills/audit-context-building/SKILL.md"),
+        resources: &[
+            (
+                "references/analysis-format.md",
+                include_str!("../skills/audit-context-building/references/analysis-format.md"),
+            ),
+            (
+                "references/domain-notes.md",
+                include_str!("../skills/audit-context-building/references/domain-notes.md"),
+            ),
+        ],
+    },
 ];
 
 fn field(body: &'static str, key: &str) -> &'static str {

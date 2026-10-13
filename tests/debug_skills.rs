@@ -102,7 +102,7 @@ fn cli_exports_raw_resources_from_any_directory_and_keeps_existing_files() {
         .output()
         .unwrap();
     let catalog: Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(catalog.as_array().unwrap().len(), 10);
+    assert_eq!(catalog.as_array().unwrap().len(), 14);
 
     assert!(catalog
         .as_array()

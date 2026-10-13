@@ -11,6 +11,9 @@ timeout_ms = 60000
 max_tool_calls = 32
 # header = ["X-Tenant: acme"]   # Extra provider request headers, repeatable.
 format = "quiet"
+# verbose = true             # Add lifecycle, tool, and token details to human output.
+# tui = true                 # Requires an interactive terminal.
+# tui_view = "answer"        # overview, reasoning, answer, or findings.
 
 # Omit these sections to use the concise built-in prompt, tools, and skill catalog.
 [prompts]

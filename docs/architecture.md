@@ -46,8 +46,8 @@ The library separates provider protocols, tool execution, and evidence validatio
 | Audit entry point | `src/provider/mod.rs` | Run monitoring, deadline supervision, and the public audit API |
 | Supervision | `src/runner.rs` | External agent process execution, deadlines, and cleanup |
 | Evaluation | `src/dataset.rs`, `src/evaluate.rs`, `src/progress.rs` | Dataset loading, exact scoring, batch progress |
-| Console | `src/output.rs` | `text`, `markdown`, `cot`, `body`, and `jsonl` renderers |
-| TUI | `src/tui.rs` | Interactive `ratatui` view over the event stream |
+| Console | `quiet`, `text`, `markdown`, `table`, `cot`, `body`, `json`, and `jsonl` renderers in `src/output.rs` |
+| TUI | `src/tui.rs` | Interactive `ratatui` view over the event stream; cached body wrapping for status-only redraws |
 | Entry points | `src/main.rs`, `src/bin/demo-agent.rs` | CLI orchestration and the deterministic fixture |
 
 ## Data flow

@@ -73,12 +73,18 @@ enum Action {
         /// Console format for the live stream on stderr.
         #[arg(long, value_enum, default_value_t = OutputFormat::Text)]
         format: OutputFormat,
+        /// Include lifecycle, tool, and usage details in human output.
+        #[arg(short = 'v', long, num_args = 0..=1, default_missing_value = "true", require_equals = true)]
+        verbose: bool,
         /// When to use ANSI color on stderr.
         #[arg(long, value_enum, default_value_t = ColorChoice::Auto)]
         color: ColorChoice,
         /// Run the audit in an interactive terminal UI.
         #[arg(long, num_args = 0..=1, default_missing_value = "true", require_equals = true)]
         tui: bool,
+        /// Initial TUI view; switch views with 1-4 or Tab during the run.
+        #[arg(long, value_enum, default_value_t = tui::TuiView::Overview)]
+        tui_view: tui::TuiView,
         #[command(flatten)]
         llm: LlmOptions,
         #[command(flatten)]
@@ -341,8 +347,10 @@ async fn execute(cli: Cli) -> Result<bool> {
             instruction,
             dry_run,
             format,
+            verbose,
             color,
             tui: use_tui,
+            tui_view,
             llm,
             limits,
         } => {
@@ -398,7 +406,8 @@ async fn execute(cli: Cli) -> Result<bool> {
                 if !std::io::stderr().is_terminal() {
                     bail!("--tui requires a terminal; omit --tui or choose a --format");
                 }
-                let app = tui::App::new(target.clone(), llm.model.clone());
+                let app = tui::App::new(target.clone(), llm.model.clone())
+                    .with_presentation(tui_view, verbose);
                 match tui::run_audit(app, llm.clone(), request, context, root.clone(), timeout)
                     .await
                 {
@@ -427,7 +436,8 @@ async fn execute(cli: Cli) -> Result<bool> {
                 let is_tty = std::io::stderr().is_terminal();
                 let use_color = color.resolve(is_tty);
                 let stderr = std::io::stderr();
-                let mut renderer = output::Renderer::new(format, use_color, is_tty, stderr.lock());
+                let mut renderer = output::Renderer::new(format, use_color, is_tty, stderr.lock())
+                    .with_verbose(verbose);
                 let result =
                     provider::audit_with(&llm, &request, &context, &root, timeout, &mut renderer)
                         .await;

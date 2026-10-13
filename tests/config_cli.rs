@@ -55,6 +55,47 @@ fn final_turn() -> String {
     )
 }
 
+#[test]
+fn tui_requires_terminal_without_writing_json_stdout() {
+    let dir = tempfile::tempdir().unwrap();
+    let root = dir.path();
+    std::fs::write(root.join("entry.py"), "pass\n").unwrap();
+    config(
+        root,
+        "[cli]\nmodel = 'fixture'\ntarget = 'entry.py'\nendpoint = 'http://127.0.0.1:1/v1/chat/completions'\n",
+    );
+    let output = cli(root, "audit").arg("--tui").output().unwrap();
+    assert!(!output.status.success());
+    assert!(output.stdout.is_empty());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("--tui requires a terminal"));
+}
+
+#[test]
+fn audit_output_format_and_verbose_follow_config_and_cli_override() {
+    let dir = tempfile::tempdir().unwrap();
+    let root = dir.path();
+    std::fs::write(root.join("entry.py"), "pass\n").unwrap();
+    let (endpoint, _rx, server) = server(vec![final_turn(), final_turn()]);
+    config(
+        root,
+        &format!(
+            "[cli]\nmodel = 'fixture'\ntarget = 'entry.py'\nendpoint = {endpoint:?}\nformat = 'table'\nverbose = true\ntui_view = 'answer'\n"
+        ),
+    );
+    let verbose = cli(root, "audit").output().unwrap();
+    let verbose_stderr = String::from_utf8_lossy(&verbose.stderr).into_owned();
+    assert_eq!(success(verbose)["outcome"], "success");
+    assert!(verbose_stderr.contains("[run_start]"));
+    assert!(verbose_stderr.contains("No findings."));
+
+    let compact = cli(root, "audit").arg("--verbose=false").output().unwrap();
+    let compact_stderr = String::from_utf8_lossy(&compact.stderr).into_owned();
+    assert_eq!(success(compact)["outcome"], "success");
+    assert!(!compact_stderr.contains("[run_start]"));
+    assert!(compact_stderr.contains("No findings."));
+    server.join().unwrap();
+}
+
 fn finding_turn(path: &str) -> String {
     let answer = json!({"schema_version":1,"findings":[{"cwe":"CWE-78","path":path,"line":2,"severity":"high","title":"Sink","evidence":"Input reaches sink"}]}).to_string();
     format!(
@@ -197,6 +238,9 @@ fn invalid_configs_fail_before_execution_even_with_overrides() {
         "schema_version = 1\n[cli]\nmax_tool_output_bytes = 1023",
         "schema_version = 1\n[cli]\nmodel_typo = 'x'",
         "schema_version = 1\n[cli]\nheader = ['broken']",
+        "schema_version = 1\n[cli]\nformat = 'unknown'",
+        "schema_version = 1\n[cli]\ntui_view = 'unknown'",
+        "schema_version = 1\n[cli]\nverbose = 'true'",
         "schema_version = 1\n[tools]\nenabled = ['unknown']",
         "schema_version = 1\n[tools]\nenabled = ['bash', 'bash']",
         "schema_version = 1\n[prompts]\nsystem = 'x'\nsystem_file = 'missing'",

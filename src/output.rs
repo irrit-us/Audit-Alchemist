@@ -4,13 +4,15 @@
 //! stays intact. Formats:
 //!
 //! - `quiet`: nothing.
-//! - `text` / `markdown`: the findings, rendered after the run.
+//! - `text` / `markdown` / `table`: the findings, rendered after the run.
 //! - `cot`: provider-exposed reasoning or summaries (dimmed) and answer text.
 //!   Providers may expose no reasoning, and OpenAI summaries are not raw CoT.
 //! - `body`: only the answer body, one timed line at a time with terminal
 //!   control to rewrite the in-progress line.
 //! - `json`: nothing on stderr (the JSON report already goes to stdout).
 //! - `jsonl`: one JSON event per line.
+//!
+//! `verbose` adds lifecycle, tool, and usage metadata to human formats.
 
 use crate::{
     protocol::Response,
@@ -28,6 +30,7 @@ pub enum OutputFormat {
     Quiet,
     Text,
     Markdown,
+    Table,
     Cot,
     Body,
     Json,
@@ -40,6 +43,7 @@ impl OutputFormat {
             OutputFormat::Quiet => "quiet",
             OutputFormat::Text => "text",
             OutputFormat::Markdown => "markdown",
+            OutputFormat::Table => "table",
             OutputFormat::Cot => "cot",
             OutputFormat::Body => "body",
             OutputFormat::Json => "json",
@@ -99,6 +103,7 @@ pub struct Renderer<W: Write> {
     format: OutputFormat,
     color: bool,
     tty: bool,
+    verbose: bool,
     out: W,
     line_started: Instant,
     line: String,
@@ -112,6 +117,7 @@ impl<W: Write> Renderer<W> {
             format,
             color,
             tty,
+            verbose: false,
             out,
             line_started: now,
             line: String::new(),
@@ -119,11 +125,17 @@ impl<W: Write> Renderer<W> {
         }
     }
 
-    /// Render the final findings for `text` and `markdown` and flush.
+    pub fn with_verbose(mut self, verbose: bool) -> Self {
+        self.verbose = verbose;
+        self
+    }
+
+    /// Render the final findings for summary formats and flush.
     pub fn finish(&mut self, response: &Response) -> io::Result<()> {
         match self.format {
             OutputFormat::Text => self.render_findings(response, false)?,
             OutputFormat::Markdown => self.render_findings(response, true)?,
+            OutputFormat::Table => self.render_table(response)?,
             OutputFormat::Cot | OutputFormat::Body => {
                 self.flush_line(true)?;
             }
@@ -133,6 +145,21 @@ impl<W: Write> Renderer<W> {
     }
 
     fn write_event(&mut self, event: &StreamEvent) -> io::Result<()> {
+        if self.format.is_machine() {
+            return Ok(());
+        }
+        if self.format != OutputFormat::Jsonl
+            && !self.verbose
+            && matches!(
+                event,
+                StreamEvent::ToolStart { .. }
+                    | StreamEvent::ToolEnd { .. }
+                    | StreamEvent::Operation { .. }
+                    | StreamEvent::Usage(_)
+            )
+        {
+            return Ok(());
+        }
         match (self.format, event) {
             (OutputFormat::Jsonl, event) => {
                 serde_json::to_writer(&mut self.out, event)?;
@@ -142,6 +169,7 @@ impl<W: Write> Renderer<W> {
             (
                 OutputFormat::Text
                 | OutputFormat::Markdown
+                | OutputFormat::Table
                 | OutputFormat::Cot
                 | OutputFormat::Body,
                 StreamEvent::ToolStart { name, .. },
@@ -153,6 +181,7 @@ impl<W: Write> Renderer<W> {
             (
                 OutputFormat::Text
                 | OutputFormat::Markdown
+                | OutputFormat::Table
                 | OutputFormat::Cot
                 | OutputFormat::Body,
                 StreamEvent::ToolEnd {
@@ -172,23 +201,40 @@ impl<W: Write> Renderer<W> {
             (
                 OutputFormat::Text
                 | OutputFormat::Markdown
+                | OutputFormat::Table
                 | OutputFormat::Cot
                 | OutputFormat::Body,
                 StreamEvent::Operation { name, details },
-            ) if matches!(
-                name.as_str(),
-                "heartbeat" | "retry" | "run_start" | "run_end" | "trace_truncated"
-            ) =>
-            {
+            ) => {
                 self.flush_line(true)?;
                 writeln!(self.out, "[{name}] {details}")?;
                 self.out.flush()
             }
-            (OutputFormat::Text | OutputFormat::Markdown, _) => Ok(()),
+            (
+                OutputFormat::Text | OutputFormat::Markdown | OutputFormat::Table,
+                StreamEvent::Usage(usage),
+            ) if self.verbose => {
+                writeln!(
+                    self.out,
+                    "[usage] tokens {}/{}/{}",
+                    usage.prompt_tokens, usage.completion_tokens, usage.total_tokens
+                )?;
+                self.out.flush()
+            }
+            (OutputFormat::Text | OutputFormat::Markdown | OutputFormat::Table, _) => Ok(()),
             (OutputFormat::Body, StreamEvent::Text { text }) => self.push(Channel::Text, text),
             (OutputFormat::Cot, StreamEvent::Text { text }) => self.push(Channel::Text, text),
             (OutputFormat::Cot, StreamEvent::Reasoning { text }) => {
                 self.push(Channel::Reasoning, text)
+            }
+            (_, StreamEvent::Usage(usage)) if self.verbose => {
+                self.flush_line(true)?;
+                writeln!(
+                    self.out,
+                    "[usage] tokens {}/{}/{}",
+                    usage.prompt_tokens, usage.completion_tokens, usage.total_tokens
+                )?;
+                self.out.flush()
             }
             (_, StreamEvent::Usage(_) | StreamEvent::Done) => {
                 self.flush_line(true)?;
@@ -269,6 +315,25 @@ impl<W: Write> Renderer<W> {
         }
         Ok(())
     }
+
+    fn render_table(&mut self, response: &Response) -> io::Result<()> {
+        if response.findings.is_empty() {
+            return writeln!(self.out, "No findings.");
+        }
+        writeln!(self.out, "SEVERITY | CWE | LOCATION | TITLE")?;
+        for finding in &response.findings {
+            let location = format!("{}:{}", finding.path, finding.line);
+            writeln!(
+                self.out,
+                "{} | {} | {} | {}",
+                finding.severity.as_str(),
+                finding.cwe,
+                location.replace(['\r', '\n', '|'], " "),
+                finding.title.replace(['\r', '\n', '|'], " ")
+            )?;
+        }
+        Ok(())
+    }
 }
 
 impl<W: Write> EventSink for Renderer<W> {
@@ -282,13 +347,22 @@ mod tests {
     use super::*;
     use crate::protocol::{Finding, Severity, VERSION};
 
-    fn render(format: OutputFormat, color: bool, events: &[StreamEvent]) -> String {
+    fn render_with_verbosity(
+        format: OutputFormat,
+        color: bool,
+        verbose: bool,
+        events: &[StreamEvent],
+    ) -> String {
         let mut buffer = Vec::new();
-        let mut renderer = Renderer::new(format, color, false, &mut buffer);
+        let mut renderer = Renderer::new(format, color, false, &mut buffer).with_verbose(verbose);
         for event in events {
             renderer.on_event(event);
         }
         String::from_utf8(buffer).unwrap()
+    }
+
+    fn render(format: OutputFormat, color: bool, events: &[StreamEvent]) -> String {
+        render_with_verbosity(format, color, false, events)
     }
 
     fn finding() -> Finding {
@@ -385,5 +459,73 @@ mod tests {
         }];
         assert!(render(OutputFormat::Quiet, false, &events).is_empty());
         assert!(render(OutputFormat::Json, false, &events).is_empty());
+    }
+
+    #[test]
+    fn table_is_compact_and_keeps_rows_on_one_line() {
+        let response = Response {
+            schema_version: VERSION,
+            findings: vec![Finding {
+                title: "Command\ninjection | unsafe".into(),
+                ..finding()
+            }],
+        };
+        let mut buffer = Vec::new();
+        Renderer::new(OutputFormat::Table, false, false, &mut buffer)
+            .finish(&response)
+            .unwrap();
+        let text = String::from_utf8(buffer).unwrap();
+        assert_eq!(text.lines().count(), 2);
+        assert!(text.contains("SEVERITY | CWE | LOCATION | TITLE"));
+        assert!(text.contains("high | CWE-78 | sources/x.py:4 | Command injection   unsafe"));
+    }
+
+    #[test]
+    fn verbose_only_adds_metadata_to_human_formats() {
+        let events = [
+            StreamEvent::Operation {
+                name: "run_start".into(),
+                details: serde_json::json!({"phase":"start"}),
+            },
+            StreamEvent::Operation {
+                name: "turn_end".into(),
+                details: serde_json::json!({"turn":1}),
+            },
+            StreamEvent::ToolStart {
+                name: "bash".into(),
+                call_id: "c1".into(),
+            },
+            StreamEvent::ToolEnd {
+                name: "bash".into(),
+                call_id: "c1".into(),
+                is_error: false,
+                elapsed_ms: 5,
+            },
+            StreamEvent::Usage(crate::provider::events::Usage {
+                total_tokens: 12,
+                ..Default::default()
+            }),
+        ];
+        for format in [
+            OutputFormat::Text,
+            OutputFormat::Markdown,
+            OutputFormat::Table,
+            OutputFormat::Cot,
+            OutputFormat::Body,
+        ] {
+            assert!(render(format, false, &events).is_empty());
+            let verbose = render_with_verbosity(format, false, true, &events);
+            assert!(verbose.contains("[run_start]"));
+            assert!(verbose.contains("[turn_end]"));
+            assert!(verbose.contains("[tool] bash: complete (5 ms)"));
+            assert!(verbose.contains("[usage] tokens 0/0/12"));
+        }
+        for format in [OutputFormat::Quiet, OutputFormat::Json] {
+            assert!(render_with_verbosity(format, false, true, &events).is_empty());
+        }
+        assert_eq!(
+            render(OutputFormat::Jsonl, false, &events),
+            render_with_verbosity(OutputFormat::Jsonl, false, true, &events)
+        );
     }
 }

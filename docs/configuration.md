@@ -18,7 +18,7 @@ alchemist agent --config node.toml < request.json
 
 `schema_version = 1` is required. Precedence is built-in defaults, then TOML,
 then explicit CLI flags. Boolean overrides accept `--dry-run=false`,
-`--tui=false`, and `--debug-trace=false`; bare flags still mean true.
+`--tui=false`, `--verbose=false`, and `--debug-trace=false`; bare flags still mean true.
 Unknown keys, duplicate selections, invalid CLI values, and unknown schema
 versions fail before model/server execution. CLI values in TOML are validated
 even if a CLI flag overrides them. `check-config` validates local structure,
@@ -236,19 +236,32 @@ control the live stream and findings summary on stderr.
 
 | Flag | Default | Values |
 | --- | --- | --- |
-| `--format <FORMAT>` | `text` | `quiet`, `text`, `markdown`, `cot`, `body`, `json`, `jsonl` |
+| `--format <FORMAT>` | `text` | `quiet`, `text`, `markdown`, `table`, `cot`, `body`, `json`, `jsonl` |
+| `-v`, `--verbose` | off | Include lifecycle, tool, and token usage events in human formats; `--verbose=false` overrides TOML. |
 | `--color <WHEN>` | `auto` | `auto`, `always`, `never` |
 | `--tui` | off | Interactive terminal UI (requires a TTY) |
+| `--tui-view <VIEW>` | `overview` | Initial TUI view: `overview`, `reasoning`, `answer`, or `findings` |
 
 | Format | Behavior |
 | --- | --- |
 | `quiet` | No stderr output. |
 | `text` | Findings summary after the run. |
 | `markdown` | Findings as Markdown. |
+| `table` | Compact one-line findings table (full evidence remains in the JSON report). |
 | `cot` | Reasoning stream (dim) followed by the answer. |
 | `body` | Answer body only, one timed line at a time with terminal control. |
 | `json` | No stderr output (the JSON report is on stdout). |
 | `jsonl` | One JSON stream event per line. |
+
+`--verbose` adds metadata only to human output; `quiet` and `json` remain silent
+on stderr, while `jsonl` always emits the complete event stream. In the TUI,
+`--verbose` includes a bounded activity section and expands token usage details.
+Press `1`–`4` or Tab to change views, `v` to toggle verbosity, Up/Down or Page
+Up/Down to scroll, Home to reach the start, and End to resume following output.
+The TUI restores the terminal immediately when the run ends and leaves a concise
+findings summary or cancellation notice on stderr. `--format` controls CLI output;
+`--tui-view` controls the TUI view. Both keep the JSON report on stdout or
+`--output`.
 
 ### Retries
 

@@ -98,11 +98,18 @@ cargo run --locked -- audit --root datasets/smoke --target sources/command_unsaf
   --endpoint https://YOUR-PROVIDER/v1/chat/completions --model YOUR-MODEL --tui
 ```
 
-`--format` selects `quiet`, `text`, `markdown`, `cot` (readable chain of thought),
+`--format` selects `quiet`, `text`, `markdown`, `table`, `cot` (readable chain of thought),
 `body` (per-line timed answer with terminal control), `json`, or `jsonl`.
 `--wire-api` selects `chat-completions` (OpenAI-compatible, covering DeepSeek,
 Groq, Azure, and local servers), `responses` (OpenAI Responses), or `anthropic`
-(Anthropic Messages). `--tui` opens an interactive terminal view. See
+(Anthropic Messages). `--tui` opens a compact scrolling terminal view on stderr.
+It follows new output; Up/Down, Page Up/Down, and Home scroll back, and End
+returns to live output. The terminal is restored on exit; a findings summary or
+cancellation notice remains on stderr, and the JSON report still goes to stdout.
+Use `--verbose` to show tool, lifecycle, and usage details; in the TUI,
+`--tui-view` selects the initial view, `1`–`4` or Tab changes views, and `v`
+toggles details. Press `q`,
+Esc, or Ctrl+C to cancel an active audit. See
 [Configuration](docs/configuration.md).
 
 ## Documentation

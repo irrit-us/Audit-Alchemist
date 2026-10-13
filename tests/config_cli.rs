@@ -279,6 +279,64 @@ fn optional_security_skills_are_selectable_and_lazy_through_cli_config() {
 }
 
 #[test]
+fn circom_auditor_is_selectable_and_loads_only_exact_resources() {
+    let dir = tempfile::tempdir().unwrap();
+    let root = dir.path();
+    config(
+        root,
+        "[tools]\nenabled = ['load_skill']\n[skills]\nenabled = ['circom-auditor']\n",
+    );
+    let checked = success(cli(root, "check-config").output().unwrap());
+    let catalog = checked["skills"].as_array().unwrap();
+    assert_eq!(catalog.len(), 1);
+    assert_eq!(catalog[0]["name"], "circom-auditor");
+    assert!(catalog[0].get("content").is_none());
+
+    let body = success(cli(root, "skills").arg("circom-auditor").output().unwrap());
+    assert_eq!(body["resource"], "SKILL.md");
+    let resources = body["available_resources"].as_array().unwrap();
+    assert_eq!(resources.len(), 8);
+    for resource in [
+        "references/vector-index.md",
+        "references/validation.md",
+        "references/attack-vectors/signal-field.md",
+        "references/attack-vectors/range.md",
+        "references/attack-vectors/selector-accumulator.md",
+        "references/attack-vectors/binding-1.md",
+        "references/attack-vectors/binding-2.md",
+        "references/attack-vectors/regex-language.md",
+    ] {
+        assert!(resources.iter().any(|available| available == resource));
+        let loaded = success(
+            cli(root, "skills")
+                .args(["circom-auditor", "--resource", resource])
+                .output()
+                .unwrap(),
+        );
+        assert_eq!(loaded["resource"], resource);
+        assert!(loaded["content"]
+            .as_str()
+            .is_some_and(|content| !content.is_empty()));
+    }
+    assert!(!cli(root, "skills")
+        .args([
+            "circom-auditor",
+            "--resource",
+            "references/orchestration/codex.md"
+        ])
+        .output()
+        .unwrap()
+        .status
+        .success());
+    assert!(!cli(root, "skills")
+        .arg("audit-context-building")
+        .output()
+        .unwrap()
+        .status
+        .success());
+}
+
+#[test]
 fn invalid_configs_fail_before_execution_even_with_overrides() {
     let dir = tempfile::tempdir().unwrap();
     for body in [

@@ -64,6 +64,13 @@ requested, with `references/analysis-format.md` and
 it available for unfamiliar targets; leave it out for a short, already scoped
 review. No upstream workflow runner or subagent is started.
 
+For Circom targets, add `"circom-auditor"` to `[skills].enabled` alongside
+`"code-audit"`, with `"load_skill"` in `[tools].enabled`. The skill body routes
+to `references/vector-index.md`, `references/validation.md`, and six separately
+loadable attack-vector slices. Its catalog entry is just a name and description;
+no vector text loads until requested. The adapted skill uses the existing audit
+JSON output and tool budget; the upstream multi-agent workflow is not enabled.
+
 Paths owned by the file (`root`, `dataset`, `output`, `trace_dir`,
 `codex_auth_file`, prompt/skill files, Bash executable, MCP cwd, and MCP commands
 containing path components) resolve relative to its directory. A bare MCP command

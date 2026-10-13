@@ -21,3 +21,14 @@ license text is retained in `LICENSE.trailofbits-CC-BY-SA-4.0`. We rewrote the
 entrypoint and references for bounded single-agent use, removed the upstream
 workflow/subagent dispatch, and kept the function-assumption and call-continuity
 method. No upstream JavaScript workflow, agents, fixtures, or assets are bundled.
+
+`circom-auditor` adapts [zkSecurity's skill](https://github.com/zksecurity/zk-skills/tree/f56ed630f15b7782885342cc55dacbe5692a7b9d/skills/circom-auditor)
+at commit `f56ed630f15b7782885342cc55dacbe5692a7b9d` (`v0.1.0`, MIT,
+copyright 2026 zkSecurity). Its six attack-vector slices are included under
+`circom-auditor/references/attack-vectors/`; the license is retained in
+`LICENSE.zksecurity-MIT`. The entrypoint, vector index, and validation checklist
+were rewritten for the harness's bounded single-agent tools, evidence rules,
+and JSON report. We did not bundle the upstream 17-agent orchestration, agent
+prompts, unbounded context-bundle script, Markdown report format, or eval
+fixtures. The 48 vector examples are investigation leads, not quality evidence
+for this integration or substitutes for local source validation.

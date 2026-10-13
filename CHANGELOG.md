@@ -7,6 +7,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- Optional built-in `circom-auditor` skill with lazy validation guidance and
+  zkSecurity's six focused Circom attack-vector slices, adapted to the bounded
+  single-agent audit loop and existing JSON evidence contract.
 - Built-in, lazily loaded `cvss`, `nvd-cve`, and `gh-advisory` skills with
   separate reference resources. Explicit `[skills].enabled` configuration can
   expose them only where published-advisory lookup is in scope; loading them

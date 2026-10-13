@@ -92,7 +92,7 @@ enables existing component diagnostics; tracing is written to stderr.
 
 ## Built-in skills
 
-Fourteen skills are compiled into the executable:
+Fifteen skills are compiled into the executable:
 
 | Skill | Use |
 | --- | --- |
@@ -110,6 +110,7 @@ Fourteen skills are compiled into the executable:
 | `nvd-cve` | Lookup of supplied CVEs in NVD API v2.0 |
 | `gh-advisory` | Lookup of supplied GHSAs, CVEs, and packages in GitHub global advisories |
 | `audit-context-building` | Bounded mapping of unfamiliar code, function contracts, and open questions before focused auditing |
+| `circom-auditor` | Circom constraint, witness, privacy, and protocol-binding review with focused attack-vector references |
 
 Only names and descriptions enter the initial prompt. The agent consults a
 skill when guidance is needed through `load_skill {"name":"native-debugging"}` and can fetch
@@ -130,6 +131,13 @@ not replace local source evidence or add fields to the audit JSON contract.
 single-agent harness. Its format and domain cues load on demand; the upstream
 workflow runner and subagents are not bundled. It has no extra dependencies and
 does not produce a vulnerability verdict or change the required final report.
+
+`circom-auditor` adapts zkSecurity's circuit-review method for the same bounded
+single-agent loop. The entrypoint, validation checklist, and selected slices of
+its 48-vector catalog load separately. The upstream 17-agent orchestration,
+context-bundle script, progress console, and Markdown report format are not
+bundled. Loading guidance does not install Circom or change the JSON contract;
+the vector catalog supplies candidate patterns, not validated findings.
 
 For human inspection, use `alchemist skills` or
 `alchemist skills native-debugging --resource references/pwndbg.md`.

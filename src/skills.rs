@@ -132,6 +132,47 @@ const SKILLS: &[Skill] = &[
             ),
         ],
     },
+    Skill {
+        body: include_str!("../skills/circom-auditor/SKILL.md"),
+        resources: &[
+            (
+                "references/vector-index.md",
+                include_str!("../skills/circom-auditor/references/vector-index.md"),
+            ),
+            (
+                "references/validation.md",
+                include_str!("../skills/circom-auditor/references/validation.md"),
+            ),
+            (
+                "references/attack-vectors/signal-field.md",
+                include_str!("../skills/circom-auditor/references/attack-vectors/signal-field.md"),
+            ),
+            (
+                "references/attack-vectors/range.md",
+                include_str!("../skills/circom-auditor/references/attack-vectors/range.md"),
+            ),
+            (
+                "references/attack-vectors/selector-accumulator.md",
+                include_str!(
+                    "../skills/circom-auditor/references/attack-vectors/selector-accumulator.md"
+                ),
+            ),
+            (
+                "references/attack-vectors/binding-1.md",
+                include_str!("../skills/circom-auditor/references/attack-vectors/binding-1.md"),
+            ),
+            (
+                "references/attack-vectors/binding-2.md",
+                include_str!("../skills/circom-auditor/references/attack-vectors/binding-2.md"),
+            ),
+            (
+                "references/attack-vectors/regex-language.md",
+                include_str!(
+                    "../skills/circom-auditor/references/attack-vectors/regex-language.md"
+                ),
+            ),
+        ],
+    },
 ];
 
 fn field(body: &'static str, key: &str) -> &'static str {

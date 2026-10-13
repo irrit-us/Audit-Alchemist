@@ -102,11 +102,19 @@ async fn send_retrying(
             }
             Err(error) => {
                 if final_attempt || !retryable_transport(&error) {
+                    sink.on_event(&crate::monitor::model_stop(
+                        "transport_error",
+                        transport_reason(&error),
+                    ));
                     return Err(error)
                         .context("LLM API request failed (connection, TLS, or deadline)");
                 }
                 let wait = retry::backoff(&policy, attempt, None, retry::seed());
                 if !has_time(deadline, wait) {
+                    sink.on_event(&crate::monitor::model_stop(
+                        "transport_error",
+                        transport_reason(&error),
+                    ));
                     return Err(error)
                         .context("LLM API request failed (connection, TLS, or deadline)");
                 }
@@ -123,6 +131,20 @@ async fn send_retrying(
                 attempt += 1;
             }
         }
+    }
+}
+
+fn transport_reason(error: &reqwest::Error) -> &'static str {
+    if error.is_timeout() {
+        "timeout"
+    } else if error.is_connect() {
+        "connect"
+    } else if error.is_body() {
+        "body"
+    } else if error.is_decode() {
+        "decode"
+    } else {
+        "request"
     }
 }
 
@@ -149,6 +171,12 @@ pub(super) async fn complete(
                 api_key_request(client, wire, url, &key, body, deadline, &headers)
             })
             .await?;
+            if !response.status().is_success() {
+                sink.on_event(&crate::monitor::model_stop(
+                    "http_error",
+                    http_reason(response.status().as_u16()),
+                ));
+            }
             ensure!(
                 response.status().is_success(),
                 "LLM API returned HTTP {}",
@@ -180,6 +208,12 @@ pub(super) async fn complete(
             } else {
                 response
             };
+            if !response.status().is_success() {
+                sink.on_event(&crate::monitor::model_stop(
+                    "http_error",
+                    http_reason(response.status().as_u16()),
+                ));
+            }
             ensure!(
                 response.status().is_success(),
                 "Codex responses returned HTTP {}",
@@ -206,6 +240,17 @@ pub(super) async fn complete(
         );
     }
     Ok(turn)
+}
+
+fn http_reason(status: u16) -> &'static str {
+    match status {
+        401 | 403 => "authentication",
+        408 | 504 => "timeout",
+        429 => "rate_limit",
+        500..=599 => "server_error",
+        400..=499 => "client_error",
+        _ => "unexpected_status",
+    }
 }
 
 fn api_key_request(
@@ -266,27 +311,87 @@ async fn read_stream(
     let mut stream = TurnDecoder::new(wire);
     let mut total = 0usize;
     let started = Instant::now();
-    while let Some(chunk) = response.chunk().await.context("read model stream")? {
+    loop {
+        let chunk = match response.chunk().await {
+            Ok(Some(chunk)) => chunk,
+            Ok(None) => break,
+            Err(error) => {
+                sink.on_event(&crate::monitor::model_stop(
+                    "stream_read_error",
+                    transport_reason(&error),
+                ));
+                return Err(error).context("read model stream");
+            }
+        };
         if total == 0 && !chunk.is_empty() {
             sink.on_event(&crate::monitor::operation(
                 "stream_start",
                 serde_json::json!({"after_headers_ms":started.elapsed().as_millis() as u64}),
             ));
         }
-        total += chunk.len();
-        ensure!(total <= max_bytes, "model stream exceeds {max_bytes} bytes");
-        for data in lines.push(&chunk)? {
-            stream.handle_data(&data, sink)?;
+        total = total.saturating_add(chunk.len());
+        if total > max_bytes {
+            sink.on_event(&crate::monitor::model_stop(
+                "stream_limit",
+                "max_stream_bytes",
+            ));
+            anyhow::bail!("model stream exceeds {max_bytes} bytes");
+        }
+        let payloads = lines.push(&chunk).inspect_err(|_| {
+            sink.on_event(&crate::monitor::model_stop(
+                "stream_decode_error",
+                "invalid_sse",
+            ));
+        })?;
+        for data in payloads {
+            stream.handle_data(&data, sink).inspect_err(|_| {
+                sink.on_event(&crate::monitor::model_stop(
+                    "stream_decode_error",
+                    "invalid_event",
+                ));
+            })?;
         }
     }
-    for data in lines.finish()? {
-        stream.handle_data(&data, sink)?;
+    let payloads = lines.finish().inspect_err(|_| {
+        sink.on_event(&crate::monitor::model_stop(
+            "stream_decode_error",
+            "invalid_sse",
+        ));
+    })?;
+    for data in payloads {
+        stream.handle_data(&data, sink).inspect_err(|_| {
+            sink.on_event(&crate::monitor::model_stop(
+                "stream_decode_error",
+                "invalid_event",
+            ));
+        })?;
     }
     sink.on_event(&crate::monitor::operation(
         "stream_end",
         serde_json::json!({"bytes":total,"elapsed_ms":started.elapsed().as_millis() as u64}),
     ));
-    stream.finish()
+    let completed = stream.completed();
+    let provider_error = stream.provider_error();
+    let result = stream.finish();
+    if let Err(error) = &result {
+        if error.is::<super::conversation::EmptyCompletion>() {
+            sink.on_event(&crate::monitor::model_stop(
+                "empty_completion",
+                "no_text_or_tool_calls",
+            ));
+        } else if !completed && !provider_error {
+            sink.on_event(&crate::monitor::model_stop(
+                "stream_incomplete",
+                "missing_completion",
+            ));
+        } else if completed && !provider_error {
+            sink.on_event(&crate::monitor::model_stop(
+                "turn_decode_error",
+                "invalid_tool_turn",
+            ));
+        }
+    }
+    result
 }
 
 /// A best-effort unique identifier for the `session_id` header.

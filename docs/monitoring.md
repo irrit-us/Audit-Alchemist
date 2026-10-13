@@ -21,6 +21,17 @@ retries, duration, and cumulative provider-reported token usage. Repeated
 partial usage updates are merged within a turn; separate turns are added.
 Missing provider usage remains zero, so it is not a billing estimate.
 
+Each model request records a content-free `model_stop` when the wire supplies a
+finish reason or the harness detects a failure. The `run_end.model_stop` field
+holds the latest request's `{kind, reason}`. Kinds distinguish provider finish,
+provider error/incomplete, HTTP or transport failure, stream byte cap, stream
+read/decode/incomplete, empty completion, and deadline. Reasons are fixed
+categories or an allowlisted provider stop name; unknown names become `other`.
+The event never contains provider error text. A failure before classification
+appears as `model_error/unclassified`. A deadline can override an earlier
+stream reason if the run's wall-clock timer ultimately expires. Old journals
+cannot recover causes that were not recorded.
+
 Context events report request size, the configured cap, approximate request
 tokens, and before/after sizes for pruning or tool-result projection. See
 [Context management](context-management.md) for retention and archive lifetime.
@@ -65,7 +76,7 @@ commands, results, and error messages may contain other credentials or private
 data. Review debug journals before sharing them. No traces are uploaded.
 
 Start with the last phase and HTTP status. For `model`, check retries and
-whether `stream_start` occurred; for `tool:NAME`, inspect timing and the
+`run_end.model_stop`, then whether `stream_start` occurred; for `tool:NAME`, inspect timing and the
 bounded tool result; for `validating`, use the debug response/error to diagnose
 malformed JSON or unsupported citations. A nonzero Bash exit counts as a tool
 error even when the tool successfully returned stdout/stderr. Missing

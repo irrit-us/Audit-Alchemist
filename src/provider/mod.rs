@@ -93,6 +93,7 @@ pub async fn audit_with(
         max_context_bytes: options.max_context_bytes,
         context_policy: options.context_policy.as_str().into(),
         max_output_repairs: options.max_output_repairs,
+        citation_confirmation: options.citation_confirmation,
         max_settlement_calls: options.max_settlement_calls,
     };
     monitor.start_with_manifest(

@@ -263,6 +263,14 @@ pub struct TurnDecoder {
 }
 
 impl TurnDecoder {
+    pub fn completed(&self) -> bool {
+        self.stream.completed
+    }
+
+    pub fn provider_error(&self) -> bool {
+        self.stream.error.is_some()
+    }
+
     pub fn new(wire: WireApi) -> Self {
         Self {
             wire,

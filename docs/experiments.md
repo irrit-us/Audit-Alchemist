@@ -16,6 +16,12 @@ is a deterministic performance and contract check, not another live quality
 round. Its Harbor trace review characterizes existing runs without attributing
 their outcomes to the new optimization.
 
+On 2026-10-13, bounded citation confirmation was promoted by user direction
+despite zero invocations in the prior five live candidate audits. The following
+model-stop telemetry experiment uses injected provider failures to check
+classification; it makes no quality or efficiency claim. See
+[Validation](validation.md#citation-confirmation-and-model-stop-telemetry-2026-10-13).
+
 ## Capability levels
 
 Exact scoring is `(CWE, path, line)`. Because the model frequently finds the

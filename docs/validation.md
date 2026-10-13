@@ -1,5 +1,22 @@
 # Validation
 
+## Citation confirmation and model stop telemetry: 2026-10-13
+
+Bounded citation confirmation was adopted as a default-on repair contract at
+the user's request. The prior live A/B on four Harbor tasks plus one repeated
+Ajna task triggered zero confirmations in all five candidate audits, so it
+established no quality or efficiency gain. It uses existing output repair turns
+and never accepts a citation without a fresh validated report. The confirmed
+source line is treated as untrusted evidence. `--citation-confirmation false`
+disables the behavior.
+
+The next experiment adds content-free model stop reasons to ordinary journals.
+Its deterministic fixture checks distinguish provider length, incomplete SSE,
+stream byte cap, HTTP server failure, and deadline; they validate diagnostic
+classification and JSON stdout, not vulnerability discovery. Historical traces
+cannot retroactively identify an unrecorded stop cause. The local experiment
+plan is retained under `target/model-stop-reasons/plan.md`.
+
 ## Practical checks of earlier ambiguities: 2026-10-12
 
 The [round-30 trial records](reports/harbor-round30.json) contain six

@@ -29,6 +29,11 @@ pub fn operation(name: &str, details: Value) -> StreamEvent {
     }
 }
 
+/// Content-free outcome of one model request or stream.
+pub fn model_stop(kind: &str, reason: &str) -> StreamEvent {
+    operation("model_stop", json!({"kind":kind,"reason":reason}))
+}
+
 fn add(a: Usage, b: Usage) -> Usage {
     Usage {
         prompt_tokens: a.prompt_tokens.saturating_add(b.prompt_tokens),
@@ -51,6 +56,7 @@ pub struct RunManifest {
     pub max_context_bytes: u32,
     pub context_policy: String,
     pub max_output_repairs: u32,
+    pub citation_confirmation: bool,
     pub max_settlement_calls: u32,
 }
 
@@ -67,6 +73,7 @@ pub struct Monitor<'a> {
     debug: bool,
     secret: Option<String>,
     phase: String,
+    model_stop: Value,
     turns: u64,
     tools: u64,
     tool_errors: u64,
@@ -118,6 +125,7 @@ impl<'a> Monitor<'a> {
             debug: options.debug_trace,
             secret: std::env::var(api_key_env).ok().filter(|s| !s.is_empty()),
             phase: "starting".into(),
+            model_stop: Value::Null,
             turns: 0,
             tools: 0,
             tool_errors: 0,
@@ -165,6 +173,7 @@ impl<'a> Monitor<'a> {
             "max_context_bytes":manifest.max_context_bytes,
             "context_policy":manifest.context_policy,
             "max_output_repairs":manifest.max_output_repairs,
+            "citation_confirmation":manifest.citation_confirmation,
             "max_settlement_calls":manifest.max_settlement_calls}),
         ));
     }
@@ -178,8 +187,15 @@ impl<'a> Monitor<'a> {
     }
 
     pub fn finish(&mut self, outcome: &str) -> Result<()> {
+        if outcome == "timeout" && self.phase == "model" {
+            self.model_stop = json!({"kind":"deadline","reason":"audit_timeout"});
+            self.on_event(&model_stop("deadline", "audit_timeout"));
+        } else if outcome == "error" && self.phase == "model" && self.model_stop.is_null() {
+            self.on_event(&model_stop("model_error", "unclassified"));
+        }
         self.ended = true;
         self.on_event(&operation("run_end", json!({"outcome":outcome,"phase":self.phase,
+            "model_stop":self.model_stop,
             "elapsed_ms":self.start.elapsed().as_millis() as u64,"turns":self.turns,
             "tools":self.tools,"tool_errors":self.tool_errors,"retries":self.retries,
             "output_repairs":self.output_repairs,
@@ -271,6 +287,10 @@ impl EventSink for Monitor<'_> {
                 self.completed_usage = add(self.completed_usage, self.current_usage);
                 self.current_usage = Usage::default();
                 self.phase = "model".into();
+                self.model_stop = Value::Null;
+            }
+            StreamEvent::Operation { name, details } if name == "model_stop" => {
+                self.model_stop = details.clone();
             }
             StreamEvent::Operation { name, .. } if name == "retry" => {
                 self.retries += 1;
@@ -439,6 +459,7 @@ mod tests {
                 max_context_bytes: 1024,
                 context_policy: "prune".into(),
                 max_output_repairs: 2,
+                citation_confirmation: true,
                 max_settlement_calls: 3,
             };
             monitor.start_with_manifest(

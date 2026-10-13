@@ -124,6 +124,8 @@ fn retries_and_opted_in_debug_capture_preserve_privacy_and_json_stdout() {
     let (summary, raw) = trace(dir.path());
     assert_eq!(summary["summary"]["retries"], 1);
     assert_eq!(summary["summary"]["usage"]["total_tokens"], 15);
+    assert_eq!(summary["summary"]["model_stop"]["kind"], "provider_finish");
+    assert_eq!(summary["summary"]["model_stop"]["reason"], "stop");
     assert!(raw.contains("source-private"));
     assert!(!raw.contains("fixture-secret"));
     assert!(raw.contains("[REDACTED]"));
@@ -155,8 +157,68 @@ fn waiting_provider_emits_heartbeat_and_records_timeout() {
     let (summary, raw) = trace(dir.path());
     assert_eq!(summary["summary"]["outcome"], "timeout");
     assert_eq!(summary["summary"]["phase"], "model");
+    assert_eq!(summary["summary"]["model_stop"]["kind"], "deadline");
+    assert_eq!(summary["summary"]["model_stop"]["reason"], "audit_timeout");
     assert!(raw.contains("heartbeat"));
     assert!(!raw.contains("source-private"));
+}
+
+#[test]
+fn model_phase_failures_have_content_free_stop_reasons() {
+    let cases = [
+        (
+            "provider_length",
+            200,
+            format!(
+                "data: {}\n\ndata: [DONE]\n\n",
+                json!({"choices":[{"delta":{"content":"partial"},"finish_reason":"length"}]})
+            ),
+            vec!["--max-attempts", "1"],
+            "provider_finish",
+            "length",
+        ),
+        (
+            "incomplete_stream",
+            200,
+            format!(
+                "data: {}\n\n",
+                json!({"choices":[{"delta":{"content":"partial"},"finish_reason":null}]})
+            ),
+            vec!["--max-attempts", "1"],
+            "stream_incomplete",
+            "missing_completion",
+        ),
+        (
+            "stream_cap",
+            200,
+            format!("data: {}\n\n", "x".repeat(1_048_576)),
+            vec!["--max-stream-bytes", "1048576", "--max-attempts", "1"],
+            "stream_limit",
+            "max_stream_bytes",
+        ),
+        (
+            "http_failure",
+            503,
+            "{}".into(),
+            vec!["--max-attempts", "1"],
+            "http_error",
+            "server_error",
+        ),
+    ];
+    for (name, status, body, extra, kind, reason) in cases {
+        let dir = tempfile::tempdir().unwrap();
+        let (url, task) = server(vec![(status, 0, body)]);
+        let output = run(dir.path(), &url, &extra);
+        task.join().unwrap();
+        assert_eq!(output.status.code(), Some(2), "{name}");
+        let (summary, raw) = trace(dir.path());
+        assert_eq!(summary["summary"]["outcome"], "error", "{name}");
+        assert_eq!(summary["summary"]["phase"], "model", "{name}");
+        assert_eq!(summary["summary"]["model_stop"]["kind"], kind, "{name}");
+        assert_eq!(summary["summary"]["model_stop"]["reason"], reason, "{name}");
+        assert!(raw.contains("\"name\":\"model_stop\""), "{name}");
+        assert!(!raw.contains("source-private"), "{name}");
+    }
 }
 
 #[test]

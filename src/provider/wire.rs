@@ -85,6 +85,7 @@ pub struct WireStream {
     pub usage: Usage,
     pub completed: bool,
     pub error: Option<String>,
+    stop_reason_seen: bool,
 }
 
 impl WireStream {
@@ -96,12 +97,19 @@ impl WireStream {
             usage: Usage::default(),
             completed: false,
             error: None,
+            stop_reason_seen: false,
         }
     }
 
     /// Decode one `data:` payload.
     pub fn handle_data(&mut self, data: &str, sink: &mut dyn EventSink) -> Result<()> {
         if data == "[DONE]" {
+            if !self.stop_reason_seen && self.error.is_none() {
+                sink.on_event(&crate::monitor::model_stop(
+                    "provider_finish",
+                    "unspecified",
+                ));
+            }
             self.completed = true;
             return Ok(());
         }
@@ -129,6 +137,7 @@ impl WireStream {
 
     fn handle_chat(&mut self, event: &Value, sink: &mut dyn EventSink) {
         if is_present(event.get("error")) {
+            sink.on_event(&crate::monitor::model_stop("provider_error", "error_event"));
             self.error = Some(json_error(event.get("error").unwrap()));
             return;
         }
@@ -155,6 +164,13 @@ impl WireStream {
             }
         }
         if let Some(reason) = choice.get("finish_reason").and_then(Value::as_str) {
+            self.stop_reason_seen = true;
+            if self.error.is_none() {
+                sink.on_event(&crate::monitor::model_stop(
+                    "provider_finish",
+                    safe_stop_reason(reason),
+                ));
+            }
             // Tool calls continue the agent loop; truncation/filtering must fail.
             if reason != "stop" && reason != "tool_calls" {
                 self.error = Some(format!("model stopped with finish_reason {reason}"));
@@ -177,6 +193,10 @@ impl WireStream {
                 }
             }
             "response.completed" => {
+                self.stop_reason_seen = true;
+                if self.error.is_none() {
+                    sink.on_event(&crate::monitor::model_stop("provider_finish", "completed"));
+                }
                 self.completed = true;
                 if self.text.is_empty() {
                     let text = completed_text(event);
@@ -189,10 +209,24 @@ impl WireStream {
                 }
             }
             "response.failed" | "response.incomplete" => {
+                let kind = if event["type"] == "response.incomplete" {
+                    "provider_incomplete"
+                } else {
+                    "provider_error"
+                };
+                let reason = event
+                    .pointer("/response/incomplete_details/reason")
+                    .and_then(Value::as_str)
+                    .map(safe_stop_reason)
+                    .unwrap_or("error_event");
+                sink.on_event(&crate::monitor::model_stop(kind, reason));
                 let error = event.pointer("/response/error").unwrap_or(event);
                 self.error = Some(json_error(error));
             }
-            "error" => self.error = Some(json_error(event)),
+            "error" => {
+                sink.on_event(&crate::monitor::model_stop("provider_error", "error_event"));
+                self.error = Some(json_error(event));
+            }
             _ => {}
         }
     }
@@ -224,6 +258,13 @@ impl WireStream {
             }
             "message_delta" => {
                 if let Some(reason) = event.pointer("/delta/stop_reason").and_then(Value::as_str) {
+                    self.stop_reason_seen = true;
+                    if self.error.is_none() {
+                        sink.on_event(&crate::monitor::model_stop(
+                            "provider_finish",
+                            safe_stop_reason(reason),
+                        ));
+                    }
                     if reason != "end_turn" && reason != "tool_use" {
                         self.error = Some(format!("model stopped with stop_reason {reason}"));
                     }
@@ -232,8 +273,17 @@ impl WireStream {
                     self.set_usage(anthropic_usage(usage), sink);
                 }
             }
-            "message_stop" => self.completed = true,
+            "message_stop" => {
+                if !self.stop_reason_seen && self.error.is_none() {
+                    sink.on_event(&crate::monitor::model_stop(
+                        "provider_finish",
+                        "unspecified",
+                    ));
+                }
+                self.completed = true;
+            }
             "error" => {
+                sink.on_event(&crate::monitor::model_stop("provider_error", "error_event"));
                 let error = event.get("error").unwrap_or(event);
                 self.error = Some(json_error(error));
             }
@@ -267,6 +317,26 @@ impl WireStream {
         }
         self.usage.merge(usage);
         sink.on_event(&StreamEvent::Usage(self.usage));
+    }
+}
+
+/// Keep provider-controlled text out of ordinary operational journals.
+fn safe_stop_reason(reason: &str) -> &'static str {
+    match reason {
+        "stop" => "stop",
+        "tool_calls" => "tool_calls",
+        "length" => "length",
+        "content_filter" => "content_filter",
+        "function_call" => "function_call",
+        "completed" => "completed",
+        "max_output_tokens" => "max_output_tokens",
+        "max_tokens" => "max_tokens",
+        "end_turn" => "end_turn",
+        "tool_use" => "tool_use",
+        "stop_sequence" => "stop_sequence",
+        "pause_turn" => "pause_turn",
+        "refusal" => "refusal",
+        _ => "other",
     }
 }
 
@@ -388,7 +458,14 @@ mod tests {
             sink.0.first(),
             Some(StreamEvent::Reasoning { .. })
         ));
-        assert!(matches!(sink.0.last(), Some(StreamEvent::Usage(_))));
+        assert!(sink
+            .0
+            .iter()
+            .any(|event| matches!(event, StreamEvent::Usage(_))));
+        assert!(sink.0.iter().any(|event| matches!(event,
+            StreamEvent::Operation { name, details }
+                if name == "model_stop" && details["reason"] == "unspecified"
+        )));
     }
 
     #[test]
@@ -433,12 +510,13 @@ mod tests {
             )
             .unwrap();
         assert_eq!(stream.finish().unwrap().0, "{\"findings\":[]}");
-        assert_eq!(
-            sink.0,
-            vec![StreamEvent::Text {
-                text: "{\"findings\":[]}".into()
-            }]
-        );
+        assert!(sink.0.iter().any(|event| matches!(event,
+            StreamEvent::Text { text } if text == "{\"findings\":[]}"
+        )));
+        assert!(sink.0.iter().any(|event| matches!(event,
+            StreamEvent::Operation { name, details }
+                if name == "model_stop" && details["reason"] == "completed"
+        )));
     }
 
     #[test]
@@ -516,6 +594,12 @@ mod tests {
             .unwrap_err()
             .to_string()
             .contains("finish_reason length"));
+        assert!(sink.0.iter().any(|event| matches!(event,
+            StreamEvent::Operation { name, details }
+                if name == "model_stop" && details["kind"] == "provider_finish"
+                    && details["reason"] == "length"
+        )));
+        assert_eq!(safe_stop_reason("secret from provider"), "other");
     }
 
     #[test]

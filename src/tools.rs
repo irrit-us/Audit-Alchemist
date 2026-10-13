@@ -24,6 +24,33 @@ use tokio::{io::AsyncReadExt, process::Command};
 
 pub const OUTPUT_BYTES: usize = 32_768;
 const FILE_BYTES: usize = 1_048_576;
+const CITATION_EVIDENCE_BYTES: usize = 2_048;
+const CITATION_WALK_ENTRIES: usize = 4_096;
+const CITATION_WALK_FILES: usize = 2_048;
+
+#[derive(Debug)]
+pub struct UnobservedCitation {
+    pub path: String,
+    pub line: u32,
+}
+
+impl std::fmt::Display for UnobservedCitation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "finding must cite a source line supplied in the initial context or read_file: {}:{}",
+            self.path, self.line
+        )
+    }
+}
+
+impl std::error::Error for UnobservedCitation {}
+
+pub struct CitationEvidence {
+    pub path: String,
+    pub line: u32,
+    pub text: String,
+}
 
 /// Native tools that only inspect state. They remain available during the
 /// settlement phase, when mutating tools (Bash, write, edit) are withdrawn.
@@ -99,23 +126,84 @@ impl WorkspaceTools {
             .get(&finding.path)
             .and_then(|lines| lines.get(&finding.line))
             .copied();
-        ensure!(
-            expected.is_some(),
-            "finding must cite a source line supplied in the initial context or read_file: {}:{}",
-            finding.path,
-            finding.line
-        );
+        let expected = expected.ok_or_else(|| UnobservedCitation {
+            path: finding.path.clone(),
+            line: finding.line,
+        })?;
         // Re-read the cited line so a change made by Bash or another process
         // after the read cannot be cited as if it were the inspected source.
         let page = read::read(&self.root, &finding.path, finding.line as usize, 1)
             .with_context(|| format!("re-read cited source {}:{}", finding.path, finding.line))?;
         ensure!(
-            page.texts.first().map(|text| fingerprint(text.as_bytes())) == expected,
+            page.texts.first().map(|text| fingerprint(text.as_bytes())) == Some(expected),
             "cited source changed after it was read; re-read {}:{} before reporting",
             finding.path,
             finding.line
         );
         Ok(())
+    }
+
+    /// Supply one claimed line as data for a bounded final-answer repair. This
+    /// is a read-only equivalent of `read_file`, including fingerprinting.
+    /// A missing path may be corrected only by a unique source-path suffix.
+    pub fn confirm_citation_source(
+        &mut self,
+        citation: &UnobservedCitation,
+    ) -> Result<CitationEvidence> {
+        relative_path(&citation.path)?;
+        let path = if self
+            .root
+            .path()
+            .join(&citation.path)
+            .symlink_metadata()
+            .is_ok()
+        {
+            citation.path.clone()
+        } else {
+            ensure!(
+                citation.path.contains('/'),
+                "citation path needs at least two components for suffix lookup"
+            );
+            let suffix = format!("/{}", citation.path);
+            let matches: Vec<_> = self
+                .root
+                .walk(
+                    ".",
+                    WalkLimits {
+                        max_entries: CITATION_WALK_ENTRIES,
+                        max_files: CITATION_WALK_FILES,
+                    },
+                )?
+                .into_iter()
+                .filter(|entry| entry.path.ends_with(&suffix))
+                .collect();
+            ensure!(
+                matches.len() == 1,
+                "citation path suffix must identify exactly one source file"
+            );
+            matches[0].path.clone()
+        };
+        let page = read::read(&self.root, &path, citation.line as usize, 1)?;
+        ensure!(page.lines == 1, "citation line is not present");
+        let text = page.texts[0].clone();
+        ensure!(
+            serde_json::to_string(&text)?.len() <= CITATION_EVIDENCE_BYTES,
+            "citation line exceeds confirmation byte cap"
+        );
+        let canonical_path = page.path;
+        self.observed
+            .entry(canonical_path.clone())
+            .or_default()
+            .insert(citation.line);
+        self.fingerprints
+            .entry(canonical_path.clone())
+            .or_default()
+            .insert(citation.line, fingerprint(text.as_bytes()));
+        Ok(CitationEvidence {
+            path: canonical_path,
+            line: citation.line,
+            text,
+        })
     }
 
     pub async fn execute(&mut self, name: &str, arguments: &str, timeout: Duration) -> Value {

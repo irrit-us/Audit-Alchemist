@@ -117,6 +117,9 @@ pub struct LlmOptions {
     /// `0` restores fail-fast behavior; repairs never fabricate a report.
     #[arg(long, default_value_t = 2, value_parser = clap::value_parser!(u32).range(0..=8))]
     pub max_output_repairs: u32,
+    /// Confirm an unobserved cited source line during a bounded final repair.
+    #[arg(long, action = clap::ArgAction::Set, default_value_t = true)]
+    pub citation_confirmation: bool,
     /// Read-only tool executions allowed after the main tool budget is spent,
     /// so a run can still verify a cited line before its final report.
     #[arg(long, default_value_t = 2, value_parser = clap::value_parser!(u32).range(0..=8))]
@@ -253,6 +256,9 @@ impl LlmOptions {
             "--max-settlement-calls".into(),
             self.max_settlement_calls.to_string(),
         ];
+        if !self.citation_confirmation {
+            args.extend(["--citation-confirmation".into(), "false".into()]);
+        }
         if let Some(tokens) = self.max_source_tokens {
             args.extend(["--max-source-tokens".into(), tokens.to_string()]);
         }

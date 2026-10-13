@@ -48,6 +48,62 @@ fn final_turn() -> String {
     )
 }
 
+fn finding_turn(path: &str) -> String {
+    let answer = json!({"schema_version":1,"findings":[{"cwe":"CWE-78","path":path,"line":2,"severity":"high","title":"Sink","evidence":"Input reaches sink"}]}).to_string();
+    format!(
+        "data: {}\n\ndata: [DONE]\n\n",
+        json!({"choices":[{"delta":{"content":answer},"finish_reason":"stop"}]})
+    )
+}
+
+#[test]
+fn citation_confirmation_requires_a_new_report_and_exposes_exact_source() {
+    for configured in [Some(false), Some(true), None] {
+        let enabled = configured.unwrap_or(true);
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        std::fs::write(root.join("entry.py"), "pass\n").unwrap();
+        std::fs::create_dir_all(root.join("pkg/sub")).unwrap();
+        std::fs::write(root.join("pkg/sub/a.py"), "first\nsink()\n").unwrap();
+        let (endpoint, rx, server) =
+            server(vec![finding_turn("sub/a.py"), finding_turn("pkg/sub/a.py")]);
+        let citation_setting = configured
+            .map(|value| format!("citation_confirmation = {value}\n"))
+            .unwrap_or_default();
+        config(root, &format!(
+            "[cli]\nmodel = 'fixture'\ntarget = 'entry.py'\nendpoint = {endpoint:?}\nmax_output_repairs = 1\n{citation_setting}trace_dir = 'traces'\nformat = 'quiet'\n"
+        ));
+        let output = cli(root, "audit").output().unwrap();
+        server.join().unwrap();
+        assert_eq!(
+            output.status.success(),
+            enabled,
+            "configured={configured:?}, stdout={}, stderr={}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let first = rx.recv().unwrap();
+        assert!(!first.to_string().contains("sink()"));
+        let second = rx.recv().unwrap();
+        let second_text = second.to_string();
+        assert_eq!(second_text.contains("sink()"), enabled);
+        assert_eq!(second_text.contains("pkg/sub/a.py"), enabled);
+        let trace = std::fs::read_to_string(
+            std::fs::read_dir(root.join("traces"))
+                .unwrap()
+                .next()
+                .unwrap()
+                .unwrap()
+                .path(),
+        )
+        .unwrap();
+        assert_eq!(
+            trace.contains("\"name\":\"citation_confirmation\""),
+            enabled
+        );
+    }
+}
+
 #[test]
 fn standalone_config_paths_overrides_and_lazy_skills() {
     let dir = tempfile::tempdir().unwrap();

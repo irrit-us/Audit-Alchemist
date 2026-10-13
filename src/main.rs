@@ -516,7 +516,7 @@ fn parse_cli() -> Result<Cli> {
                 toml::Value::Boolean(v)
                     if matches!(
                         arg.get_action(),
-                        clap::ArgAction::SetTrue | clap::ArgAction::SetFalse
+                        clap::ArgAction::SetTrue | clap::ArgAction::SetFalse | clap::ArgAction::Set
                     ) =>
                 {
                     vec![v.to_string()]

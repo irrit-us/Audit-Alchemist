@@ -134,6 +134,54 @@ async fn citation_fingerprint_rejects_external_source_change() {
     assert!(tools.validate_finding(&finding).is_err());
 }
 
+#[test]
+fn citation_confirmation_requires_unique_safe_source_and_preserves_fingerprint() {
+    let dir = tempfile::tempdir().unwrap();
+    std::fs::create_dir_all(dir.path().join("pkg/sub")).unwrap();
+    std::fs::write(dir.path().join("pkg/sub/a.py"), "first\nsink()\n").unwrap();
+    let mut tools = WorkspaceTools::new(
+        dir.path(),
+        &Context {
+            sources: vec![],
+            total_bytes: 0,
+        },
+    )
+    .unwrap();
+    let mut finding = Finding {
+        cwe: "CWE-78".into(),
+        path: "sub/a.py".into(),
+        line: 2,
+        severity: Severity::High,
+        title: "x".into(),
+        evidence: "x".into(),
+    };
+    let error = tools.validate_finding(&finding).unwrap_err();
+    let citation = error
+        .downcast_ref::<audit_harness::tools::UnobservedCitation>()
+        .unwrap();
+    let evidence = tools.confirm_citation_source(citation).unwrap();
+    assert_eq!(evidence.path, "pkg/sub/a.py");
+    assert_eq!(evidence.text, "sink()");
+    assert!(tools.validate_finding(&finding).is_err());
+    finding.path = evidence.path;
+    tools.validate_finding(&finding).unwrap();
+    std::fs::write(dir.path().join("pkg/sub/a.py"), "first\nchanged()\n").unwrap();
+    assert!(tools.validate_finding(&finding).is_err());
+
+    std::fs::create_dir_all(dir.path().join("other/sub")).unwrap();
+    std::fs::write(dir.path().join("other/sub/a.py"), "first\nsink()\n").unwrap();
+    let ambiguous = audit_harness::tools::UnobservedCitation {
+        path: "sub/a.py".into(),
+        line: 2,
+    };
+    assert!(tools.confirm_citation_source(&ambiguous).is_err());
+    let traversal = audit_harness::tools::UnobservedCitation {
+        path: "../pkg/sub/a.py".into(),
+        line: 2,
+    };
+    assert!(tools.confirm_citation_source(&traversal).is_err());
+}
+
 #[tokio::test]
 async fn bash_preserves_shell_syntax_and_native_failure_semantics() {
     let dir = tempfile::tempdir().unwrap();

@@ -171,6 +171,7 @@ See [Authentication](authentication.md) for the credential details.
 | `--max-tool-output-bytes <N>` | `32768` | 1024–131072 bytes per model-visible JSON tool result, including metadata |
 | `--max-tokens <N>` | `4096` | 1–32768 requested output tokens |
 | `--max-output-repairs <N>` | `2` | 0–8 bounded retries after the final report fails JSON, schema, or evidence validation; `0` fails fast. A repair never fabricates a report |
+| `--citation-confirmation <BOOL>` | `true` | Enable or disable bounded confirmation of an unobserved cited line during an existing output repair. Configuration key: `citation_confirmation = false` |
 | `--max-settlement-calls <N>` | `2` | 0–8 read-only tool executions after the action budget is spent; `0` ends with a tool-free report |
 | `--max-stream-bytes <N>` | `8388608` (8 MiB) | 1048576–33554432 streamed bytes per response, including SSE framing. Reasoning models can emit far more raw SSE than assembled text |
 | `--timeout-ms <N>` | `60000` | 1–3600000 wall-clock deadline |
@@ -263,6 +264,13 @@ always inside the run deadline. A completed stream with no text and no tool call
 is also retried up to `--max-attempts` times without replaying any tool. A
 response with text is never retried for transport reasons; if its final report
 fails validation, `--max-output-repairs` returns the error to the model instead.
+A default-on citation confirmation may supply the current source line for an
+unobserved citation before that repair request. It uses at most two of the
+existing repair turns, reads no more than 2048 bytes of source text per line,
+and accepts a corrected finding only after a fresh model report passes ordinary
+evidence validation. A missing path is suggested only when a bounded source
+walk finds one unambiguous suffix match. This is a repair contract, not a
+measured improvement in audit quality.
 A 401 from the Codex backend triggers one forced re-authentication and retry.
 
 ### `audit` and `evaluate` specifics

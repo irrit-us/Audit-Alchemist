@@ -71,7 +71,9 @@ The library separates provider protocols, tool execution, and evidence validatio
    so the model can still verify a cited line before returning its report. A
    final report that fails JSON,
    schema, or evidence validation is returned to the model for bounded repair
-   (`--max-output-repairs`), and a completed stream with no text or tool calls is
+   (`--max-output-repairs`). An unobserved cited line can trigger a bounded
+   source-line confirmation within that repair budget; the model must return a
+   fresh report, which undergoes the same validation. A completed stream with no text or tool calls is
    retried up to `--max-attempts` without replaying a tool. The loop ends with a
    validated JSON report or an explicit limit/provider error. Findings must cite
    observed lines whose content fingerprint still matches, so a Bash or external

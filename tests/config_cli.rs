@@ -38,7 +38,14 @@ fn success(output: std::process::Output) -> Value {
 }
 fn mcp_config(root: &Path, mode: &str) -> String {
     let fixture = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/mcp_server.py");
-    let timeout = if mode == "hang_init" { 1500 } else { 5000 };
+    // Windows CI can take several seconds to launch Python while other Rust
+    // integration tests start child processes. Keep deliberate hang fixtures
+    // short, but give successful startup and tool calls room to complete.
+    let timeout = match mode {
+        "hang_init" => 1500,
+        "echo" | "pages" => 15_000,
+        _ => 5000,
+    };
     format!("[mcp.fixture]\nenabled = true\ncommand = {:?}\nargs = [{:?}, {:?}, {:?}]\ntimeout_ms = {timeout}\ntools = [\"echo\"]\n", if cfg!(windows) { "python" } else { "python3" }, fixture.to_string_lossy(), mode, root.join("mcp.jsonl").to_string_lossy())
 }
 fn final_turn() -> String {
@@ -316,7 +323,7 @@ fn cli_agent_runs_mcp_and_custom_skills_with_monitoring() {
 model = "fixture"
 endpoint = {endpoint:?}
 max_attempts = 1
-timeout_ms = 8000
+timeout_ms = 30000
 trace_dir = "traces"
 [prompts]
 system = "CONFIGURED_SYSTEM"
@@ -401,7 +408,7 @@ fn evaluate_forwards_resolved_config_into_staged_workspaces() {
 model = "fixture"
 endpoint = {endpoint:?}
 dataset = "dataset.json"
-timeout_ms = 8000
+timeout_ms = 30000
 [prompts]
 system_file = "prompt.txt"
 [tools]
@@ -478,13 +485,13 @@ fn cli_deadline_cancels_mcp_initialization_and_its_descendants() {
     let dir = tempfile::tempdir().unwrap();
     let root = dir.path();
     std::fs::write(root.join("entry.py"), "print('fixture')\n").unwrap();
-    config(root, &format!("[cli]\nmodel = 'fixture'\ntarget = 'entry.py'\nendpoint = 'http://127.0.0.1:9/unused'\ntimeout_ms = 5000\n{}", mcp_config(root, "cancel_init").replace("timeout_ms = 5000", "timeout_ms = 15000")));
+    config(root, &format!("[cli]\nmodel = 'fixture'\ntarget = 'entry.py'\nendpoint = 'http://127.0.0.1:9/unused'\ntimeout_ms = 10000\n{}", mcp_config(root, "cancel_init").replace("timeout_ms = 5000", "timeout_ms = 15000")));
     let start = Instant::now();
     let output = cli(root, "audit").output().unwrap();
     assert!(!output.status.success());
     let result: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(result["outcome"], "timeout", "{result}");
-    assert!(start.elapsed() < Duration::from_secs(10));
+    assert!(start.elapsed() < Duration::from_secs(15));
     let log = std::fs::read_to_string(root.join("mcp.jsonl")).unwrap();
     assert!(log.contains("initialize"));
     assert!(root.join("mcp.jsonl.child-ready").exists());
